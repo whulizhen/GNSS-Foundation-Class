@@ -1,0 +1,145 @@
+//spacecraft: Galileo IOV, PRN E11, E12 , E19, E20,696.815, 694.779(E12),695(E19,E20), refx:0.56,refY:0.62,refZ:0.418,spec:0.0 perform better for boxwing,solarArray+: 0.0 0.0 0.0 10.82 0.0134876  0.9143 1.86148 0.0857 0.0857 0.2828 , galileo_iov_x_q23w15.grd,galileo_iov_y_q50w27.grd,galileo_iov_z_q50w17.grd
+// Antenna Power: 276.46(150) or 431.68 Watt 505.9
+// galileo_iov_x_q22w32.grd galileo_iov_y_q50w50.grd galileo_iov_z_q19w50.grd
+// the unit of y_bias(2.5nm/s^2) is nanoNewton, basiclly the parameters for the calculation of Ybias, currently it is just a constant
+{
+spacecraftName: GALIOV
+mass: 696.815
+COM: -1.2058440 -0.6289670  0.5534360
+LRAoffset: -2.2980 -0.5950 1.1740
+GNSSoffset: 0.0 0.0 0.0
+nominalMass: 1.0
+antennaPower: 160
+panelPowerDraw: 1300.0
+busX+: 1.0 0.0 0.0 1.32 0.0  0.4436 0.0 0.0 0.5564 0.4727
+busX-: -1.0 0.0 0.0 1.32 0.0  0.94 0.0 0.0 0.06 0.0
+busY+: 0.0 1.0 0.0 3.0 0.0  0.38 0.0 0.0 0.62 0.5333
+busY-: 0.0 -1.0 0.0 3.0 0.0  0.3884 0.0 0.0 0.6116 0.5253
+busZ+: 0.0 0.0 1.0 3.0 0.0  0.5816 0.0 0.0 0.4184 0.3413
+busZ-: 0.0 0.0 -1.0 3.0 0.0  0.94 0.0 0.0 0.06 0.0
+solarArray+: 0.0 0.0 0.0 10.82 0.0003048  0.91434 0.607424072 0.80 0.1 1.0
+solarArray-: 0.0 0.0 0.0 10.82 0.0266700  0.90000 1.694884419 0.82 0.1 0.1
+BFSbias: 0.0 0.13 0.0
+gridX: ../data/galIOV_gridfiles/xgrid_new.grd
+gridY: ../data/galIOV_gridfiles/ygrid_new.grd
+gridZ: ../data/galIOV_gridfiles/zgrid_new.grd
+}
+
+
+//spacecraft: Galileo FOC, PRN E14,E18,E22,E26. https://www.gsc-europa.eu/system-status/Constellation-Information
+{
+spacecraftName: GALFOC
+mass: 732.8
+COM: -1.2058440 -0.6289670  0.5534360
+LRAoffset: -2.2980 -0.5950 1.1740
+GNSSoffset: 0.0 0.0 0.0
+nominalMass: 1.0
+antennaPower: 120.0
+busX+: 1.0 0.0 0.0 1.32 0.0  0.4436 0.0 0.0 0.5564 0.4727
+busX-: -1.0 0.0 0.0 1.32 0.0  0.94 0.0 0.0 0.06 0.0
+busY+: 0.0 1.0 0.0 3.0 0.0  0.38 0.0 0.0 0.62 0.5333
+busY-: 0.0 -1.0 0.0 3.0 0.0  0.3884 0.0 0.0 0.6116 0.5253
+busZ+: 0.0 0.0 1.0 3.0 0.0  0.5816 0.0 0.0 0.4184 0.3413
+busZ-: 0.0 0.0 -1.0 3.0 0.0  0.94 0.0 0.0 0.06 0.0
+solarArray+: 0.0 0.0 0.0 10.82 0.0003048  0.91434 0.607424072 0.80 0.31 1.0
+solarArray-: 0.0 0.0 0.0 10.82 0.0266700  0.90000 1.694884419 0.82 0.1 1.0
+BFSbias: 0.0 -1.1 0.0
+gridX: ../data/galFOC_gridfiles/xgrid_v2_srp_trr.grd
+gridY: ../data/galFOC_gridfiles/ygrid_v2_srp_trr.grd
+gridZ: ../data/galFOC_gridfiles/zgrid_v2_srp_trr.grd
+}
+
+// spacecraft geometry and optical property description file
+// mass: 1086.4512 GPSIIRnapShroudX-R100-Q32W44S0.grd GPSIIRnapShroudY-R100-Q50W50S0.grd GPSIIRnapShroudZ-R100-Q43W19S0.grd
+// ybias for gps is 1.1 nm/s^2  gpsiirnapX-R100-Q37W13S0_g.grd  gpsiirnapY-R100-Q50W50S0_g.grd gpsiirnapZ-R100-Q32W11S0_g.grd
+{
+spacecraftName: GPSIIR
+mass: 1086.4512
+COM: 0.0 0.0 0.0
+LRAoffset: 0.0 0.0 0.0
+GNSSoffset: 0.0 0.0 0.0
+nominalMass: 1.0
+antennaPower: 77
+busX+: 1.0 0.0 0.0 2.286568 0.0  0.0 0.0 0.0 0.06 0.0
+busX-: -1.0 0.0 0.0 2.286568 0.0  0.0 0.0 0.0 0.06 0.0
+busY+: 0.0 1.0 0.0 2.859672 0.0  0.0 0.0 0.0 0.06 0.0
+busY-: 0.0 -1.0 0.0 2.859672 0.0  0.0 0.0 0.0 0.06 0.0
+busZ+: 0.0 0.0 1.0 3.059184 0.0  0.0 0.0 0.0 0.06 0.0
+busZ-: 0.0 0.0 -1.0 3.059184 0.0  0.0 0.0 0.0 0.06 0.0
+solarArray+: 0.0 0.0 0.0 13.564096 0.0003048  0.72 0.607424072 0.86 0.28 0.85
+solarArray-: 0.0 0.0 0.0 13.564096 0.02667  0.78 1.694884419 0.89 0.1 0.0
+BFSbias: 0.0 -0.85 0.0
+gridX: ../data/gpsIIR_gridfiles/xgrid_nap.grd
+gridY: ../data/gpsIIR_gridfiles/ygrid_nap.grd
+gridZ: ../data/gpsIIR_gridfiles/zgrid_nap.grd
+}
+//spacecraft: BDSIGSO
+//https://igscb.jpl.nasa.gov/projects/mgex/Status_BDS.html
+// COM: 1.0756 0.0 -0.0004 , LRAoffset: 0.673 -0.573 1.093
+{
+spacecraftName: BDSIGSO
+mass: 1320.0
+COM: 1.0756 0.0 -0.0004
+LRAoffset: 0.673 -0.573 1.093
+GNSSoffset: 0.0 0.0 0.0
+nominalMass: 1100.0
+antennaPower: 85.0
+busX+: 1.0 0.0 0.0 3.784 0.0  0.0 0.0 0.0 0.65 0.0
+busX-: -1.0 0.0 0.0 3.784 0.0  0.0 0.0 0.0 0.65 0.0
+busY+: 0.0 1.0 0.0 4.4 0.0  0.0 0.0 0.0 0.86 0.0
+busY-: 0.0 -1.0 0.0 4.4 0.0  0.0 0.0 0.0 0.86 0.0
+busZ+: 0.0 0.0 1.0 3.44 0.0  0.0 0.0 0.0 0.65 0.0
+busZ-: 0.0 0.0 -1.0 3.44 0.0  0.0 0.0 0.0 0.65 0.0
+solarArray+: 0.0 0.0 0.0 22.704 0.0134876  0.78 1.86148 0.82 0.28 0.85
+solarArray-: 0.0 0.0 0.0 22.704 0.0134876  0.78 1.86148 0.82 0.28 0.85
+BFSbias: 0.0 -0.6 0.0
+gridX: ../data/bds_gridfiles/version1/BDSIGSOX-R100-Q12W25S0.grd
+gridY: ../data/bds_gridfiles/version1/BDSIGSOY-R100-Q42W11S0.grd
+gridZ: ../data/bds_gridfiles/version1/BDSIGSOZ-R100-Q15W43S0.grd
+}
+
+//spacecraft: BDSGEO
+{
+spacecraftName: BDSGEO
+mass: 1733.5
+COM: 1.1525 0.0002 0.0
+LRAoffset: 0.6088 -0.5702 1.093
+GNSSoffset: 0.0 0.0 0.0
+nominalMass: 1100
+antennaPower: 85.0
+busX+: 1.0 0.0 0.0 3.784 0.0  0.0 0.0 0.0 0.65 0.0
+busX-: -1.0 0.0 0.0 3.784 0.0  0.0 0.0 0.0 0.65 0.0
+busY+: 0.0 1.0 0.0 4.4 0.0  0.0 0.0 0.0 0.86 0.0
+busY-: 0.0 -1.0 0.0 4.4 0.0  0.0 0.0 0.0 0.86 0.0
+busZ+: 0.0 0.0 1.0 3.44 0.0  0.0 0.0 0.0 0.65 0.0
+busZ-: 0.0 0.0 -1.0 3.44 0.0  0.0 0.0 0.0 0.65 0.0
+solarArray+: 0.0 0.0 0.0 22.704 0.0134876  0.78 1.86148 0.82 0.28 0.85
+solarArray-: 0.0 0.0 0.0 22.704 0.0134876  0.78 1.86148 0.82 0.28 0.85
+BFSbias: 0.0 -0.6 0.0
+gridX: ../data/bds_gridfiles/version1/BDSIGSOX-R100-Q12W25S0.grd
+gridY: ../data/bds_gridfiles/version1/BDSIGSOY-R100-Q42W11S0.grd
+gridZ: ../data/bds_gridfiles/version1/BDSIGSOZ-R100-Q15W43S0.grd
+}
+
+//spacecraft: BDSMEO
+{
+spacecraftName: BDSMEO
+mass: 1320.0
+COM: 1.082 -0.0004 -0.0005
+LRAoffset: 0.6499 -0.5625 1.1123
+GNSSoffset: 0.0 0.0 0.0
+nominalMass: 1100.0
+antennaPower: 85.0
+busX+: 1.0 0.0 0.0 3.784 0.0  0.0 0.0 0.0 0.65 0.0
+busX-: -1.0 0.0 0.0 3.784 0.0  0.0 0.0 0.0 0.65 0.0
+busY+: 0.0 1.0 0.0 4.4 0.0  0.0 0.0 0.0 0.86 0.0
+busY-: 0.0 -1.0 0.0 4.4 0.0  0.0 0.0 0.0 0.86 0.0
+busZ+: 0.0 0.0 1.0 3.44 0.0  0.0 0.0 0.0 0.65 0.0
+busZ-: 0.0 0.0 -1.0 3.44 0.0  0.0 0.0 0.0 0.65 0.0
+solarArray+: 0.0 0.0 0.0 22.704 0.0134876  0.78 1.86148 0.82 0.28 0.85
+solarArray-: 0.0 0.0 0.0 22.704 0.0134876  0.78 1.86148 0.82 0.28 0.85
+BFSbias: 0.0 -0.6 0.0
+gridX: ../data/bds_gridfiles/version1/xgrid_1mm.grd
+gridY: ../data/bds_gridfiles/version1/ygrid_1mm.grd
+gridZ: ../data/bds_gridfiles/version1/zgrid_1mm.grd
+}
