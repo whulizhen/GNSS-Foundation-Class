@@ -1,0 +1,54 @@
+CRD/Merit-II Data Intercomparison Report for session
+ Date: 2008/05/06 (127) 10:18:49 UTC
+ Station: MDOL       7080
+ Target: etalon2    0008903903 4146      20026
+
+The following disagreements were found between the
+  CRD and MERIT-II full rate files
+ Of 4 pressure measurements,
+   4 differed by < 0.1 mb;
+   0 differed by < 1.0 mb;
+   0 differed by < 10 mb; and
+   0 differed by more.
+ Of 4 temperature measurements,
+   1 differed by < 0.1 K;
+   3 differed by < 1.0 K;
+   0 differed by < 10.0 K; and
+   0 differed by more.
+ Of 4 humidity measurements,
+   1 differed by < 1 %;
+   3 differed by < 5 %;
+   0 differed by < 10 %; and
+   0 differed by more.
+ Of 323 full rate seconds of day,
+   323 differed by < 0.1 psec ;
+   0 differed by < 500 nsec;
+   0 differed by < 1 microsec; and
+   0 differed by more.
+ Of 323 full rate time of flight,
+   288 differed by < 1 psec ;
+   35 differed by < 5 psec;
+   0 differed by < 10 psec; and
+   0 differed by more.
+ Of 1 calibration system delays,
+   1 differed by < 1 psec ;
+   0 differed by < 5 psec;
+   0 differed by < 10 psec; and
+   0 differed by more.
+ Of 1 calibration delay shifts,
+   1 differed by < 1 psec ;
+   0 differed by < 5 psec;
+   0 differed by < 10 psec; and
+   0 differed by more.
+ Of 1 calibration rms,
+   1 differed by < 1 psec ;
+   0 differed by < 5 psec;
+   0 differed by < 10 psec; and
+   0 differed by more.
+ Of 0 session rms,
+   0 differed by < 1 psec ;
+   0 differed by < 5 psec;
+   0 differed by < 10 psec; and
+   0 differed by more.
+
+7080_etalon2_crd_20080506_10_00.frd: pass

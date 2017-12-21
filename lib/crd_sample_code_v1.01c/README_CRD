@@ -1,0 +1,109 @@
+			CRD Sample Code README
+
+CRD sample code provides several sets of software to read, write, convert, and 
+test CRD files. These are provided "as is" with no guarantees. The software has 
+been tested with a limited amount of data, and there may still be errors and 
+incomplete implementation of standards. This software is meant to be a starting
+place for those implementing and managing ranging data in the CRD format.
+
+To avoid confusion that would occur if the terms "new" and "old" format were 
+used, the following convention is adopted. References to the CRD format use 
+the term "crd". References to the older ILRS normal point and sampled 
+engineering (quicklook) format use the term "cstg", reflecting the format's 
+origin. Similarly, references to the older ILRS full rate format use the term 
+"merit" or "MERIT-II" to reflect the format's origin. Similarly, the lunar
+full rate data is refeirred to as "cospar" data.
+
+The CRD sample software can be broken into several groups.
+
+1) Code common to many applications
+   directory: common_c	('c' version)
+   directory: crd_rw_c
+	read_crd.c	- read and parse CRD records
+	write_crd.c	- write CRD records
+	getfield.c	- read undelimited data fields from a string ???
+
+2) Code common to many applications
+   directory: common_f	('FORTRAN' version)
+	read_crdf.f	- read and parse CRD records
+	write_crdf.f	- write CRD records
+
+3) CRD file checker - crd_chk ('c' only).
+   directory: crd_chk_c
+	crd_chk.c	 - check CRD file for errors
+        crd_cstg_np_cmp  - compares new and old format normal point files for 
+                           differences
+        crd_merit_fr_cmp - compares new and old format full rate files for 
+                           differences
+
+4) Various conversion utilities between CRD and older SLR/LLR formats 
+   ('c' only).
+   directory: crd_conv_slr_c
+	crd_to_cstg_np.c	- CRD normal points to old normal point format
+	crd_to_cstg_ql.c	- CRD sampled engineering to old 
+				  sampled engineering format
+	crd_to_merit.c		- CRD fullrate to old fullrate format
+	cstg_to_crd.c		- Old normalpoint and sampled engineering
+				  to CRD format
+	merit_to_crd.c		- Old fullrate to CRD format
+	read_cstg.c		- Read old normalpoint and sampled engineering
+				  records
+	read_merit.c		- Read old fullrate records
+	write_cstg.c		- Write old normalpoint and sampled engineering
+				  records
+	write_merit.c		- Write old fullrate records
+
+5) Various conversion utilities from old lunar format to CRD ('c' only).
+   directory: crd_conv_llr_c
+	cllr_to_crd.c		- Old COSPAR lunar to CRD format
+	read_llr.c		- Read old lunar format records
+	cospar_llr.h		- Header file with old lunar format information
+
+6) Various CRD file split, merge, sort, and miscellaneous routines.
+   directory: crd_split_c
+	crd_split.c		- Split multi-pass and multi-data-type file
+				  into separate files using station naming
+				  convention ????
+	frd_strip.c		- Strip out station-dependent (9x) records and
+				  remove some white space from CRD fullrate file
+	merge_crd_daily.c	- merge single pass normalpoitn, quicklook, and
+				  full rate files into single day files.
+
+7) Various header and include files
+   directory: include	('c' and FORTRAN versions)
+	crd.h			- Header file with CRD information ('c')
+	crd.inc			- Header file with CRD information (FORTRAN)
+	cstg.h			- Header file with old normal point and
+				  sampled engineering information
+	merit.h			- Header file with old fullrate format 
+				  information
+
+
+To compile this code on a Linux system, just type
+	./make.sh
+on the command line in the main directory or
+	make all
+in each source directory.
+
+In selected directories there are scripts to test the program using the 
+supplied data. Data files ending in ".ref" are the reference (or "correct") 
+output from the conversion programs. To run the tests, and automatically 
+compared results, type
+	./test.sh
+in the main directory or each of these directories.
+
+If there are errors or problems found with the software, please let me know.
+Thank you.
+
+R. Ricklefs
+University of Texas / Center for Space Research
+ricklefs@csr.utexas.edu
+
+First version: 01/10/2008 v0.27
+Add merge_crd_daily, and correct targets.dat: 01/24/2008 v0.27a
+Added crd_cstg_np_cmp and crd_merit_fr_cmp and undated as needed for v1.00.
+ 06/25/2008
+Rolled errata into source code. v1.01. 10/28/2009
+Rolled errata into source code. v1.01a.
+Rolled errata into source code. v1.01b. 02/23/2012
+

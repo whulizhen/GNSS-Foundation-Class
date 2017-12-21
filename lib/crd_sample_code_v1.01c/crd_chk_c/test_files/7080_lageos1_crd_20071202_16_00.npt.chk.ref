@@ -1,0 +1,28 @@
+CRD Check Version: 1.01b
+CRD File name: 7080_lageos1_crd_20071202_16_00.npt
+
+Station: Pad ID:7080  Sys Num:24  Occ num: 19  Name: [MDOL      ] time scale: 4
+Target: COSPAR: 7603901    SIC:1155    NORAD:     8820    Name: [LAGEOS1   ]
+        time scale: 0    target type: slr
+Format version: 0    Data type: npt    Data release: 0
+Produced on 2008/ 1/ 7 19 hours
+Session Starting on 2007/12/ 2 16: 0: 8 Ending on 2007/12/ 2 16:17:10 UTC
+refraction applied: no     CofM applied: no     xcv amplitude applied: no 
+Station system delay applied: yes    Satellite system delay applied: no 
+Range type: 2-way    Date quality alert: good   
+
+
+Number of records -
+ 11 Normal Point Record: 8
+ 20 Meteorological Record: 4
+ 40 Calibration Record: 1
+ 50 Session Statistics Record: 1
+ 60 Compatibility Record: 1
+ c0 System Configuration Records: 1
+ c1 Laser Configuration Records: 1
+ c2 Detector Configuration Records: 1
+ c3 Timing Configuration Records: 1
+
+Errors and Warnings -
+
+

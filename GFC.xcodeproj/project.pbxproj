@@ -1,0 +1,641 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B7BE64481FD6FDAA008CC80A /* GFMThirdBody.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63C51FD6FDA1008CC80A /* GFMThirdBody.cpp */; };
+		B7BE64491FD6FDAA008CC80A /* GEphemeris.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63C61FD6FDA1008CC80A /* GEphemeris.cpp */; };
+		B7BE644A1FD6FDAA008CC80A /* NRLMSISE-00.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63C81FD6FDA1008CC80A /* NRLMSISE-00.cpp */; };
+		B7BE644B1FD6FDAA008CC80A /* SRIF.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63C91FD6FDA1008CC80A /* SRIF.cpp */; };
+		B7BE644C1FD6FDAA008CC80A /* GFCCONST.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63CD1FD6FDA1008CC80A /* GFCCONST.cpp */; };
+		B7BE644D1FD6FDAA008CC80A /* GNSSData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63D01FD6FDA1008CC80A /* GNSSData.cpp */; };
+		B7BE644E1FD6FDAA008CC80A /* GEllipsoidMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63D21FD6FDA2008CC80A /* GEllipsoidMgr.cpp */; };
+		B7BE644F1FD6FDAA008CC80A /* GTidalCorrection.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63D41FD6FDA2008CC80A /* GTidalCorrection.cpp */; };
+		B7BE64501FD6FDAA008CC80A /* GOrbitPredictor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63D51FD6FDA2008CC80A /* GOrbitPredictor.cpp */; };
+		B7BE64511FD6FDAA008CC80A /* SensorID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63D61FD6FDA2008CC80A /* SensorID.cpp */; };
+		B7BE64521FD6FDAA008CC80A /* GException.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63DA1FD6FDA2008CC80A /* GException.cpp */; };
+		B7BE64541FD6FDAA008CC80A /* GSLRcrd.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63DC1FD6FDA2008CC80A /* GSLRcrd.cpp */; };
+		B7BE64551FD6FDAA008CC80A /* GFMEarthRadiationPressure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63DD1FD6FDA2008CC80A /* GFMEarthRadiationPressure.cpp */; };
+		B7BE64561FD6FDAA008CC80A /* GSpaceCraftAttitude.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63E01FD6FDA2008CC80A /* GSpaceCraftAttitude.cpp */; };
+		B7BE64571FD6FDAA008CC80A /* GFMThermalRadiationForce.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63E21FD6FDA3008CC80A /* GFMThermalRadiationForce.cpp */; };
+		B7BE64581FD6FDAA008CC80A /* GIAU.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63E31FD6FDA3008CC80A /* GIAU.cpp */; };
+		B7BE64591FD6FDAA008CC80A /* GFMEarthGravity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63E41FD6FDA3008CC80A /* GFMEarthGravity.cpp */; };
+		B7BE645A1FD6FDAA008CC80A /* GIERS.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63E51FD6FDA3008CC80A /* GIERS.cpp */; };
+		B7BE645B1FD6FDAA008CC80A /* GOrbitFitting.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63E71FD6FDA3008CC80A /* GOrbitFitting.cpp */; };
+		B7BE645C1FD6FDAA008CC80A /* GStream.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63E91FD6FDA3008CC80A /* GStream.cpp */; };
+		B7BE645D1FD6FDAA008CC80A /* GVector.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63EA1FD6FDA3008CC80A /* GVector.cpp */; };
+		B7BE645E1FD6FDAA008CC80A /* GGlobalPressureTemperature.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63EC1FD6FDA3008CC80A /* GGlobalPressureTemperature.cpp */; };
+		B7BE645F1FD6FDAA008CC80A /* GString.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63ED1FD6FDA3008CC80A /* GString.cpp */; };
+		B7BE64601FD6FDAA008CC80A /* GMatrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63EE1FD6FDA3008CC80A /* GMatrix.cpp */; };
+		B7BE64611FD6FDAA008CC80A /* GSpaceEnv.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63F11FD6FDA4008CC80A /* GSpaceEnv.cpp */; };
+		B7BE64621FD6FDAA008CC80A /* GMotionState.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63F21FD6FDA4008CC80A /* GMotionState.cpp */; };
+		B7BE64631FD6FDAA008CC80A /* GFMSolarRadiationPressure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63F41FD6FDA4008CC80A /* GFMSolarRadiationPressure.cpp */; };
+		B7BE64641FD6FDAA008CC80A /* GRadiationGrid.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63F51FD6FDA4008CC80A /* GRadiationGrid.cpp */; };
+		B7BE64651FD6FDAA008CC80A /* GSpacecraft.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63F71FD6FDA4008CC80A /* GSpacecraft.cpp */; };
+		B7BE64661FD6FDAA008CC80A /* GRungeKutta.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63FA1FD6FDA4008CC80A /* GRungeKutta.cpp */; };
+		B7BE64671FD6FDAA008CC80A /* GFMEarthTide.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63FB1FD6FDA4008CC80A /* GFMEarthTide.cpp */; };
+		B7BE64681FD6FDAA008CC80A /* GLegendre.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63FD1FD6FDA4008CC80A /* GLegendre.cpp */; };
+		B7BE64691FD6FDAA008CC80A /* GEquation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE63FE1FD6FDA4008CC80A /* GEquation.cpp */; };
+		B7BE646A1FD6FDAA008CC80A /* GSLRValidation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64001FD6FDA5008CC80A /* GSLRValidation.cpp */; };
+		B7BE646B1FD6FDAA008CC80A /* GTime.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64011FD6FDA5008CC80A /* GTime.cpp */; };
+		B7BE646C1FD6FDAA008CC80A /* GSpacecraftModel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64041FD6FDA5008CC80A /* GSpacecraftModel.cpp */; };
+		B7BE646D1FD6FDAA008CC80A /* GFMGravity.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64091FD6FDA5008CC80A /* GFMGravity.cpp */; };
+		B7BE646F1FD6FDAA008CC80A /* GAdams.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE640B1FD6FDA6008CC80A /* GAdams.cpp */; };
+		B7BE64711FD6FDAA008CC80A /* GSensor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64151FD6FDA6008CC80A /* GSensor.cpp */; };
+		B7BE64721FD6FDAA008CC80A /* GIcosahedron.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64161FD6FDA6008CC80A /* GIcosahedron.cpp */; };
+		B7BE64731FD6FDAA008CC80A /* GRadiationFlux.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE641A1FD6FDA7008CC80A /* GRadiationFlux.cpp */; };
+		B7BE64741FD6FDAA008CC80A /* ObsDataTree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE641E1FD6FDA7008CC80A /* ObsDataTree.cpp */; };
+		B7BE64751FD6FDAA008CC80A /* GOBSData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64201FD6FDA7008CC80A /* GOBSData.cpp */; };
+		B7BE64761FD6FDAA008CC80A /* GSourceID.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64211FD6FDA7008CC80A /* GSourceID.cpp */; };
+		B7BE64771FD6FDAA008CC80A /* GJPLEPH.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64221FD6FDA7008CC80A /* GJPLEPH.cpp */; };
+		B7BE64781FD6FDAA008CC80A /* GConfigure.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64251FD6FDA7008CC80A /* GConfigure.cpp */; };
+		B7BE64791FD6FDAA008CC80A /* GRinex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64271FD6FDA8008CC80A /* GRinex.cpp */; };
+		B7BE647A1FD6FDAA008CC80A /* GMath.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64291FD6FDA8008CC80A /* GMath.cpp */; };
+		B7BE647B1FD6FDAA008CC80A /* GFMSolarRadiaitonPressureEM.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE642B1FD6FDA8008CC80A /* GFMSolarRadiaitonPressureEM.cpp */; };
+		B7BE647C1FD6FDAA008CC80A /* GForceModelMgr.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64301FD6FDA8008CC80A /* GForceModelMgr.cpp */; };
+		B7BE647D1FD6FDAA008CC80A /* GStation.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64311FD6FDA8008CC80A /* GStation.cpp */; };
+		B7BE647E1FD6FDAA008CC80A /* GTemperatureTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64321FD6FDA9008CC80A /* GTemperatureTest.cpp */; };
+		B7BE647F1FD6FDAA008CC80A /* GFData.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64331FD6FDA9008CC80A /* GFData.cpp */; };
+		B7BE64801FD6FDAA008CC80A /* GPreciseOrbitDetermination.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64381FD6FDA9008CC80A /* GPreciseOrbitDetermination.cpp */; };
+		B7BE64811FD6FDAA008CC80A /* GEarthOrientationParameter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE643B1FD6FDA9008CC80A /* GEarthOrientationParameter.cpp */; };
+		B7BE64821FD6FDAA008CC80A /* GKPE.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64411FD6FDAA008CC80A /* GKPE.cpp */; };
+		B7BE64861FD707F1008CC80A /* main_orbitPredictor.cpp in Sources */ = {isa = PBXBuildFile; fileRef = B7BE64851FD707F1008CC80A /* main_orbitPredictor.cpp */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B7BE63B81FD6F7B0008CC80A /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		B7BE63BA1FD6F7B0008CC80A /* GFC */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GFC; sourceTree = BUILT_PRODUCTS_DIR; };
+		B7BE63C51FD6FDA1008CC80A /* GFMThirdBody.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GFMThirdBody.cpp; path = src/GFMThirdBody.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63C61FD6FDA1008CC80A /* GEphemeris.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GEphemeris.cpp; path = src/GEphemeris.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63C71FD6FDA1008CC80A /* GKPE.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GKPE.hpp; path = src/GKPE.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63C81FD6FDA1008CC80A /* NRLMSISE-00.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = "NRLMSISE-00.cpp"; path = "src/NRLMSISE-00.cpp"; sourceTree = SOURCE_ROOT; };
+		B7BE63C91FD6FDA1008CC80A /* SRIF.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SRIF.cpp; path = src/SRIF.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63CA1FD6FDA1008CC80A /* GSpaceEnv.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GSpaceEnv.hpp; path = src/GSpaceEnv.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63CB1FD6FDA1008CC80A /* GRungeKutta.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GRungeKutta.hpp; path = src/GRungeKutta.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63CC1FD6FDA1008CC80A /* GFMGravity.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GFMGravity.hpp; path = src/GFMGravity.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63CD1FD6FDA1008CC80A /* GFCCONST.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GFCCONST.cpp; path = src/GFCCONST.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63CE1FD6FDA1008CC80A /* BaseString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseString.h; path = src/BaseString.h; sourceTree = SOURCE_ROOT; };
+		B7BE63CF1FD6FDA1008CC80A /* GEquation.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GEquation.hpp; path = src/GEquation.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63D01FD6FDA1008CC80A /* GNSSData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GNSSData.cpp; path = src/GNSSData.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63D11FD6FDA1008CC80A /* GFMEarthGravity.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GFMEarthGravity.hpp; path = src/GFMEarthGravity.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63D21FD6FDA2008CC80A /* GEllipsoidMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GEllipsoidMgr.cpp; path = src/GEllipsoidMgr.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63D31FD6FDA2008CC80A /* GFCCONST.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GFCCONST.h; path = src/GFCCONST.h; sourceTree = SOURCE_ROOT; };
+		B7BE63D41FD6FDA2008CC80A /* GTidalCorrection.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GTidalCorrection.cpp; path = src/GTidalCorrection.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63D51FD6FDA2008CC80A /* GOrbitPredictor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GOrbitPredictor.cpp; path = src/GOrbitPredictor.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63D61FD6FDA2008CC80A /* SensorID.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SensorID.cpp; path = src/SensorID.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63D71FD6FDA2008CC80A /* GForceModel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GForceModel.hpp; path = src/GForceModel.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63D81FD6FDA2008CC80A /* GException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GException.h; path = src/GException.h; sourceTree = SOURCE_ROOT; };
+		B7BE63D91FD6FDA2008CC80A /* GStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GStream.h; path = src/GStream.h; sourceTree = SOURCE_ROOT; };
+		B7BE63DA1FD6FDA2008CC80A /* GException.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GException.cpp; path = src/GException.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63DC1FD6FDA2008CC80A /* GSLRcrd.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSLRcrd.cpp; path = src/GSLRcrd.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63DD1FD6FDA2008CC80A /* GFMEarthRadiationPressure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GFMEarthRadiationPressure.cpp; path = src/GFMEarthRadiationPressure.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63DE1FD6FDA2008CC80A /* GSpaceCraftAttitude.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GSpaceCraftAttitude.hpp; path = src/GSpaceCraftAttitude.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63DF1FD6FDA2008CC80A /* GFMSolarRadiationPressure.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GFMSolarRadiationPressure.hpp; path = src/GFMSolarRadiationPressure.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63E01FD6FDA2008CC80A /* GSpaceCraftAttitude.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSpaceCraftAttitude.cpp; path = src/GSpaceCraftAttitude.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63E11FD6FDA3008CC80A /* GVector.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GVector.hpp; path = src/GVector.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63E21FD6FDA3008CC80A /* GFMThermalRadiationForce.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GFMThermalRadiationForce.cpp; path = src/GFMThermalRadiationForce.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63E31FD6FDA3008CC80A /* GIAU.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GIAU.cpp; path = src/GIAU.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63E41FD6FDA3008CC80A /* GFMEarthGravity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GFMEarthGravity.cpp; path = src/GFMEarthGravity.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63E51FD6FDA3008CC80A /* GIERS.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GIERS.cpp; path = src/GIERS.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63E61FD6FDA3008CC80A /* GGlobalPressureTemperature.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GGlobalPressureTemperature.hpp; path = src/GGlobalPressureTemperature.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63E71FD6FDA3008CC80A /* GOrbitFitting.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GOrbitFitting.cpp; path = src/GOrbitFitting.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63E81FD6FDA3008CC80A /* GFData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GFData.h; path = src/GFData.h; sourceTree = SOURCE_ROOT; };
+		B7BE63E91FD6FDA3008CC80A /* GStream.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GStream.cpp; path = src/GStream.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63EA1FD6FDA3008CC80A /* GVector.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GVector.cpp; path = src/GVector.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63EB1FD6FDA3008CC80A /* SatID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SatID.h; path = src/SatID.h; sourceTree = SOURCE_ROOT; };
+		B7BE63EC1FD6FDA3008CC80A /* GGlobalPressureTemperature.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GGlobalPressureTemperature.cpp; path = src/GGlobalPressureTemperature.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63ED1FD6FDA3008CC80A /* GString.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GString.cpp; path = src/GString.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63EE1FD6FDA3008CC80A /* GMatrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GMatrix.cpp; path = src/GMatrix.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63EF1FD6FDA4008CC80A /* GPreciseOrbitDetermination.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GPreciseOrbitDetermination.hpp; path = src/GPreciseOrbitDetermination.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63F01FD6FDA4008CC80A /* GStation.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GStation.hpp; path = src/GStation.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63F11FD6FDA4008CC80A /* GSpaceEnv.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSpaceEnv.cpp; path = src/GSpaceEnv.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63F21FD6FDA4008CC80A /* GMotionState.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GMotionState.cpp; path = src/GMotionState.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63F31FD6FDA4008CC80A /* GMotionState.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GMotionState.hpp; path = src/GMotionState.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63F41FD6FDA4008CC80A /* GFMSolarRadiationPressure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GFMSolarRadiationPressure.cpp; path = src/GFMSolarRadiationPressure.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63F51FD6FDA4008CC80A /* GRadiationGrid.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GRadiationGrid.cpp; path = src/GRadiationGrid.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63F61FD6FDA4008CC80A /* GBinaryStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GBinaryStream.h; path = src/GBinaryStream.h; sourceTree = SOURCE_ROOT; };
+		B7BE63F71FD6FDA4008CC80A /* GSpacecraft.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSpacecraft.cpp; path = src/GSpacecraft.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63F81FD6FDA4008CC80A /* LogStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LogStream.h; path = src/LogStream.h; sourceTree = SOURCE_ROOT; };
+		B7BE63F91FD6FDA4008CC80A /* GMotionDynamic.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GMotionDynamic.hpp; path = src/GMotionDynamic.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE63FA1FD6FDA4008CC80A /* GRungeKutta.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GRungeKutta.cpp; path = src/GRungeKutta.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63FB1FD6FDA4008CC80A /* GFMEarthTide.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GFMEarthTide.cpp; path = src/GFMEarthTide.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63FC1FD6FDA4008CC80A /* GJPLEPH.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GJPLEPH.h; path = src/GJPLEPH.h; sourceTree = SOURCE_ROOT; };
+		B7BE63FD1FD6FDA4008CC80A /* GLegendre.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GLegendre.cpp; path = src/GLegendre.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63FE1FD6FDA4008CC80A /* GEquation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GEquation.cpp; path = src/GEquation.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE63FF1FD6FDA5008CC80A /* GSensor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSensor.h; path = src/GSensor.h; sourceTree = SOURCE_ROOT; };
+		B7BE64001FD6FDA5008CC80A /* GSLRValidation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSLRValidation.cpp; path = src/GSLRValidation.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64011FD6FDA5008CC80A /* GTime.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GTime.cpp; path = src/GTime.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64021FD6FDA5008CC80A /* GFMEarthRadiationPressure.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GFMEarthRadiationPressure.hpp; path = src/GFMEarthRadiationPressure.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64031FD6FDA5008CC80A /* GRadiationFlux.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GRadiationFlux.hpp; path = src/GRadiationFlux.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64041FD6FDA5008CC80A /* GSpacecraftModel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSpacecraftModel.cpp; path = src/GSpacecraftModel.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64051FD6FDA5008CC80A /* GConfigure.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GConfigure.hpp; path = src/GConfigure.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64061FD6FDA5008CC80A /* GRinex.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GRinex.hpp; path = src/GRinex.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64071FD6FDA5008CC80A /* GAdams.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GAdams.hpp; path = src/GAdams.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64081FD6FDA5008CC80A /* GEarthRadiationModel_bakeup */ = {isa = PBXFileReference; lastKnownFileType = folder; name = GEarthRadiationModel_bakeup; path = src/GEarthRadiationModel_bakeup; sourceTree = SOURCE_ROOT; };
+		B7BE64091FD6FDA5008CC80A /* GFMGravity.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GFMGravity.cpp; path = src/GFMGravity.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE640B1FD6FDA6008CC80A /* GAdams.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GAdams.cpp; path = src/GAdams.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE640D1FD6FDA6008CC80A /* GMatrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GMatrix.h; path = src/GMatrix.h; sourceTree = SOURCE_ROOT; };
+		B7BE640E1FD6FDA6008CC80A /* GObject.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GObject.hpp; path = src/GObject.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE640F1FD6FDA6008CC80A /* GIAU.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GIAU.hpp; path = src/GIAU.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64101FD6FDA6008CC80A /* GNSSData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GNSSData.h; path = src/GNSSData.h; sourceTree = SOURCE_ROOT; };
+		B7BE64111FD6FDA6008CC80A /* Platform.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Platform.h; path = src/Platform.h; sourceTree = SOURCE_ROOT; };
+		B7BE64121FD6FDA6008CC80A /* GFMSolarRadiaitonPressureEM.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GFMSolarRadiaitonPressureEM.hpp; path = src/GFMSolarRadiaitonPressureEM.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64131FD6FDA6008CC80A /* GMath.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GMath.hpp; path = src/GMath.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64141FD6FDA6008CC80A /* GTidalCorrection.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GTidalCorrection.hpp; path = src/GTidalCorrection.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64151FD6FDA6008CC80A /* GSensor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSensor.cpp; path = src/GSensor.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64161FD6FDA6008CC80A /* GIcosahedron.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GIcosahedron.cpp; path = src/GIcosahedron.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64171FD6FDA6008CC80A /* GIcosahedron.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GIcosahedron.h; path = src/GIcosahedron.h; sourceTree = SOURCE_ROOT; };
+		B7BE64181FD6FDA7008CC80A /* GSLRcrd.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GSLRcrd.hpp; path = src/GSLRcrd.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE641A1FD6FDA7008CC80A /* GRadiationFlux.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GRadiationFlux.cpp; path = src/GRadiationFlux.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE641B1FD6FDA7008CC80A /* GFMThirdBody.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GFMThirdBody.hpp; path = src/GFMThirdBody.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE641C1FD6FDA7008CC80A /* GIERS.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GIERS.hpp; path = src/GIERS.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE641D1FD6FDA7008CC80A /* GEllipsoid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GEllipsoid.h; path = src/GEllipsoid.h; sourceTree = SOURCE_ROOT; };
+		B7BE641E1FD6FDA7008CC80A /* ObsDataTree.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ObsDataTree.cpp; path = src/ObsDataTree.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE641F1FD6FDA7008CC80A /* GSourceID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GSourceID.h; path = src/GSourceID.h; sourceTree = SOURCE_ROOT; };
+		B7BE64201FD6FDA7008CC80A /* GOBSData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GOBSData.cpp; path = src/GOBSData.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64211FD6FDA7008CC80A /* GSourceID.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GSourceID.cpp; path = src/GSourceID.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64221FD6FDA7008CC80A /* GJPLEPH.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GJPLEPH.cpp; path = src/GJPLEPH.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64231FD6FDA7008CC80A /* GSLRValidation.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GSLRValidation.hpp; path = src/GSLRValidation.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64241FD6FDA7008CC80A /* NRLMSISE-00.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = "NRLMSISE-00.hpp"; path = "src/NRLMSISE-00.hpp"; sourceTree = SOURCE_ROOT; };
+		B7BE64251FD6FDA7008CC80A /* GConfigure.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GConfigure.cpp; path = src/GConfigure.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64261FD6FDA8008CC80A /* GOBSData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GOBSData.h; path = src/GOBSData.h; sourceTree = SOURCE_ROOT; };
+		B7BE64271FD6FDA8008CC80A /* GRinex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GRinex.cpp; path = src/GRinex.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64281FD6FDA8008CC80A /* GSpacecraftModel.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GSpacecraftModel.hpp; path = src/GSpacecraftModel.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64291FD6FDA8008CC80A /* GMath.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GMath.cpp; path = src/GMath.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE642A1FD6FDA8008CC80A /* GEarthOrientationParameter.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GEarthOrientationParameter.hpp; path = src/GEarthOrientationParameter.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE642B1FD6FDA8008CC80A /* GFMSolarRadiaitonPressureEM.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GFMSolarRadiaitonPressureEM.cpp; path = src/GFMSolarRadiaitonPressureEM.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE642C1FD6FDA8008CC80A /* GString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GString.h; path = src/GString.h; sourceTree = SOURCE_ROOT; };
+		B7BE642D1FD6FDA8008CC80A /* ObsDataTree.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ObsDataTree.h; path = src/ObsDataTree.h; sourceTree = SOURCE_ROOT; };
+		B7BE642E1FD6FDA8008CC80A /* GFMEarthTide.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GFMEarthTide.hpp; path = src/GFMEarthTide.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE642F1FD6FDA8008CC80A /* SensorID.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SensorID.h; path = src/SensorID.h; sourceTree = SOURCE_ROOT; };
+		B7BE64301FD6FDA8008CC80A /* GForceModelMgr.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GForceModelMgr.cpp; path = src/GForceModelMgr.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64311FD6FDA8008CC80A /* GStation.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GStation.cpp; path = src/GStation.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64321FD6FDA9008CC80A /* GTemperatureTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GTemperatureTest.cpp; path = src/GTemperatureTest.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64331FD6FDA9008CC80A /* GFData.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GFData.cpp; path = src/GFData.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64341FD6FDA9008CC80A /* GFMThermalRadiationForce.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GFMThermalRadiationForce.hpp; path = src/GFMThermalRadiationForce.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64351FD6FDA9008CC80A /* GOrbitPredictor.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GOrbitPredictor.hpp; path = src/GOrbitPredictor.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64361FD6FDA9008CC80A /* GSpacecraft.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GSpacecraft.hpp; path = src/GSpacecraft.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64371FD6FDA9008CC80A /* GForceModelMgr.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GForceModelMgr.hpp; path = src/GForceModelMgr.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64381FD6FDA9008CC80A /* GPreciseOrbitDetermination.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GPreciseOrbitDetermination.cpp; path = src/GPreciseOrbitDetermination.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64391FD6FDA9008CC80A /* GTemperatureTest.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GTemperatureTest.hpp; path = src/GTemperatureTest.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE643A1FD6FDA9008CC80A /* GTextStream.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTextStream.h; path = src/GTextStream.h; sourceTree = SOURCE_ROOT; };
+		B7BE643B1FD6FDA9008CC80A /* GEarthOrientationParameter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GEarthOrientationParameter.cpp; path = src/GEarthOrientationParameter.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE643C1FD6FDA9008CC80A /* DataTypeBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DataTypeBase.h; path = src/DataTypeBase.h; sourceTree = SOURCE_ROOT; };
+		B7BE643E1FD6FDA9008CC80A /* GLegendre.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GLegendre.hpp; path = src/GLegendre.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE643F1FD6FDAA008CC80A /* GOBSDataStorage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GOBSDataStorage.h; path = src/GOBSDataStorage.h; sourceTree = SOURCE_ROOT; };
+		B7BE64401FD6FDAA008CC80A /* GOrbitFitting.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GOrbitFitting.hpp; path = src/GOrbitFitting.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64411FD6FDAA008CC80A /* GKPE.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GKPE.cpp; path = src/GKPE.cpp; sourceTree = SOURCE_ROOT; };
+		B7BE64421FD6FDAA008CC80A /* GStreamError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GStreamError.h; path = src/GStreamError.h; sourceTree = SOURCE_ROOT; };
+		B7BE64431FD6FDAA008CC80A /* GRadiationGrid.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GRadiationGrid.hpp; path = src/GRadiationGrid.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64451FD6FDAA008CC80A /* GEphemeris.hpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GEphemeris.hpp; path = src/GEphemeris.hpp; sourceTree = SOURCE_ROOT; };
+		B7BE64461FD6FDAA008CC80A /* GTime.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GTime.h; path = src/GTime.h; sourceTree = SOURCE_ROOT; };
+		B7BE64471FD6FDAA008CC80A /* GEllipsoidMgr.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GEllipsoidMgr.h; path = src/GEllipsoidMgr.h; sourceTree = SOURCE_ROOT; };
+		B7BE64851FD707F1008CC80A /* main_orbitPredictor.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = main_orbitPredictor.cpp; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B7BE63B71FD6F7B0008CC80A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B7BE63B11FD6F7B0008CC80A = {
+			isa = PBXGroup;
+			children = (
+				B7BE63BC1FD6F7B0008CC80A /* GFC */,
+				B7BE64851FD707F1008CC80A /* main_orbitPredictor.cpp */,
+				B7BE63BB1FD6F7B0008CC80A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B7BE63BB1FD6F7B0008CC80A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B7BE63BA1FD6F7B0008CC80A /* GFC */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B7BE63BC1FD6F7B0008CC80A /* GFC */ = {
+			isa = PBXGroup;
+			children = (
+				B7BE63C41FD6FD8C008CC80A /* src */,
+			);
+			path = GFC;
+			sourceTree = "<group>";
+		};
+		B7BE63C41FD6FD8C008CC80A /* src */ = {
+			isa = PBXGroup;
+			children = (
+				B7BE63CE1FD6FDA1008CC80A /* BaseString.h */,
+				B7BE643C1FD6FDA9008CC80A /* DataTypeBase.h */,
+				B7BE640B1FD6FDA6008CC80A /* GAdams.cpp */,
+				B7BE64071FD6FDA5008CC80A /* GAdams.hpp */,
+				B7BE63F61FD6FDA4008CC80A /* GBinaryStream.h */,
+				B7BE64251FD6FDA7008CC80A /* GConfigure.cpp */,
+				B7BE64051FD6FDA5008CC80A /* GConfigure.hpp */,
+				B7BE643B1FD6FDA9008CC80A /* GEarthOrientationParameter.cpp */,
+				B7BE642A1FD6FDA8008CC80A /* GEarthOrientationParameter.hpp */,
+				B7BE64081FD6FDA5008CC80A /* GEarthRadiationModel_bakeup */,
+				B7BE641D1FD6FDA7008CC80A /* GEllipsoid.h */,
+				B7BE63D21FD6FDA2008CC80A /* GEllipsoidMgr.cpp */,
+				B7BE64471FD6FDAA008CC80A /* GEllipsoidMgr.h */,
+				B7BE63C61FD6FDA1008CC80A /* GEphemeris.cpp */,
+				B7BE64451FD6FDAA008CC80A /* GEphemeris.hpp */,
+				B7BE63FE1FD6FDA4008CC80A /* GEquation.cpp */,
+				B7BE63CF1FD6FDA1008CC80A /* GEquation.hpp */,
+				B7BE63DA1FD6FDA2008CC80A /* GException.cpp */,
+				B7BE63D81FD6FDA2008CC80A /* GException.h */,
+				B7BE63CD1FD6FDA1008CC80A /* GFCCONST.cpp */,
+				B7BE63D31FD6FDA2008CC80A /* GFCCONST.h */,
+				B7BE64331FD6FDA9008CC80A /* GFData.cpp */,
+				B7BE63E81FD6FDA3008CC80A /* GFData.h */,
+				B7BE63E41FD6FDA3008CC80A /* GFMEarthGravity.cpp */,
+				B7BE63D11FD6FDA1008CC80A /* GFMEarthGravity.hpp */,
+				B7BE63DD1FD6FDA2008CC80A /* GFMEarthRadiationPressure.cpp */,
+				B7BE64021FD6FDA5008CC80A /* GFMEarthRadiationPressure.hpp */,
+				B7BE63FB1FD6FDA4008CC80A /* GFMEarthTide.cpp */,
+				B7BE642E1FD6FDA8008CC80A /* GFMEarthTide.hpp */,
+				B7BE64091FD6FDA5008CC80A /* GFMGravity.cpp */,
+				B7BE63CC1FD6FDA1008CC80A /* GFMGravity.hpp */,
+				B7BE642B1FD6FDA8008CC80A /* GFMSolarRadiaitonPressureEM.cpp */,
+				B7BE64121FD6FDA6008CC80A /* GFMSolarRadiaitonPressureEM.hpp */,
+				B7BE63F41FD6FDA4008CC80A /* GFMSolarRadiationPressure.cpp */,
+				B7BE63DF1FD6FDA2008CC80A /* GFMSolarRadiationPressure.hpp */,
+				B7BE63E21FD6FDA3008CC80A /* GFMThermalRadiationForce.cpp */,
+				B7BE64341FD6FDA9008CC80A /* GFMThermalRadiationForce.hpp */,
+				B7BE63C51FD6FDA1008CC80A /* GFMThirdBody.cpp */,
+				B7BE641B1FD6FDA7008CC80A /* GFMThirdBody.hpp */,
+				B7BE63D71FD6FDA2008CC80A /* GForceModel.hpp */,
+				B7BE64301FD6FDA8008CC80A /* GForceModelMgr.cpp */,
+				B7BE64371FD6FDA9008CC80A /* GForceModelMgr.hpp */,
+				B7BE63EC1FD6FDA3008CC80A /* GGlobalPressureTemperature.cpp */,
+				B7BE63E61FD6FDA3008CC80A /* GGlobalPressureTemperature.hpp */,
+				B7BE63E31FD6FDA3008CC80A /* GIAU.cpp */,
+				B7BE640F1FD6FDA6008CC80A /* GIAU.hpp */,
+				B7BE64161FD6FDA6008CC80A /* GIcosahedron.cpp */,
+				B7BE64171FD6FDA6008CC80A /* GIcosahedron.h */,
+				B7BE63E51FD6FDA3008CC80A /* GIERS.cpp */,
+				B7BE641C1FD6FDA7008CC80A /* GIERS.hpp */,
+				B7BE64221FD6FDA7008CC80A /* GJPLEPH.cpp */,
+				B7BE63FC1FD6FDA4008CC80A /* GJPLEPH.h */,
+				B7BE64411FD6FDAA008CC80A /* GKPE.cpp */,
+				B7BE63C71FD6FDA1008CC80A /* GKPE.hpp */,
+				B7BE63FD1FD6FDA4008CC80A /* GLegendre.cpp */,
+				B7BE643E1FD6FDA9008CC80A /* GLegendre.hpp */,
+				B7BE64291FD6FDA8008CC80A /* GMath.cpp */,
+				B7BE64131FD6FDA6008CC80A /* GMath.hpp */,
+				B7BE63EE1FD6FDA3008CC80A /* GMatrix.cpp */,
+				B7BE640D1FD6FDA6008CC80A /* GMatrix.h */,
+				B7BE63F91FD6FDA4008CC80A /* GMotionDynamic.hpp */,
+				B7BE63F21FD6FDA4008CC80A /* GMotionState.cpp */,
+				B7BE63F31FD6FDA4008CC80A /* GMotionState.hpp */,
+				B7BE63D01FD6FDA1008CC80A /* GNSSData.cpp */,
+				B7BE64101FD6FDA6008CC80A /* GNSSData.h */,
+				B7BE640E1FD6FDA6008CC80A /* GObject.hpp */,
+				B7BE64201FD6FDA7008CC80A /* GOBSData.cpp */,
+				B7BE64261FD6FDA8008CC80A /* GOBSData.h */,
+				B7BE643F1FD6FDAA008CC80A /* GOBSDataStorage.h */,
+				B7BE63E71FD6FDA3008CC80A /* GOrbitFitting.cpp */,
+				B7BE64401FD6FDAA008CC80A /* GOrbitFitting.hpp */,
+				B7BE63D51FD6FDA2008CC80A /* GOrbitPredictor.cpp */,
+				B7BE64351FD6FDA9008CC80A /* GOrbitPredictor.hpp */,
+				B7BE64381FD6FDA9008CC80A /* GPreciseOrbitDetermination.cpp */,
+				B7BE63EF1FD6FDA4008CC80A /* GPreciseOrbitDetermination.hpp */,
+				B7BE641A1FD6FDA7008CC80A /* GRadiationFlux.cpp */,
+				B7BE64031FD6FDA5008CC80A /* GRadiationFlux.hpp */,
+				B7BE63F51FD6FDA4008CC80A /* GRadiationGrid.cpp */,
+				B7BE64431FD6FDAA008CC80A /* GRadiationGrid.hpp */,
+				B7BE64271FD6FDA8008CC80A /* GRinex.cpp */,
+				B7BE64061FD6FDA5008CC80A /* GRinex.hpp */,
+				B7BE63FA1FD6FDA4008CC80A /* GRungeKutta.cpp */,
+				B7BE63CB1FD6FDA1008CC80A /* GRungeKutta.hpp */,
+				B7BE64151FD6FDA6008CC80A /* GSensor.cpp */,
+				B7BE63FF1FD6FDA5008CC80A /* GSensor.h */,
+				B7BE63DC1FD6FDA2008CC80A /* GSLRcrd.cpp */,
+				B7BE64181FD6FDA7008CC80A /* GSLRcrd.hpp */,
+				B7BE64001FD6FDA5008CC80A /* GSLRValidation.cpp */,
+				B7BE64231FD6FDA7008CC80A /* GSLRValidation.hpp */,
+				B7BE64211FD6FDA7008CC80A /* GSourceID.cpp */,
+				B7BE641F1FD6FDA7008CC80A /* GSourceID.h */,
+				B7BE63F71FD6FDA4008CC80A /* GSpacecraft.cpp */,
+				B7BE64361FD6FDA9008CC80A /* GSpacecraft.hpp */,
+				B7BE63E01FD6FDA2008CC80A /* GSpaceCraftAttitude.cpp */,
+				B7BE63DE1FD6FDA2008CC80A /* GSpaceCraftAttitude.hpp */,
+				B7BE64041FD6FDA5008CC80A /* GSpacecraftModel.cpp */,
+				B7BE64281FD6FDA8008CC80A /* GSpacecraftModel.hpp */,
+				B7BE63F11FD6FDA4008CC80A /* GSpaceEnv.cpp */,
+				B7BE63CA1FD6FDA1008CC80A /* GSpaceEnv.hpp */,
+				B7BE64311FD6FDA8008CC80A /* GStation.cpp */,
+				B7BE63F01FD6FDA4008CC80A /* GStation.hpp */,
+				B7BE63E91FD6FDA3008CC80A /* GStream.cpp */,
+				B7BE63D91FD6FDA2008CC80A /* GStream.h */,
+				B7BE64421FD6FDAA008CC80A /* GStreamError.h */,
+				B7BE63ED1FD6FDA3008CC80A /* GString.cpp */,
+				B7BE642C1FD6FDA8008CC80A /* GString.h */,
+				B7BE64321FD6FDA9008CC80A /* GTemperatureTest.cpp */,
+				B7BE64391FD6FDA9008CC80A /* GTemperatureTest.hpp */,
+				B7BE643A1FD6FDA9008CC80A /* GTextStream.h */,
+				B7BE63D41FD6FDA2008CC80A /* GTidalCorrection.cpp */,
+				B7BE64141FD6FDA6008CC80A /* GTidalCorrection.hpp */,
+				B7BE64011FD6FDA5008CC80A /* GTime.cpp */,
+				B7BE64461FD6FDAA008CC80A /* GTime.h */,
+				B7BE63EA1FD6FDA3008CC80A /* GVector.cpp */,
+				B7BE63E11FD6FDA3008CC80A /* GVector.hpp */,
+				B7BE63F81FD6FDA4008CC80A /* LogStream.h */,
+				B7BE63C81FD6FDA1008CC80A /* NRLMSISE-00.cpp */,
+				B7BE64241FD6FDA7008CC80A /* NRLMSISE-00.hpp */,
+				B7BE641E1FD6FDA7008CC80A /* ObsDataTree.cpp */,
+				B7BE642D1FD6FDA8008CC80A /* ObsDataTree.h */,
+				B7BE64111FD6FDA6008CC80A /* Platform.h */,
+				B7BE63EB1FD6FDA3008CC80A /* SatID.h */,
+				B7BE63D61FD6FDA2008CC80A /* SensorID.cpp */,
+				B7BE642F1FD6FDA8008CC80A /* SensorID.h */,
+				B7BE63C91FD6FDA1008CC80A /* SRIF.cpp */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B7BE63B91FD6F7B0008CC80A /* GFC */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B7BE63C11FD6F7B0008CC80A /* Build configuration list for PBXNativeTarget "GFC" */;
+			buildPhases = (
+				B7BE63B61FD6F7B0008CC80A /* Sources */,
+				B7BE63B71FD6F7B0008CC80A /* Frameworks */,
+				B7BE63B81FD6F7B0008CC80A /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = GFC;
+			productName = GFC;
+			productReference = B7BE63BA1FD6F7B0008CC80A /* GFC */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B7BE63B21FD6F7B0008CC80A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				TargetAttributes = {
+					B7BE63B91FD6F7B0008CC80A = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = B7BE63B51FD6F7B0008CC80A /* Build configuration list for PBXProject "GFC" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B7BE63B11FD6F7B0008CC80A;
+			productRefGroup = B7BE63BB1FD6F7B0008CC80A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B7BE63B91FD6F7B0008CC80A /* GFC */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B7BE63B61FD6F7B0008CC80A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B7BE646F1FD6FDAA008CC80A /* GAdams.cpp in Sources */,
+				B7BE64491FD6FDAA008CC80A /* GEphemeris.cpp in Sources */,
+				B7BE647F1FD6FDAA008CC80A /* GFData.cpp in Sources */,
+				B7BE64791FD6FDAA008CC80A /* GRinex.cpp in Sources */,
+				B7BE64651FD6FDAA008CC80A /* GSpacecraft.cpp in Sources */,
+				B7BE64621FD6FDAA008CC80A /* GMotionState.cpp in Sources */,
+				B7BE64751FD6FDAA008CC80A /* GOBSData.cpp in Sources */,
+				B7BE64861FD707F1008CC80A /* main_orbitPredictor.cpp in Sources */,
+				B7BE644B1FD6FDAA008CC80A /* SRIF.cpp in Sources */,
+				B7BE64771FD6FDAA008CC80A /* GJPLEPH.cpp in Sources */,
+				B7BE64781FD6FDAA008CC80A /* GConfigure.cpp in Sources */,
+				B7BE647B1FD6FDAA008CC80A /* GFMSolarRadiaitonPressureEM.cpp in Sources */,
+				B7BE64511FD6FDAA008CC80A /* SensorID.cpp in Sources */,
+				B7BE64581FD6FDAA008CC80A /* GIAU.cpp in Sources */,
+				B7BE645C1FD6FDAA008CC80A /* GStream.cpp in Sources */,
+				B7BE645A1FD6FDAA008CC80A /* GIERS.cpp in Sources */,
+				B7BE646B1FD6FDAA008CC80A /* GTime.cpp in Sources */,
+				B7BE64501FD6FDAA008CC80A /* GOrbitPredictor.cpp in Sources */,
+				B7BE644F1FD6FDAA008CC80A /* GTidalCorrection.cpp in Sources */,
+				B7BE644C1FD6FDAA008CC80A /* GFCCONST.cpp in Sources */,
+				B7BE64551FD6FDAA008CC80A /* GFMEarthRadiationPressure.cpp in Sources */,
+				B7BE64801FD6FDAA008CC80A /* GPreciseOrbitDetermination.cpp in Sources */,
+				B7BE645F1FD6FDAA008CC80A /* GString.cpp in Sources */,
+				B7BE64481FD6FDAA008CC80A /* GFMThirdBody.cpp in Sources */,
+				B7BE647C1FD6FDAA008CC80A /* GForceModelMgr.cpp in Sources */,
+				B7BE64521FD6FDAA008CC80A /* GException.cpp in Sources */,
+				B7BE647E1FD6FDAA008CC80A /* GTemperatureTest.cpp in Sources */,
+				B7BE64721FD6FDAA008CC80A /* GIcosahedron.cpp in Sources */,
+				B7BE64821FD6FDAA008CC80A /* GKPE.cpp in Sources */,
+				B7BE646C1FD6FDAA008CC80A /* GSpacecraftModel.cpp in Sources */,
+				B7BE64561FD6FDAA008CC80A /* GSpaceCraftAttitude.cpp in Sources */,
+				B7BE644E1FD6FDAA008CC80A /* GEllipsoidMgr.cpp in Sources */,
+				B7BE64741FD6FDAA008CC80A /* ObsDataTree.cpp in Sources */,
+				B7BE647A1FD6FDAA008CC80A /* GMath.cpp in Sources */,
+				B7BE64631FD6FDAA008CC80A /* GFMSolarRadiationPressure.cpp in Sources */,
+				B7BE645B1FD6FDAA008CC80A /* GOrbitFitting.cpp in Sources */,
+				B7BE646A1FD6FDAA008CC80A /* GSLRValidation.cpp in Sources */,
+				B7BE644D1FD6FDAA008CC80A /* GNSSData.cpp in Sources */,
+				B7BE64731FD6FDAA008CC80A /* GRadiationFlux.cpp in Sources */,
+				B7BE64671FD6FDAA008CC80A /* GFMEarthTide.cpp in Sources */,
+				B7BE64591FD6FDAA008CC80A /* GFMEarthGravity.cpp in Sources */,
+				B7BE64691FD6FDAA008CC80A /* GEquation.cpp in Sources */,
+				B7BE647D1FD6FDAA008CC80A /* GStation.cpp in Sources */,
+				B7BE645D1FD6FDAA008CC80A /* GVector.cpp in Sources */,
+				B7BE64811FD6FDAA008CC80A /* GEarthOrientationParameter.cpp in Sources */,
+				B7BE64761FD6FDAA008CC80A /* GSourceID.cpp in Sources */,
+				B7BE64601FD6FDAA008CC80A /* GMatrix.cpp in Sources */,
+				B7BE64641FD6FDAA008CC80A /* GRadiationGrid.cpp in Sources */,
+				B7BE645E1FD6FDAA008CC80A /* GGlobalPressureTemperature.cpp in Sources */,
+				B7BE646D1FD6FDAA008CC80A /* GFMGravity.cpp in Sources */,
+				B7BE64681FD6FDAA008CC80A /* GLegendre.cpp in Sources */,
+				B7BE64541FD6FDAA008CC80A /* GSLRcrd.cpp in Sources */,
+				B7BE64571FD6FDAA008CC80A /* GFMThermalRadiationForce.cpp in Sources */,
+				B7BE64661FD6FDAA008CC80A /* GRungeKutta.cpp in Sources */,
+				B7BE64611FD6FDAA008CC80A /* GSpaceEnv.cpp in Sources */,
+				B7BE644A1FD6FDAA008CC80A /* NRLMSISE-00.cpp in Sources */,
+				B7BE64711FD6FDAA008CC80A /* GSensor.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		B7BE63BF1FD6F7B0008CC80A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		B7BE63C01FD6F7B0008CC80A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "-";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		B7BE63C21FD6F7B0008CC80A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		B7BE63C31FD6F7B0008CC80A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B7BE63B51FD6F7B0008CC80A /* Build configuration list for PBXProject "GFC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B7BE63BF1FD6F7B0008CC80A /* Debug */,
+				B7BE63C01FD6F7B0008CC80A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B7BE63C11FD6F7B0008CC80A /* Build configuration list for PBXNativeTarget "GFC" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B7BE63C21FD6F7B0008CC80A /* Debug */,
+				B7BE63C31FD6F7B0008CC80A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B7BE63B21FD6F7B0008CC80A /* Project object */;
+}

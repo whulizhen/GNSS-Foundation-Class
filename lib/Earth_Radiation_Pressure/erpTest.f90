@@ -1,0 +1,49 @@
+     function myerpTest(ERM,ANT,GRD,REFF,YSAT,SUN,KAPPA,MONTH,BLKNUM,FORCE)
+
+!      program erpTest
+
+      INTEGER(4) ERM, ANT, GRD, REFF, MONTH, BLKNUM
+      REAL(8) YSAT(6),SUN(3),FORCE(3),FORCE1(3),ACCEL(3),KAPPA(3,3)
+	CHARACTER*100 DATPATH
+	DATPATH='//Users//lizhen//myProject//GFC//GFC_Proj//Earth_Radiation_Pressure//DATA//'
+     
+!      ERM = 2
+!      ANT = 0
+!      GRD = 1
+!      REFF = 0
+!      MONTH = 3
+!      BLKNUM = 4
+! unit is meter, ECI
+!      YSAT(1) = -17662416.430000001
+!      YSAT(2) = 4031322.1279999998
+!      YSAT(3) = -19465284.702000001
+!      YSAT(4) = 412.19989000000001
+!      YSAT(5) = -3679.8486600000002
+!      YSAT(6) = -1122.6964100000001
+
+! position of sun in meters(ECI)
+!      SUN(1) = 139782958138.39048
+!      SUN(2) = -45244942785.067253
+!      SUN(3) = -19615287917.492874
+
+! the transformation matrix from ECI to ECEF
+!      KAPPA(1,1) = -0.4052188296198202
+!      KAPPA(1,2) = 0.91421971355857101
+!      KAPPA(1,3) = 0.00012434800857546492
+!      KAPPA(2,1) = -0.91421964219783969
+!      KAPPA(2,2) = -0.40521884732965979
+!      KAPPA(2,3) = 0.00036275125925288264
+!      KAPPA(3,1) = 0.00038202250902986989
+!      KAPPA(3,2) = 0.000033312248809693642
+!      KAPPA(3,3) = 0.99999992647454571
+      
+!      ACCEL(1) = 0;
+!      ACCEL(2) = 0;
+!      ACCEL(3) = 100;
+      call ERPFBOXW(ERM,DATPATH,ANT,GRD,REFF,YSAT,SUN,KAPPA,MONTH,BLKNUM,FORCE)  
+!     write (*,*) "1", FORCE
+
+!     call ERPFBOXW(ERM,DATPATH,ANT,GRD,REFF,YSAT,SUN,KAPPA,MONTH,BLKNUM,FORCE1)  
+!     write (*,*) "2", FORCE1
+
+      end

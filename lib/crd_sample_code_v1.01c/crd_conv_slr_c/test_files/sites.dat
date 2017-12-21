@@ -1,0 +1,75 @@
+1824  	GLSL  	Golosiiv, Ukraine  	18248101  	12356S001  	GLSV  	-  	-
+1831 	LVIL 	Lviv, Ukraine 	18318501 	12368S001 	SULP 	- 	-
+1863 	MAID 	Maidanak 2, Uzbekistan 	18635101 	12340S001 	- 	- 	-
+1864 	MAIL 	Maidanak 1, Uzbekistan 	18645401 	12340S002 	- 	- 	-
+1868 	KOML 	Komsomolsk-na-Amure, Russia 	18685901 	12341S001 	- 	- 	-
+1870 	MDVL 	Mendeleevo 1, Russia 	18706301 	12309S001 	MDVO 	- 	-
+1873 	SIML 	Simeiz, Ukraine 	18734901 	12337S003 	CRAO 	CRIMEA 	-
+1874 	MDVS 	Mendeleevo 2, Russia 	18748301 	12309S003 	MDVO 	- 	-
+1884 	RIGL 	Riga, Latvia 	18844401 	12302S002 	RIGA 	- 	-
+1893 	KTZL 	Katzively, Ukraine 	18931801 	12337S006 	- 	- 	-
+7040 	OCTL 	Wrightwood, California 	70409201 	49901S001 	- 	- 	-
+7080 	MDOL 	McDonald Observatory, Texas 	70802419 	40442M006 	MDO1 	tbd 	-
+7090 	YARL 	Yarragadee, Australia 	70900513 	50107M001 	YAR1
+YAR2 	- 	YARB
+7105 	GODL 	Greenbelt, Maryland 	71050725 	40451M105 	GODE 	GGAO7108 	GREB
+7110 	MONL 	Monument Peak, California 	71100412 	40497M001 	MONP 	- 	-
+7119 	HA4T 	Haleakala, Hawaii 	71191401 	TBD 	MAUI 	- 	-
+7124 	THTL 	Tahiti, French Polynesia 	71240802 	92201M007 	THTI 	- 	PAQB
+7130 	GO4T 	Greenbelt, MD 	71301403 	40451M116 	GODE 	GGAO7108 	GREB
+7210 	HALL 	Haleakala, Hawaii** 	72102313 	40445M001 	MAUI 	- 	-
+7231 	WUHL 	Wuhan, China 	72312901 	21602S004 	WUHN 	- 	JIUB
+7236 	N.A. 	Wuhan, China** (now at 7231) 	72362901 	21602S003 	WUHN 	- 	JIUB
+7237 	CHAL 	Changchun, China 	72371901 	21611S001 	CHAN 	- 	-
+7249 	BEIL 	Beijing, China 	72496101 	21601S004 	BJFS 	- 	-
+7308 	KOGC 	Koganei, Japan(CRL) 	73085001 	21704S002 	KGNI 	KOGANEI 	-
+7328 	KOGL 	Koganei, Japan** 	73287101 	21704M001 	KGNI 	KOGANEI 	-
+7335 	KASL 	Kashima, Japan** 	73357201 	21701M002 	KSMV 	KASHIM34
+KASHIM11 	-
+7337 	MIUL 	Miura, Japan** 	73377301 	21739M001 	- 	MIURA 	-
+7339 	TATL 	Tateyama, Japan** 	73397401 	21740M001 	- 	TATEYAMA 	-
+7343 	BEIT 	Beijing (TROS), China* 	73438401 	21601M002 	BJFS 	- 	-
+7355 	URUL 	Urumqi, China* 	73558402 	21612M002 	URUM 	URUMQI 	-
+7356 	LHAL 	Lhasa, China* 	73568401 	21613M003 	LHAS 	- 	-
+7357 	BEIA 	Beijing-A, China 	73578801 	21601S005 	BJFS 	- 	-
+7358 	GMSL 	Tanegashima, Japan 	73588901 	21749M001 	GMSD 	- 	-
+7403 	AREL 	Arequipa, Peru 	74031303 	42202M003 	AREQ 	- 	AREB
+7405 	CONL 	Concepcion, Chile 	74057902 	41719M001 	CONZ 	TIGOCONC 	-
+7406 	SJUL 	San Juan, Argentina 	74068801 	41508S003 	- 	- 	-
+7501 	HARL 	Hartebeesthoek, South Africa 	75010602 	30302M003 	HARB
+HRAO 	HARTRAO 	HSKB
+7548 	CGLL 	Cagliari, Italy** 	75486201 	12725S013 	CAGL 	- 	-
+7594 	WETT 	TIGO, Germany** 	75947901 	14201M200 	WTZA
+WTZR
+WTZT
+WTZZ 	WETTZELL 	-
+7604 	BREF 	Brest, France* 	76046901 	10004M002 	BRST 	- 	-
+7806 	METL 	Metsahovi, Finland 	78067601 	10503S014 	METS 	tbd 	METB
+7810 	ZIML 	Zimmerwald, Switzerland 	78106801 	14001S007 	ZIMM 	- 	-
+7811 	BORL 	Borowiec, Poland 	78113802 	12205S001 	BOR1 	- 	-
+7820 	KUNL 	Kunming, China 	78208201 	21609S002 	KUNM 	- 	-
+7821 	SHA2 	Shanghai, China 	78212801 	21605S010 	SHAO 	SESHAN25 	-
+7823 	SFEF 	San Fernando, Spain* 	78236901 	13402M005 	SFER 	- 	-
+7824 	SFEL 	San Fernando, Spain 	78244502 	13402S007 	SFER 	- 	-
+7825 	STL3 	Mt Stromlo, Australia 	78259001 	50119S003 	STR1 	- 	MSPB
+7826 	STRK 	Mt Stromlo, Australia 	78269101 	50119S001 	STR1 	- 	MSPB
+7830 	CHAF 	Chania, Crete, Greece* 	78306901 	12617M002 	TUC1 	- 	-
+7831 	HLWL 	Helwan, Egypt 	78314601 	30101S001 	- 	- 	-
+7832 	RIYL 	Riyadh, Saudi Arabia 	78325501 	20101S001 	SOLA 	- 	-
+7835 	GRSL 	Grasse, France (SLR) 	78353102 	10002S001 	GRAS 	- 	-
+7836 	POTL 	Potsdam, Germany 	78365801 	14106S009 	POTS 	- 	-
+7837 	SHAL 	Shanghai, China 	78372805 	21605S001 	SHAO 	SESHAN25 	-
+7838 	SISL 	Simosato, Japan 	78383602 	21726S001 	- 	- 	-
+7839 	GRZL 	Graz, Austria 	78393402 	11001S002 	GRAZ 	- 	-
+7840 	HERL 	Herstmonceux, United Kingdom 	78403501 	13212S001 	HERS 	- 	-
+7841 	POT3 	Potsdam, Germany
+	78418701 	14106S011 	POTS 	- 	-
+7843 	ORRL 	Orroral, Australia** 	78432502 	50103S007 	- 	- 	-
+7845 	GRSM 	Grasse, France (LLR) 	78457801 	10002S002 	GRAS 	- 	-
+7846 	GRSF 	Grasse, France (FTLRS) ** 	78466901 	10002M004 	GRAS 	- 	-
+7848 	AJAF 	Ajaccio, France (FTLRS) 	78486901 	10077M002 	AJAC 	- 	-
+7849 	STRL 	Mt Stromlo, Australia** 	78498001 	50119S001 	STR1 	- 	MSPB
+7865 	STAL 	Stafford, Virginia 	78658601 	49654M001 	- 	- 	-
+7939 	MATL 	Matera, Italy (SAO)** 	79394101 	12734S001 	MATE 	- 	-
+7941 	MATM 	Matera, Italy (MLRO) 	79417701 	12734S008 	MATE 	MATERA 	-
+8834 	WETL 	Wettzell, Germany (WLRS) 	88341001 	14201S018

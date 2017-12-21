@@ -1,0 +1,33 @@
+CRD Check Version: 1.01b
+CRD File name: beaconc_20110111.npt
+
+Station: Pad ID:7000  Sys Num: 0  Occ num: 2  Name: [test      ] time scale: 7
+Target: COSPAR:       0    SIC:   0    NORAD:        0    Name: [NAME_SATEL]
+        time scale: 0    target type: slr
+Format version: 1    Data type: npt    Data release: 0
+Produced on 2011/ 1/11  2 hours
+Session Starting on 2011/ 1/11  2:17:42 Ending on 2011/ 1/11  2:27:36 UTC
+refraction applied: no     CofM applied: no     xcv amplitude applied: no 
+Station system delay applied: yes    Satellite system delay applied: no 
+Range type: 2-way    Date quality alert: good   
+
+Error: ILRS ID       0 not found in targets.dat file
+Error: out of seq: [20 08262.000000000000 1020.70 283.25   85 1
+]
+Records not in sequence in 1 cases
+
+Number of records -
+ 11 Normal Point Record: 3
+ 20 Meteorological Record: 4
+ 40 Calibration Record: 2
+ 50 Session Statistics Record: 1
+ 60 Compatibility Record: 1
+ c0 System Configuration Records: 1
+ c1 Laser Configuration Records: 1
+ c2 Detector Configuration Records: 1
+ c3 Timing Configuration Records: 1
+
+Errors and Warnings -
+Records not in sequence in 1 passes
+
+

@@ -1,0 +1,64 @@
+CRD/CSTG Intercomparison Report for session
+ Date: 2008/05/06 (127) 10:18:49 UTC
+ Station: MDOL       7080
+ Target: etalon2    0008903903 4146      20026
+
+The following disagreements were found between the
+  CRD and CSTG normalpoint files
+ Of 3 pressure measurements,
+   3 differed by < 0.1 mb;
+   0 differed by < 1.0 mb;
+   0 differed by < 10 mb; and
+   0 differed by more.
+ Of 3 temperature measurements,
+   0 differed by < 0.1 K;
+   3 differed by < 1.0 K;
+   0 differed by < 10.0 K; and
+   0 differed by more.
+ Of 3 humidity measurements,
+   1 differed by < 1 %;
+   2 differed by < 5 %;
+   0 differed by < 10 %; and
+   0 differed by more.
+ Of 3 normal point seconds of day,
+   3 differed by < 0.1 psec ;
+   0 differed by < 500 nsec;
+   0 differed by < 1 microsec; and
+   0 differed by more.
+ Of 3 normal point time of flight,
+   3 differed by < 1 psec ;
+   0 differed by < 5 psec;
+   0 differed by < 10 psec; and
+   0 differed by more.
+ Of 3 normal point bin rms,
+   3 differed by < 1 psec ;
+   0 differed by < 5 psec;
+   0 differed by < 10 psec; and
+   0 differed by more.
+ Of 3 normalpoints, the number of returns,
+   3 differed by < 1;
+   0 differed by < 5;
+   0 differed by < 10; and
+   0 differed by more.
+ Of 1 calibration system delays,
+   1 differed by < 1 psec ;
+   0 differed by < 5 psec;
+   0 differed by < 10 psec; and
+   0 differed by more.
+ Of 1 calibration delay shifts,
+   1 differed by < 1 psec ;
+   0 differed by < 5 psec;
+   0 differed by < 10 psec; and
+   0 differed by more.
+ Of 1 calibration rms,
+   1 differed by < 1 psec ;
+   0 differed by < 5 psec;
+   0 differed by < 10 psec; and
+   0 differed by more.
+ Of 1 session rms,
+   1 differed by < 1 psec ;
+   0 differed by < 5 psec;
+   0 differed by < 10 psec; and
+   0 differed by more.
+
+7080_etalon2_crd_20080506_10_00.npt: pass

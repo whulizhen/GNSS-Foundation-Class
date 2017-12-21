@@ -1,0 +1,555 @@
+               Consolidated Laser Ranging Data (CRD) Format Changes
+                               v1.01b to v1.01c
+                                     and
+                               v1.00 to v1.01b
+                       (arranged from newest to oldest)
+
+==============================================================================
+====--------------------------------------------------------------------------
+Date: 18 May 2015
+====--------------------------------------------------------------------------
+Version 1.01c of the CRD source code is now available on the ILRS web site.
+This is a cleanup of all the errata entries since version 1.01b.
+
+------------------------------------------------------------------------------
+Issue #: 2015-1
+------------------------------------------------------------------------------
+Date: 15 May 2015
+Component: sample source code
+Version: 1.01b
+Routines: 
+  crd_conv_slr_c/crd_to_merit.c
+Problem:
+In the case of the starting date in the header being late in one day, but 
+the data records starting early in the next day, the day of year in the
+Merit II file is wrong.
+Change:
+For record types 10, 11, and 20, use existing mechanism for testing for day 
+roll-over to include a check between header and data record second of day.
+
+------------------------------------------------------------------------------
+Issue #: 2013-1
+------------------------------------------------------------------------------
+Date: 22 JUn 2012
+Component: sample source code
+Version: 1.01b
+Routines: 
+crd_chk_c/crd_chk.c
+Problem:
+Program does not make use of return status to indocate data failure.
+Program does not detect when there are too few end of data records. 
+Change:
+Add a "fail" code to provide non-zero return value when program fails due to
+an error. Also, detect when there are fewer h8 records than h1 or h2 records.
+
+====--------------------------------------------------------------------------
+Date: 23 February 2012
+====--------------------------------------------------------------------------
+Version 1.01b of the CRD source code is now available on the ILRS web site.
+This is a cleanup of all the errata entries since version 1.01.
+
+------------------------------------------------------------------------------
+Issue #: 2012-1
+------------------------------------------------------------------------------
+Date: 2 Feb 2012
+Component: sample source code
+Version: 1.01b
+Routines: 
+  crd_conv_slr_c/read_cstg.c
+  crd_conv_slr_c/read_merit.c
+  crd_conv_llr_c/cllr_to_crd.c
+Problem:
+With some compilers versions, there is round off error in seconds of day 
+read from the legacy formats. For cllr_to_crd.c, this is also true for time 
+of flight.
+Change:
+Change all instances of "1.e7" in second of day calculations to 
+"(long double)1.e7". In cllr_to_crd.c, also change "1.e13" tp 
+"(long double)1.e13" in time of flight computations.
+
+------------------------------------------------------------------------------
+Issue #: 2011-3
+------------------------------------------------------------------------------
+Date: 2 Mar 2011
+Component: sample source code
+Version: 1.01b
+Routines: 
+  crd_conv_slr_c/cstg_to_crd.c
+  crd_conv_slr_c/read_cstg.c
+  crd_conv_slr_c/read_merit.c
+  crd_split_c/merge_crd_daily.c
+
+Problem:
+The type of getifield returned value is long, but some variables used in the 
+call to getifield are type int, resulting in problems with some compilers.
+Change:
+Changed the type of data_release and syear in crd_conv_clr_c programs and
+ss, yy, ddd, hhmm, year, mon, day and sic in crd_split/merge_crd_daily.c 
+to long.
+
+------------------------------------------------------------------------------
+Issue #: 2011-2
+------------------------------------------------------------------------------
+Date: 2 Mar 2011
+Component: sample source code
+Version: 1.01b
+Routine: crd_conv_slr_c/cstg_to_crd.c
+Problem 1:
+Cannot distinguish native CRD files from those converted from legacy files
+run through this converter.
+Change 1:
+Add comment to converted file to distinguish from native CRD creation. 
+NOTE: User should change "site" to reflect their site or organization.
+Problem 2:
+Type of argument to calls to time and gmtime should be time_t but were long;
+Change 2:
+Changed the type of the argument (lclock) to time_t.
+
+------------------------------------------------------------------------------
+Issue #: 2011-1
+------------------------------------------------------------------------------
+Date: 25 Jan 2011
+Component: sample source code
+Version: 1.01b
+Routine: crd_chk_c/crd_chk.c
+Problem:
+Previous change for detecting issues with satellite identification printed
+output at the end of the      program run, obscuring the source of the problem.
+Also, program checked for strict time sequence, regardless of data record type.
+However, meteorological and differnt data records need only to be in sequence
+within their record type.
+
+Change:
+Print identification errors with the other errors from that pass. Check for
+time out-of-sequence only within each record type. Also, remove/change records
+in targets.dat having "0" for cospar/ilrs ID.
+
+See the following files on the ILRS web site:
+crd_chk.c_v1.01b
+targets.dat
+
+------------------------------------------------------------------------------
+Note: v1.01a was never put onto the ILRS web site as a separate tar file. 
+v1.01 + errata through 2010-3 (1.01a) and through 2012-1 were rolled into 
+v1.01b on the web site.
+------------------------------------------------------------------------------
+------------------------------------------------------------------------------
+Issue #: 2010-3
+------------------------------------------------------------------------------
+Date: 09 Nov 2010
+Component: sample source code
+Version: 1.01a
+Routine: crd_chk_c/crd_chk.c
+Problem:
+Program does not check that target ILRS ID, NORAD ID, SIC, name, and target
+type agree. This has shown up when stations use non-standard target names on
+the H3 record.
+
+Change:
+Apply the following difference file to crd_chk.c (v1.01). Add the file
+targets.dat to the execution directory.
+
+Note: If the diff file below is too difficult to use, please email
+ricklefs@csr.utexas.edu for the full source code of the new version.
+
+Diff file:
+-----------------------------------------------------------------------------
+<separate file on ILRS website>
+
+targets.dat file:
+-----------------------------------------------------------------------------
+<separate file on ILRS website>
+
+-----------------------------------------------------------------------------
+<separate file on ILRS website>
+
+------------------------------------------------------------------------------
+Issue #: 2010-2
+------------------------------------------------------------------------------
+Date: 29 July 2010
+Component: sample source code
+Version: 1.01 (and 1.00)
+Routine: crd_chk_c/crd_chk.c
+Problem:
+Crd_chk disallows a "-1" as the value for the rms of the system delay. There
+are some instances where this value does not apply, and "-1" should be allowed.
+In addition, checks of the skew, kurtosis, and peak-mean are absent from the
+program.
+Change:
+Crd_chk.c line 733 should be changed from
+          if (d40.cal_rms < 0 || d40.cal_rms > 1.e8)
+to
+          if (d40.cal_rms < -1 || d40.cal_rms > 1.e8)
+. Missing checks will be added to the next release.
+
+------------------------------------------------------------------------------
+Issue #: 2010-1
+------------------------------------------------------------------------------
+Date: 9 April 2010
+Component: sample source code
+Version: 1.01 (and 1.00)
+Routine: common_c/write_crd.c
+Problem:
+The write_11 (normal point record) routine writes only 7 significant digits
+in the seconds of day field. For consistency with other c and FORTRAN
+routines, this routine should write 12 significant digits.
+Change:
+Replace line 172
+           "11 %.7Lf %.12Lf %-s %d %.1f %d %.1f %.3f %.3f %.1f %.1f %d\n",
+with
+           "11 %.12Lf %.12Lf %-s %d %.1f %d %.1f %.3f %.3f %.1f %.1f %d\n",
+.
+Note: Stations are not requred to write 12 significant digits if the ranging
+system performance does not warrant this accuracy. Please see the CRD format
+manual for more information.
+
+------------------------------------------------------------------------------
+Date: 29 October 2009
+------------------------------------------------------------------------------
+Version 1.01 of the CRD manual and source code are now available on the ILRS
+website.  Errata below have been rolled into the new version, and there are
+other corrections and clarifications to the manual. There have been no format
+changes in version 1.01, in the sense that there are no new additional records
+or fields, nor have fields been moved or resized.
+
+------------------------------------------------------------------------------
+Issue #: 2009-13
+------------------------------------------------------------------------------
+Date: 10 October 2009
+Component: manual
+Version: 1.00
+Section: 3 Data Records, and others
+Problem: Analysts asked that the chronological ordering of records be clarified.
+Change:
+Replace the paragraph on order of records with the following. Changes were
+made in several other places in the manual.
+"Data records of the same type must be in chronological order. In other words,
+all normal point records must be in chronological order; all meteorological
+records must be in chronological order, etc. Meteorological records, for
+instance, may be either interleaved with the normal point records or kept
+together. Times assigned to the calibration (“40”) and session (“50”) records
+are at the discretion of the station, although if there are multiple
+calibration records in a pass, the times should be representative of the
+time for which they are applicable."
+
+------------------------------------------------------------------------------
+Issue #: 2009-12
+------------------------------------------------------------------------------
+Date: 10 October 2009
+Component: manual
+Version: 1.00
+Section: 1.2.2 Notes section for station (H2) header record
+Problem: It was discovered that the analysts can not handle any Station
+Epoch Time Scale values except 3, 4, and 7 without throwing out the data.
+Change:
+Replace paragraph regarding "station epoch time scale":
+"Currently, values of the  Station Epoch Time Scale other than 3, 4, and 7
+will not be understood by the SLR data analysts, and data including them
+will usually be discarded. Since time scales do evolve, and some experiments
+require higher accuracies than are available with the current techniques,
+it was necessary to include the possibility of new values (10-99) that did
+not conflict with current or obsolete historical values. If you believe
+there is a compelling reason to use another value (e.g. 10 or above) you
+must propose the new value and explain the reasons to the ILRS Analysis
+Working Group and the ILRS Data Formats and Procedures Working Group. If
+they grant approval, you may use the new value, and it will be documented
+in this manual."
+
+------------------------------------------------------------------------------
+Issue #: 2009-11
+------------------------------------------------------------------------------
+Date: 18 August 2009
+Component: sample source code
+Version: 1.00
+Routines: crd_to_merit.c
+          crd_to_cstg_np.c
+          crd_to_cstg_ql.c
+These programs have had substantial changes to:
+ 1) accumulate and interpolate meteorological and point angle data, to handle
+    CRD data files in which these record types are sent as blocks with the file.
+ 2) handle change of day in the middle of a pass (crd_to_merit.c); and
+ 3) properly handle data and terminate the program even if trailing "H9" record
+    is not present.
+
+------------------------------------------------------------------------------
+Issue #: 2009-10
+------------------------------------------------------------------------------
+Date: 04 May 2009
+Component: sample source code
+Version: 1.00
+Routine: crd_conv_slr_c/crd_to_cstg_np.c
+Problem: When the "11" record return rate/ signal:noise field in a CRD file 
+is set to -1 (not available), -1 is copied into the lunar signal:noise field 
+of the CSTG normal point. This field should be '00' in the CSTG normal point.
+Change:
+After line 261, insert
+              if (d11.return_rate < 0) np.snr= 0;
+
+------------------------------------------------------------------------------
+Issue #: 2009-9
+------------------------------------------------------------------------------
+Date: 04 May 2009
+Component: sample source code
+Version: 1.00
+Routine: crd_chk_c/crd_chk.c
+Problem: Crd_chk correctly finds and reports errors when there are non-blanks in
+header H3 column 23. However it reports the error is in column 22.
+Change:
+Replace line 227
+          nh3_bl[i++] = 22;
+with
+          nh3_bl[i++] = 23;
+------------------------------------------------------------------------------
+Issue #: 2009-8
+------------------------------------------------------------------------------
+Date: 04 May 2009
+Component: sample source code
+Version: 1.00
+Routine: crd_chk_c/crd_chk.c
+Problem: Crd_chk gives an "out of sequence" error when time of day wraps 
+around to 0. (See Issue #2009-7)
+Change:
+At lines 699, 666, 631, 600, 577, 541, and 496, replace
+          if (test_sec_of_day < last_sec_of_day)
+with
+          if (test_sec_of_day < last_sec_of_day &&
+              (last_sec_of_day - test_sec_of_day) < 80000)
+
+------------------------------------------------------------------------------
+Issue #: 2009-7
+------------------------------------------------------------------------------
+Date: 04 May 2009
+Component: manual
+Version: 1.00
+Section: 3. Data Records
+Problem: There is no explicit statement as to whether second of day is allowed
+to exceed 86400 or required to wrap around to 0 at end of day.
+Change:
+Add paragraph before section 3.1 -
+  Seconds of day are, at least for the time being, modulo 86400. In other 
+  words, seconds of day must wrap around to 0 at the end of day. Using the
+  pass start and stop time from the H4 header, it will be possible to 
+  unambiguously determine the day associated with the second of day. To remove
+  any ambiguity, the satellite pass must not be longer than 1 day (which could 
+  occur for geostationary satellites).
+
+------------------------------------------------------------------------------
+Issue #: 2009-6
+------------------------------------------------------------------------------
+Date: 12 March 2009
+Component: manual
+Version: 1.00
+Section: Introduction
+Problem: The manual suggests filling a numeric field with "-1" and a string 
+field with "na" the when value is not known or not applicable when converting 
+from old format. These should be the fallback values in all cases, not just 
+when converting old data.
+Change:
+Replace
+  When data is converted from an old format to the CRD format, there will be 
+  fields (such as skew and kurtosis) that do not exist in the old format.
+with
+  There will often be cases where the value of a data record field is either 
+  unknown or not applicable. This is especially true when data is converted 
+  from an old format to the CRD format, since there will be fields (such as 
+  skew and kurtosis) that do not exist in the old format.
+
+------------------------------------------------------------------------------
+Issue #: 2009-5
+------------------------------------------------------------------------------
+
+Date: 11 March 2009
+Component: sample source code
+Version: 1.00
+Routine: common_c/write_crd.c
+Problem: Satellites launched between 2000 and 2009 have 1 or 2 leading zeros in
+their ILRS ID. The write routine for the H3 record prints spaces instead of
+leading zeros.
+Change:
+On line 55, replace
+           "h3            %8d %4d %8d %1d %1d", header.ilrs_id, header.sic,
+with
+           "h3             %07d %4d %8d %1d %1d", header.ilrs_id, header.sic,
+.
+
+------------------------------------------------------------------------------
+
+Date: 11 March 2009
+Component: sample source code
+Version: 1.00
+Routine: common_f/write_crdf.f
+Problem: Satellites launched between 2000 and 2009 have 1 or 2 leading zeros in
+the ILRS ID. The write routine for the H3 record prints spaces instead of
+leading zeros.
+Change:
+On line 64, replace
+ 1000 FORMAT ("h3",1x,a10,1x,i8,1x,i4,1x,i8,1x,i1,1x,i1)
+with
+ 1000 FORMAT ("h3",1x,a10,1x,i8.7,1x,i4,1x,i8,1x,i1,1x,i1)
+.
+
+------------------------------------------------------------------------------
+Issue #: 2009-4
+------------------------------------------------------------------------------
+
+Date: 10 March 2009
+Component: sample source code
+Version: 1.00
+Routine: common_f/read_crdf.f
+Problem: The Station Epoch Time Scale in the H2 record is treated as a 1 digit 
+field rather than 2 digits.
+Change:
+On line 47, replace
+ 1000 FORMAT (a10,1x,i4,1x,i2,1x,i2,1x,i1)
+with
+ 1000 FORMAT (a10,1x,i4,1x,i2,1x,i2,1x,i2)
+.
+
+------------------------------------------------------------------------------
+
+Date: 10 March 2009
+Component: sample source code
+Version: 1.00
+Routine: common_f/write_crdf.f
+Problem: The Station Epoch Time Scale in the H2 record is treated as a 1 digit 
+field rather than 2 digits.
+Change:
+On line 47, replace
+ 1000 FORMAT ("h2",1x,a10,1x,i4,1x,i2,1x,i2,1x,i1)
+with
+ 1000 FORMAT ("h2",1x,a10,1x,i4,1x,i2,1x,i2,1x,i2)
+.
+
+------------------------------------------------------------------------------
+
+Date: 10 March 2009
+Component: sample source code
+Version: 1.00
+Routine: common_c/write_crd.c
+Problem: The Station Epoch Time Scale in the H2 record is treated as a 1 digit 
+field rather than 2 digits.
+Change:
+On line 43, replace
+           "h2            %4d %2d %2d %1d",
+with
+           "h2            %4d %2d %2d %2d",
+.
+
+------------------------------------------------------------------------------
+Issue #: 2009-3
+------------------------------------------------------------------------------
+
+Date: 10 March 2009
+Component: sample source code
+Version: 1.00
+Routine: crd_chk_c/crd_chk.c
+Problem: The "data quality alert indicator" is not read correctly.
+Change:
+On line 262, replace
+         getifield (crdstr, 62, 1, &h4.data_qual_alert_ind);
+with
+         getifield (crdstr, 61, 1, &h4.data_qual_alert_ind);
+.
+
+------------------------------------------------------------------------------
+Issue #: 2009-2
+------------------------------------------------------------------------------
+
+Date: 10 March 2009
+Component: manual
+Version: 1.00
+Section: 5.1.1.1 Ftp or Scp
+Problem: File extension ".gz" (GNU ZIP) was omitted from the list of common 
+ file compression extensions.
+Change:
+Replace
+ Files may contain the ".Z", ".z", or ".zip" extensions indicating a 
+ particular type of file compression.
+with
+ Files may contain the ".Z", ".z", ".gz", or ".zip" extensions indicating a 
+ particular type of file compression.
+
+------------------------------------------------------------------------------
+Issue #: 2009-1
+------------------------------------------------------------------------------
+
+Date: 10 March 2009
+Component: manual
+Version: 1.00
+Section: 2.4.2 Notes
+Problem: Record "C3" contains the field "Epoch delay correction" which section 
+ 2.4.2 claims is always applied, while record "C4" contains the field "Estimated
+ Station UTC offset", which may or may not be applied depending on field 
+ "Station clock offset and drift applied indicator." 
+Change:
+Replace
+ "The epoch delay correction has been applied to the data; the value here is 
+ for reference only."
+with
+ "The epoch delay correction has been applied to the data, except in the 
+ case of transponders, where there is a choice. See record "C4" in section 2.5 
+ below."
+
+------------------------------------------------------------------------------
+====================== End of 12 March Errata Update =========================
+------------------------------------------------------------------------------
+Issue #: 2008-3
+------------------------------------------------------------------------------
+
+Date: 5 December 2008
+Component: manual
+Version: 1.00
+Section: 5.1.1.1 Ftp or Scp
+Problem: To support multiple segments files from the same pass, it is 
+necessary to include minutes on the file name.
+Change:
+Replace
+    ssss_satname_crd_yyyymmdd_hh_rr.typ
+with
+    ssss_satname_crd_yyyymmdd_hh[mm]_rr.typ
+and change
+    hh is the start time of pass (hour only, UTC time scale)
+to
+    hh is the hour when the pass or pass segment begins (UTC time scale)
+    mm is the minute when the pass or pass segment begins (optional)
+
+------------------------------------------------------------------------------
+Issue #: 2008-2
+------------------------------------------------------------------------------
+
+Date: 5 December 2008
+Component: sample source code
+Version: 1.00
+Routine: crd_split_c/crd_split.c
+Problem: To support multiple segments files from the same pass, it is 
+necessary to include minutes on the file name.
+Change:
+On lines 100-103, replace
+          sprintf(out_name,"%04d_%-s_crd_%02d%02d%02d_%02d_%1d.%-3s",
+            h2.cdp_pad_id, target_name,
+            h4.start_year%100, h4.start_mon, h4.start_day, h4.start_hour,
+            h4.data_release, type_str[h4.data_type]);
+with
+          sprintf(out_name,"%04d_%-s_crd_%02d%02d%02d_%02d%02d_%1d.%-3s",
+            h2.cdp_pad_id, target_name,
+            h4.start_year%100, h4.start_mon, h4.start_day, h4.start_hour,
+            h4.start_min, h4.data_release, type_str[h4.data_type]);
+(Running test.sh in this directory will now fail as crd_split will produce file
+names that include minutes which the comparison ".ref" files do not contain.)
+
+------------------------------------------------------------------------------
+====================== End of 5 December Errata Update =======================
+------------------------------------------------------------------------------
+Issue #: 2008-1
+------------------------------------------------------------------------------
+
+Date: 29 September 2008
+Component: sample source code
+Version: 1.00
+Routine: common_f/read_crdf.f
+Problem: A variable in the C0 record reading routine was left unitialized. 
+This problem will be apparent with FORTRAN compilers that do not 
+automatically initialize all variables.
+Change:
+After line 108, add:
+       in_arg= .false.
