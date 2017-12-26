@@ -13,9 +13,8 @@
 
 
 //#include "../../src/GNetcdf.h"
-#include "../../src/GEarthOrientationParameter.hpp"
-#include "../../src/GRungeKutta.hpp"
-#include "GEarthRadiationModel.h"
+#include "GEarthOrientationParameter.hpp"
+#include "GRungeKutta.hpp"
 #include "GFMEarthRadiationPressure.hpp"
 #include "GFMThermalRadiationForce.hpp"
 
