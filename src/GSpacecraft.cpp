@@ -418,7 +418,7 @@ namespace gfc
         GPreciseEphemeris rec;
         bool isExact = false;
         int i = -1;
-        bool haveVelocity, haveAcceleration = false;
+        bool haveVelocity=false, haveAcceleration = false;
         std::map<GTime,GPreciseEphemeris>::const_iterator it1, it2, kt;
         
         //check whether ct is between the time domain

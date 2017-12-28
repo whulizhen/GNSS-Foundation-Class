@@ -335,8 +335,8 @@ namespace gfc
     GSpaceCraftAttitude* GMotionState::getAttitude_ecef()
     {
         GSpaceCraftAttitude atti_ecef;
-        
-        return &atti_ecef;
+        //has to be check in the future
+        return  &attitude_eci;
     }
     
     void GMotionState::outputState( ofstream& file )

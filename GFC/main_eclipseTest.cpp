@@ -53,11 +53,27 @@
 
 #include "GFMThermalRadiationForce.hpp"
 
+#include "GQuaternion.hpp"
+
 using namespace gfc;
 
 int main(int argc, char* argv[])
 {
+    GQuaternion q1(1,GVector(0,1,0));
+    GQuaternion q2(1,GVector(0.5,0.5,0.75));
+    GQuaternion mq = q1*q2;
     
+    GQuaternion q(1.0,GVector(0.5,0.3,0.1));
+    GQuaternion qv=q1;
+    qv.inverse();
+    
+    GQuaternion qc = q*qv;
+    
+    double nm = q.norm();
+    //q.set(GCONST("PI")/4.0, GVector(1.0,1.0,0));
+    
+    GVector i(1,1,1);
+    GVector r =q.rotate(i);
     
     //sp3/ilrsb.orb.lageos2.160416.v35.sp3   sp3/gfz.orb.lageos2.160416.v35.sp3
     
