@@ -166,9 +166,12 @@ int main(int argc, char* argv[])
     
     // testing data
     
-    argv[1] = "gfcsetup.cfg";
-    argv[2] = "ssBDS";  //satellite system;
-    argv[3] = "14";     //prn
+    argv[1] = "/Users/lizhen/projects/GFC/GFC/gfcsetup.cfg";
+    argv[2] = "ssGRACE";  //satellite system;
+    argv[3] = "1";     //prn
+    
+    
+    
     
     //2015/01/11/18:34:25.000000
     //argv[4] = "2015 1 11 17 34 43.00000000"; // start time in GPST
@@ -179,15 +182,24 @@ int main(int argc, char* argv[])
     //argv[5] = "2015 1 11 18 34 28.00000000"; // end time in GPST
     
     //for bds
-    argv[4] = "2015 01 01 00 00 00.00000000"; // start time in GPST
-    argv[5] = "2015 12 31 00 00 28.00000000"; // end time in GPST
+    //argv[4] = "2015 01 01 00 00 00.00000000"; // start time in GPST
+    //argv[5] = "2015 12 31 00 00 28.00000000"; // end time in GPST
+    
+    //for GRACE
+    //argv[4] = "2008 03 25 01 47 40.000000"; // start time in GPST
+    //argv[5] = "2008 03 25 01 48 30.000000"; // end time in GPST
+    
+    argv[4] = "2008 03 25 01 00 00.000000"; // start time in GPST
+    argv[5] = "2008 03 25 23 00 00.000000"; // end time in GPST
+    
+    
     
     argv[6]="sp3/codsp3-2015/com18264.sp3,sp3/codsp3-2015/com18265.sp3,sp3/codsp3-2015/com18266.sp3,sp3/codsp3-2015/com18270.sp3,sp3/codsp3-2015/com18271.sp3";
     
     argv[6]="sp3/whusp3-2015/wum18253.sp3,sp3/whusp3-2015/wum18254.sp3,sp3/whusp3-2015/wum18255.sp3,sp3/whusp3-2015/wum18256.sp3,sp3/whusp3-2015/wum18260.sp3";
     
     
-    argv[7] = "60";  // interval
+    argv[7] = "1";  // interval
     
     
     //argv[4] = "2015 1 9 09 13 35.00000000"; // start time in GPST
@@ -233,9 +245,13 @@ int main(int argc, char* argv[])
     GString sp3filelist = argv[6];
     
     std::vector<GString> sp3file = sp3filelist.split(',');
+    
+     GSpaceCraftMgr::loadGRACEEphemeris("/Users/lizhen/experiments/data/sp3/GRACE/nav.data");
+    
     for(int i = 0 ; i< sp3file.size(); i++ )
     {
         //GSpaceCraftMgr::loadPreciseEphemeris(sp3file[i]);
+        
     }
     
     
@@ -278,7 +294,7 @@ int main(int argc, char* argv[])
     //GKeplerianElements mykpe(42166.3119610689637646,0.00306045314881421256017,0.952694972555786168122,3.35872720362736876254,3.56769170141733082957,2.78153374241570761072);
     
     //C10 at GPST 2015 01 01 00 00 00
-    GKeplerianElements mykpe(42158.5455173419890933,0.00297678789158783898422,0.946320613861091786134,3.54313401237741487648,5.60117667874381430781,0.521560853497004761614);
+//    GKeplerianElements mykpe(42158.5455173419890933,0.00297678789158783898422,0.946320613861091786134,3.54313401237741487648,5.60117667874381430781,0.521560853497004761614);
     
     //C11 at GPST 2015 01 01 00 00 00
     //GKeplerianElements mykpe(27904.7761430916347916,0.00240232320729961978945,0.973095890700745203005,3.46758595575894412733,1.46975968471844375962,0.80975252861510960134);
@@ -288,7 +304,8 @@ int main(int argc, char* argv[])
     
     //C14
     //GKeplerianElements mykpe(27905.3627291815599456,0.00156609722616517493127,0.956695310707969204244,3.56007288522406373232,3.54991651616790226953,4.91337390378707183913);
-    
+    GKeplerianElements
+    mykpe(6838.48265785065597999,0.00303136072481130849909,1.55413552698389439467,1.52503752498879021184,1.10049729087647997993,3.91570627917123768803);
     
     while( 1 )
     {
@@ -303,26 +320,26 @@ int main(int argc, char* argv[])
        
         GSpaceEnv::updateSpaceEnvironment(epoch_utc);
         
+        mysat.getEphValue_test(epoch_gps).getPV(mp_ecef,mv_ecef);
+        mysat.getStatePointer()->updateState_ecef(epoch_utc, mp_ecef, mv_ecef);
         
-       // mysat.getEphValue_test(epoch_gps).getPV(mp_ecef,mv_ecef);
-       // mysat.getStatePointer()->updateState_ecef(epoch_utc, mp_ecef, mv_ecef);
-        
-        
-        mykpe.propagate(mykpe, (epoch_gps-start_gps).toSeconds(), mp_eci, mv_eci);
-        
+        //mykpe.propagate(mykpe, (epoch_gps-start_gps).toSeconds(), mp_eci, mv_eci);
         
         // for the eclipse event detection
         //mysat.getStatePointer()->shadow_detector(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], mp_ecef);
         
         //for the eci cooridnates
-        mysat.getStatePointer()->shadow_detector(epoch_gps,GSpaceEnv::planetPos_eci[GJPLEPH::SUN], mp_eci);
+        //mysat.getStatePointer()->shadow_detector(epoch_gps,GSpaceEnv::planetPos_eci[GJPLEPH::SUN], mysat.getStatePointer()->satpos_eci);
         
+        
+        //double shadow_factor = GMotionState::shadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], mp_eci);
+        double shadow_factor = GMotionState::shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN] , mp_ecef);
         
         // output the shadow function
         //double shadow_factor = GMotionState::shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN] , mp_ecef);
         
         
-        //printf("%s %f\n",GTime::GTime2CivilTime(epoch_gps).TimeString().c_str(), shadow_factor );
+        printf("%s %f\n",GTime::GTime2CivilTime(epoch_gps).TimeString().c_str(), shadow_factor );
         
         
         //mysat.getStatePointer()->updateState_ecef(epoch_utc, mp_ecef, mv_ecef);

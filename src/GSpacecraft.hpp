@@ -156,6 +156,8 @@ namespace  gfc
         
         static void loadUCLEphemeris(GString ephemerisFile);
         
+        static void loadGRACEEphemeris(GString ephemerisFile);
+        
         static void Initializer();
         
     };

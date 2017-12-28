@@ -351,16 +351,16 @@ namespace gfc
         double myfactor = 1.0;
         if(first == true)
         {
-            //myfactor = GMotionState::shadowFactor(XSun, XSat);
-            myfactor = GMotionState::shadowFactor_SECM(true, XSun, XSat);
+            myfactor = GMotionState::shadowFactor(XSun, XSat);
+            //myfactor = GMotionState::shadowFactor_SECM(true, XSun, XSat);
             pre_factor = myfactor;
             first = false;
             return;
         }
    
-        //myfactor = GMotionState::shadowFactor(XSun, XSat);
-        myfactor = GMotionState::shadowFactor_SECM(true, XSun, XSat);
-        
+        myfactor = GMotionState::shadowFactor(XSun, XSat);
+        //myfactor = GMotionState::shadowFactor_SECM(true, XSun, XSat);
+        //printf("%f %f\n",myfactor1,myfactor);
         
         //GTime     gpst =  epoch_gps;
         
@@ -1147,7 +1147,7 @@ namespace gfc
                 }
                 else  // penumbra
                 {
-                   // printf("Hyperbola on the photo_2!\n");
+                    //printf("Hyperbola on the photo_2!\n");
                     factor = 0.5;
                     int testc = 0;
                 }

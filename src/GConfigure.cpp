@@ -21,6 +21,7 @@ namespace gfc
         // Check that the file has opened successfully
         if (infile.fail() || !infile.is_open())
         {
+            cout<<"configure file open failed!"<<endl;
             return;
         }
         

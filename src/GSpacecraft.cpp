@@ -847,6 +847,15 @@ namespace gfc
         mysat.setSpaceCraftID(myid);
         gSpacecraft[myid.getIDString()] = mysat;
         
+        myid.setData("ssGRACE", 1);  // GRACE-A satellite
+        mysat.setSpaceCraftID(myid);
+        gSpacecraft[myid.getIDString()] = mysat;
+        
+        myid.setData("ssGRACE", 2);  // GRACE-B satellite
+        mysat.setSpaceCraftID(myid);
+        gSpacecraft[myid.getIDString()] = mysat;
+        
+        
         for( int i = 1; i<= 32; i++ )  //GPS prn:32
         {
             GSensorID myid("ssGPS",i);
@@ -894,12 +903,89 @@ namespace gfc
     }
     
     
+    void GSpaceCraftMgr::loadGRACEEphemeris(GString ephemerisFile)
+    {
+        
+        std::fstream infile(ephemerisFile.c_str());
+        if ( infile.fail() )
+        {
+            std::cerr << "\nCould not open GRACE ephemeris file. Terminating...\n";
+            exit(0);
+        }
+        const int MAX = 1024;
+        char store[MAX]={0};
+        long lineNumber = 0;
+        int totalsat = 0;
+        GPreciseEphemeris peph;
+        while ( !infile.eof() )
+        {
+            
+            infile.getline(store, MAX); //read past the file header
+            GString reader(store);
+            if(reader == "" )
+            {
+                break;
+            }
+            
+            std::vector<GString> splitstr = reader.split();
+            
+            CivilTime ct;
+            //default timesystem is GPS time
+            ct.m_ts = GTimeSystem("tsGPS");
+            ct.m_year = static_cast<int>(splitstr[0].asINT() ) ;
+            ct.m_month = static_cast<int>( splitstr[1].asINT());
+            ct.m_day = static_cast<int>(splitstr[2].asINT()) ;
+            ct.m_hour = static_cast<int>(splitstr[3].asINT()) ;
+            ct.m_minute = static_cast<int>(splitstr[4].asINT()) ;
+            ct.m_second = splitstr[5].asDOUBLE();
+            GTime epoch =  GTime::CivilTime2GTime(ct);
+            peph.setEpoch(epoch);
+            
+            for(int i = 0 ; i< 2; i++)
+            {
+                GSensorID satid("ssGRACE",1);
+                //the second line
+                infile.getline(store, MAX); //read past the file header
+                reader = store;
+                // they are in ECEF frame
+                splitstr = reader.split();
+                if(splitstr[0] == "graceA")
+                {
+                    satid.setData("ssGRACE", 1);
+                }
+                else if(splitstr[0] == "graceB")
+                {
+                   satid.setData("ssGRACE", 2);
+                }
+                
+                // the current research object is GPS prn 11, SVN 46
+                
+                peph.setSCID(satid);
+                peph.setPX(splitstr[1].asDOUBLE()/1000.0);  //px  km
+                peph.setPY(splitstr[2].asDOUBLE()/1000.0);  //px  km
+                peph.setPZ(splitstr[3].asDOUBLE()/1000.0);  //px  km
+                peph.setVX(splitstr[4].asDOUBLE()/1000.0);  //vx km
+                peph.setVY(splitstr[5].asDOUBLE()/1000.0);  //vx km
+                peph.setVZ(splitstr[6].asDOUBLE()/1000.0);  //vx km
+                
+                bool isexist = ( gfc::GSpaceCraftMgr::gSpacecraft.find(peph.getSensorID().getIDString()) != gfc::GSpaceCraftMgr::gSpacecraft.end() );
+                if( isexist == true )
+                {
+                    gfc::GSpaceCraftMgr::gSpacecraft[peph.getSensorID().getIDString()].pushPreciseEphemeris(peph);
+                }
+                
+            }
+            
+        }
+        
+    }
+    
     void GSpaceCraftMgr::loadUCLEphemeris(GString ephemerisFile)
     {
         std::fstream infile(ephemerisFile.c_str());
         if ( infile.fail() )
         {
-            std::cerr << "\nCould not open gravity file. Terminating...\n";
+            std::cerr << "\nCould not open UCL ephemeris file. Terminating...\n";
             exit(0);
         }
         const int MAX = 1024;
