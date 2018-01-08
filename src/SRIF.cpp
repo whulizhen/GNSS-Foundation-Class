@@ -413,7 +413,8 @@ void SRIF( int xnum, int obsnum, int wnum,double* IM,double* A,double* z,
     
     if( RPHI != NULL )
     {
-        delete[] RPHI, RPHI = NULL;
+        delete[] RPHI;
+        RPHI = NULL;
     }
     
 }

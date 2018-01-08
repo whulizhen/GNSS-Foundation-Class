@@ -1437,6 +1437,85 @@ namespace gfc
     }
     
     
+    
+    // the cubic solver
+    // ref: http://www.1728.org/cubic2.htm
+    // x^3 + ce[0]*x^2 + ce[1]*x + ce[2] = 0
+    unsigned int GMath::mycubicSolver(double* ce, double* rt)
+    {
+        std::complex<double> roots[3];
+        double eps = 1.0E-15;
+        unsigned int ret = -1;
+        double a = 1.0;
+        double f = (3.0*ce[1]/a - (ce[0]*ce[0]/a/a))/3.0;
+        double g = ( (2.0*ce[0]*ce[0]*ce[0]/a/a/a) - (9.0*ce[0]*ce[1]/a/a) + (27.0*ce[2]/a) )/27.0;
+        double h = ( g*g /4.0 + f*f*f/27.0 );
+        
+        // f==0 g==0 h==0, 3 real roots are equal, only 1 equal root
+        if( fabs(f)<eps && fabs(g)<eps && fabs(h)< eps )
+        {
+            rt[0] = -pow(ce[2]/a,1.0/3.0);
+            roots[0] = complex<double> ( rt[0] ,0.0);
+            ret = 1;
+        }
+        // only 1 real root, the other 2 are complex
+        if( h > 0.0 )
+        {
+            double R = -g/2.0 + sqrt(h);
+            double S = pow(R,1.0/3.0);
+            double T = -(g/2.0) - sqrt(h);
+            double U = pow(T,1.0/3.0);
+            
+            
+            rt[0] = S+U - (ce[0]/3.0/a);
+            
+            roots[0] = complex<double>(S+U - (ce[0]/3.0/a), 0.0);
+            roots[1] = complex<double>( -(S+U)/2.0 - ce[0]/3.0/a ,  (S-U)*sqrt(3.0)/2.0 );
+            roots[2] = complex<double>( -(S+U)/2.0 - ce[0]/3.0/a ,  -(S-U)*sqrt(3.0)/2.0 );
+            
+            ret = 1;
+        }
+        else  //all 3 roots are real h<=0
+        {
+            double i = sqrt( g*g/4.0 -h  );
+            double j = pow(i, 1.0/3.0);
+            double k = acos(-(g/2.0/i));
+            double L = -j;
+            double M = cos(k/3.0);
+            
+            double N = sqrt(3.0)*sin(k/3.0);
+            double P = -ce[0]/3.0/a;
+            
+            
+            
+            
+            roots[0] = complex<double>(2*j*cos(k/3.0) - ce[0]/3.0/a, 0.0);
+            //roots[0] = 2*j*cos(k/3.0) - ce[0]/3.0/a;
+            
+            roots[1] = complex<double>( L*(M+N) + P, 0.0);
+            //roots[1] = L*(M+N) + P;
+            
+             roots[2] = complex<double>(  L*(M-N) + P, 0.0);
+            //roots[2] = L*(M-N) + P;
+            
+            if(fabs(N)<eps)
+            {
+                ret = 2;
+                rt[0] = 2*j*cos(k/3.0) - ce[0]/3.0/a;
+                rt[1] = rt[1] = L*(M+N) + P;
+            }
+            else
+            {
+                ret =  3;
+                rt[0] = 2*j*cos(k/3.0) - ce[0]/3.0/a;
+                rt[1] = rt[1] = L*(M+N) + P;
+                rt[2] = L*(M-N) + P;
+            }
+        }
+        
+        return ret;
+    }
+    
     unsigned int GMath::cubicSolver(double * ce, double *roots)
     //cubic equation solver
     // x^3 + ce[0] x^2 + ce[1] x + ce[2] = 0
@@ -1567,7 +1646,7 @@ namespace gfc
             }
             return 0;
         }
-        if ( fabs(r)< eps )
+        if ( fabs(r)< eps )  // a cubic
         {
             double cubic[3]= {0.,p,q};
             roots[0]=0.;
@@ -1604,12 +1683,12 @@ namespace gfc
             double droots[2] = {0.0};
             double ce2[2];
             
-            if( croots[i] < 0.0 ) // only can be positive
+            if( croots[i] < 0.0 || fabs(croots[i])< eps ) // only can be positive
             {
                 continue;
             }
             
-            //double u2 = croots[i];
+            //double u2 = croots[i]; , u can not be ZERO
             double u = sqrt(croots[i]);
             double v = 0.5*(p+croots[i])-0.5*q/u ;
             double w = 0.5*(p+croots[i])+0.5*q/u ;

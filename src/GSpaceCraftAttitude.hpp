@@ -28,7 +28,10 @@ namespace gfc
         
     public:
         
-        static double eclipse( GVector& sunpos_eci, GVector& satpos_eci );  //units: km
+        static double penumbra_flux_scale(GVector rso, GVector earth_edge,
+                                                        GVector sun, GVector sun_edge);
+        static GVector get_earth_edge(GVector rso, GVector sun);
+        static double eclipse( GVector rso, GVector sun );  //units: km
         static bool sun_edge_earth_intersection(GVector rso, GVector edge);
         
         GSpaceCraftAttitude()

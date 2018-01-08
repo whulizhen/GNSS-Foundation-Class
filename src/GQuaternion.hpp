@@ -27,6 +27,8 @@ namespace gfc
         GQuaternion(double real,  GVector vector);
         
         void set(double half_angle, GVector u);
+        void set(double rotationMatrix[9]);
+        void getRotationMatrix(double* R);
         
         GVector rotate(GVector a);
         

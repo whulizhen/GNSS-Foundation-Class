@@ -460,6 +460,8 @@ namespace gfc
         static unsigned int cubicSolver(double * ce, double *roots);
         static unsigned int quarticSolver(double * ce, double *roots);
         
+        static unsigned int mycubicSolver(double* ce, double* rt);
+        
         static double nchoosek(int n, int m);
         
     private:

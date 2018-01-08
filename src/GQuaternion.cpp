@@ -10,7 +10,8 @@ namespace gfc
 {
     GQuaternion::GQuaternion()
     {
-        r = 0.0;
+        // initialise with a unit quaternion
+        r = 1.0;
     }
     
     GQuaternion::GQuaternion(double in_r, double in_i, double in_j, double in_k)
@@ -32,6 +33,29 @@ namespace gfc
         r = cos(half_angle);
         v = u*sin(half_angle);
     }
+    
+    //set the quaternion from the rotation matrix
+    void GQuaternion::set(double rotationMatrix[9])
+    {
+        r = sqrt( 1.0 + rotationMatrix[0] + rotationMatrix[4] + rotationMatrix[8]  )/2.0;
+        v.x = -(rotationMatrix[5] - rotationMatrix[7])/4.0/r;
+        v.y = -(rotationMatrix[6] - rotationMatrix[2])/4.0/r;
+        v.z = -(rotationMatrix[1] - rotationMatrix[3])/4.0/r;
+    }
+    
+    void GQuaternion::getRotationMatrix(double* R)
+    {
+        R[0] = r*r + v.x*v.x - v.y*v.y - v.z*v.z;
+        R[1] = 2*v.x*v.y - 2*r*v.z;
+        R[2] = 2*v.x*v.z + 2*r*v.y;
+        R[3] = 2*v.x*v.y + 2*r*v.z;
+        R[4] = r*r - v.x*v.x + v.y*v.y - v.z*v.z;
+        R[5] = 2*v.y*v.z - 2*r*v.x;
+        R[6] = 2*v.x*v.z - 2*r*v.y;
+        R[7] = 2*v.y*v.z + 2*r*v.x;
+        R[8] = r*r - v.x*v.x - v.y*v.y + v.z*v.z;
+    }
+    
     
     // tranfrom a vector using this quaternion
     // this gets the same results as matlab quatrotate

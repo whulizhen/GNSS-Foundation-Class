@@ -11,19 +11,10 @@
 #include <algorithm>
 #include <typeinfo>
 
-
-//#include "../../src/GNetcdf.h"
 #include "GEarthOrientationParameter.hpp"
 #include "GRungeKutta.hpp"
 #include "GFMEarthRadiationPressure.hpp"
 #include "GFMThermalRadiationForce.hpp"
-
-/*
-#include <GeographicLib/Constants.hpp>
-#include <GeographicLib/Geodesic.hpp>
-#include <GeographicLib/Gnomonic.hpp>
-#include <GeographicLib/PolygonArea.hpp>
-*/
 
 
 #include "GOrbitPredictor.hpp"
@@ -57,23 +48,126 @@
 
 using namespace gfc;
 
+
+//load the grace accelerationa and attitude data
+void loadGRACE_acc_sca(GString filename, GSpaceCraft& mysatA, GSpaceCraft& mysatB)
+{
+    std::fstream infile(filename.c_str());
+    if ( infile.fail() )
+    {
+        std::cerr << "\nCould not open GRACE ephemeris file. Terminating...\n";
+        exit(0);
+    }
+    const int MAX = 1024;
+    char store[MAX]={0};
+    long lineNumber = 0;
+    int totalsat = 0;
+    
+    GVector mp_ecef, mv_ecef, mp_eci, mv_eci;
+    
+    // the body fixed frame of graceA
+    GVector xbfs, ybfs, zbfs;
+    
+    while ( !infile.eof() )
+    {
+        
+        infile.getline(store, MAX); //read past the file header
+        GString reader(store);
+        if(reader == "" )
+        {
+            break;
+        }
+        
+        std::vector<GString> splitstr = reader.split();
+        CivilTime ct;
+        //default timesystem is GPS time
+        ct.m_ts = GTimeSystem("tsGPS");
+        ct.m_year = static_cast<int>(splitstr[0].asINT() ) ;
+        ct.m_month = static_cast<int>( splitstr[1].asINT());
+        ct.m_day = static_cast<int>(splitstr[2].asINT()) ;
+        ct.m_hour = static_cast<int>(splitstr[3].asINT()) ;
+        ct.m_minute = static_cast<int>(splitstr[4].asINT()) ;
+        ct.m_second = splitstr[5].asDOUBLE();
+        GTime epoch_gps =  GTime::CivilTime2GTime(ct);
+        GTime epoch_utc = GTime::GPST2UTC(epoch_gps);
+        
+        GVector acc_af(splitstr[6].asDOUBLE(),splitstr[7].asDOUBLE(),splitstr[8].asDOUBLE() );
+        
+        double half_angle = acos(splitstr[9].asDOUBLE());
+        GQuaternion q;
+        q.set(half_angle, GVector(splitstr[10].asDOUBLE(),splitstr[11].asDOUBLE(),splitstr[12].asDOUBLE()  ));
+        
+        GVector acc_bf(acc_af.x, acc_af.y, acc_af.z);
+        
+        GVector acc_eci = q.rotate(acc_bf);
+        
+        GVector acc_RAC;
+        
+        GSpaceEnv::updateSpaceEnvironment(epoch_utc);
+        
+        
+        mysatA.getEphValue_test(epoch_gps).getPV(mp_ecef,mv_ecef);
+        mysatA.getStatePointer()->updateState_ecef(epoch_utc, mp_ecef, mv_ecef);
+        
+        mysatB.getEphValue_test(epoch_gps).getPV(mp_ecef,mv_ecef);
+        mysatB.getStatePointer()->updateState_ecef(epoch_utc, mp_ecef, mv_ecef);
+        
+        
+        //process graceA data
+        mp_eci = mysatA.getStatePointer()->satpos_eci;
+        mv_eci = mysatA.getStatePointer()->satvel_eci;
+        
+        zbfs = -mp_eci;
+        zbfs.normalise();
+        
+        xbfs = (mysatB.getStatePointer()->satpos_eci - mysatA.getStatePointer()->satpos_eci);
+        xbfs.normalise();
+        
+        ybfs = crossproduct(zbfs, xbfs);
+        
+        double RM[9];
+        q.getRotationMatrix(RM);
+        
+        GVector acc_eci2;
+        acc_eci2.x = xbfs.x * acc_bf.x + ybfs.x * acc_bf.y + zbfs.x * acc_bf.z;
+        acc_eci2.y = xbfs.y * acc_bf.x + ybfs.y * acc_bf.y + zbfs.y * acc_bf.z;
+        acc_eci2.z = xbfs.z * acc_bf.x + ybfs.z * acc_bf.y + zbfs.z * acc_bf.z;
+        
+        acc_eci = acc_eci2;
+        
+        GVector R = mp_eci;
+        R.normalise();
+        
+        GVector C = crossproduct(mp_eci, mv_eci);
+        C.normalise();
+        
+        GVector A = crossproduct(R, C);
+        
+        //acc_RAC.x = dotproduct(R, acc_eci);
+        //acc_RAC.y = dotproduct(A, acc_eci);
+        //acc_RAC.z = dotproduct(C, acc_eci);
+        
+        acc_RAC.x = acc_eci.x * R.x + acc_eci.y * R.y + acc_eci.z * R.z;
+        acc_RAC.y = acc_eci.x * A.x + acc_eci.y * A.y + acc_eci.z * A.z;
+        acc_RAC.z = acc_eci.x * C.x + acc_eci.y * C.y + acc_eci.z * C.z;
+        
+        printf("%s %.9E %.9E %.9E\n", ct.TimeString().c_str(), acc_RAC.x, acc_RAC.y, acc_RAC.z);
+        
+    }
+    
+    infile.close();
+    int testc = 0;
+}
+
+
 int main(int argc, char* argv[])
 {
-    GQuaternion q1(1,GVector(0,1,0));
-    GQuaternion q2(1,GVector(0.5,0.5,0.75));
-    GQuaternion mq = q1*q2;
-    
-    GQuaternion q(1.0,GVector(0.5,0.3,0.1));
-    GQuaternion qv=q1;
-    qv.inverse();
-    
-    GQuaternion qc = q*qv;
-    
-    double nm = q.norm();
-    //q.set(GCONST("PI")/4.0, GVector(1.0,1.0,0));
-    
-    GVector i(1,1,1);
-    GVector r =q.rotate(i);
+   
+
+//    CivilTime cvt0("tsGPS", "2000 1 1 12 0 0");
+//    GTime ggt = GTime::CivilTime2GTime(cvt0);
+//    GTime mygt = ggt + 222532805;
+//    CivilTime mycvt =  GTime::GTime2CivilTime(mygt);
     
     //sp3/ilrsb.orb.lageos2.160416.v35.sp3   sp3/gfz.orb.lageos2.160416.v35.sp3
     
@@ -205,14 +299,32 @@ int main(int argc, char* argv[])
     //argv[4] = "2008 03 25 01 47 40.000000"; // start time in GPST
     //argv[5] = "2008 03 25 01 48 30.000000"; // end time in GPST
     
-    argv[4] = "2008 03 25 01 00 00.000000"; // start time in GPST
-    argv[5] = "2008 03 25 23 00 00.000000"; // end time in GPST
+   // argv[4] = "2008 03 25 01 00 00.000000"; // start time in GPST
+   // argv[5] = "2008 03 25 23 00 00.000000"; // end time in GPST
+    
+    // one penumbra event
+    //argv[4] = "2007 01 20 01 27 20.000000"; // start time in GPST
+    //argv[5] = "2007 01 20 01 28 00.000000"; // end time in GPST
+    argv[4] = "2007 01 20 02 03 18.000000"; // start time in GPST
+    argv[5] = "2007 01 20 02 04 05.000000"; // end time in GPST
+    
+    // two penumbra event
+    //argv[4] = "2007 01 20 06 09 20.000000"; // start time in GPST
+    //argv[5] = "2007 01 20 06 10 10.000000"; // end time in GPST
+    //argv[4] = "2007 01 20 06 45 15.000000"; // start time in GPST
+    //argv[5] = "2007 01 20 06 45 55.000000"; // end time in GPST
     
     
     
-    argv[6]="sp3/codsp3-2015/com18264.sp3,sp3/codsp3-2015/com18265.sp3,sp3/codsp3-2015/com18266.sp3,sp3/codsp3-2015/com18270.sp3,sp3/codsp3-2015/com18271.sp3";
     
-    argv[6]="sp3/whusp3-2015/wum18253.sp3,sp3/whusp3-2015/wum18254.sp3,sp3/whusp3-2015/wum18255.sp3,sp3/whusp3-2015/wum18256.sp3,sp3/whusp3-2015/wum18260.sp3";
+    
+//    argv[4] = "2016 01 01 01 00 00.000000"; // start time in GPST
+//    argv[5] = "2016 01 01 23 00 30.000000"; // end time in GPST
+    
+    
+    //argv[6]="sp3/codsp3-2015/com18264.sp3,sp3/codsp3-2015/com18265.sp3,sp3/codsp3-2015/com18266.sp3,sp3/codsp3-2015/com18270.sp3,sp3/codsp3-2015/com18271.sp3";
+    
+    //argv[6]="sp3/whusp3-2015/wum18253.sp3,sp3/whusp3-2015/wum18254.sp3,sp3/whusp3-2015/wum18255.sp3,sp3/whusp3-2015/wum18256.sp3,sp3/whusp3-2015/wum18260.sp3";
     
     
     argv[7] = "1";  // interval
@@ -262,7 +374,7 @@ int main(int argc, char* argv[])
     
     std::vector<GString> sp3file = sp3filelist.split(',');
     
-     GSpaceCraftMgr::loadGRACEEphemeris("/Users/lizhen/experiments/data/sp3/GRACE/nav.data");
+    GSpaceCraftMgr::loadGRACEEphemeris("/Users/lizhen/experiments/data/sp3/GRACE/nav_0120.data");
     
     for(int i = 0 ; i< sp3file.size(); i++ )
     {
@@ -273,6 +385,13 @@ int main(int argc, char* argv[])
     
     GSensorID myid(satsys, satprn); // C08  C06 and C14 , G11, E11(IOV101)
     GSpaceCraft& mysat = GSpaceCraftMgr::gSpacecraft[myid.getIDString()];
+    
+    GSensorID myidB("ssGRACE", 2); // C08  C06 and C14 , G11, E11(IOV101)
+    GSpaceCraft& mysatB = GSpaceCraftMgr::gSpacecraft[myidB.getIDString()];
+    
+    
+    
+    //loadGRACE_acc_sca("/Users/lizhen/experiments/data/sp3/GRACE/graceACC_SCA_0125.data", mysat,mysatB);
     
     //test the eclipse shadow function and orbit prediction
     
@@ -339,6 +458,15 @@ int main(int argc, char* argv[])
         mysat.getEphValue_test(epoch_gps).getPV(mp_ecef,mv_ecef);
         mysat.getStatePointer()->updateState_ecef(epoch_utc, mp_ecef, mv_ecef);
         
+        
+//
+//        printf("%.9E %.9E %.9E %.9E %.9E %.9E\n", double( mysat.getStatePointer()->keplerianElement.m_sma),
+//                                            double (mysat.getStatePointer()->keplerianElement.m_ecc),
+//                                            double (mysat.getStatePointer()->keplerianElement.m_inc),
+//                                            double (mysat.getStatePointer()->keplerianElement.m_raan),
+//                                            double(mysat.getStatePointer()->keplerianElement.m_argp),
+//                                            double(mysat.getStatePointer()->keplerianElement.m_tran)  );
+        
         //mykpe.propagate(mykpe, (epoch_gps-start_gps).toSeconds(), mp_eci, mv_eci);
         
         // for the eclipse event detection
@@ -348,14 +476,21 @@ int main(int argc, char* argv[])
         //mysat.getStatePointer()->shadow_detector(epoch_gps,GSpaceEnv::planetPos_eci[GJPLEPH::SUN], mysat.getStatePointer()->satpos_eci);
         
         
-        //double shadow_factor = GMotionState::shadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], mp_eci);
-        double shadow_factor = GMotionState::shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN] , mp_ecef);
+        //double shadow_factor = GMotionState::shadowFactor(6371.0,6371.0,GSpaceEnv::planetPos_eci[GJPLEPH::SUN], mysat.getStatePointer()->satpos_eci);
+        
+        //double shadow_factor = GMotionState::shadowFactor_SECM(true,GSpaceEnv::planetPos_eci[GJPLEPH::SUN] , mysat.getStatePointer()->satpos_eci);
+        
+       
+         printf("%s ",GTime::GTime2CivilTime(epoch_gps).TimeString().c_str());
+        double shadow_factor = GMotionState::myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN] ,mysat.getStatePointer()->satpos_eci);
+        
+        //double shadow_factor = mysat.getStatePointer()->attitude_eci.eclipse(mysat.getStatePointer()->satpos_eci,GSpaceEnv::planetPos_eci[GJPLEPH::SUN]);
         
         // output the shadow function
         //double shadow_factor = GMotionState::shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN] , mp_ecef);
         
         
-        printf("%s %f\n",GTime::GTime2CivilTime(epoch_gps).TimeString().c_str(), shadow_factor );
+        //printf("%s %f\n",GTime::GTime2CivilTime(epoch_gps).TimeString().c_str(), shadow_factor );
         
         
         //mysat.getStatePointer()->updateState_ecef(epoch_utc, mp_ecef, mv_ecef);
