@@ -799,7 +799,7 @@ namespace gfc
     //  1: hyperbolar
     //  2: elliptic
     
-   int GMotionState::perspectiveProjection(double a, double b,GVector& sunpos_eci, GVector& satpos_eci, double& S_solar,double& S, double& dis_earth_boundary,double& dis_earth_sun_proj)
+   int GMotionState::perspectiveProjection(double a, double b,GVector& sunpos_eci, GVector& satpos_eci, double& r_solar,double& S, double* EC_intersection, double* EC)
     {
         
         //the parameters for the earth ellipsoid
@@ -1000,25 +1000,12 @@ namespace gfc
         // the radius of sun on the photo, it is a circle
         double rs = f/scale*Rs;
         
-        S_solar = 3.14159265357*rs*rs;
+        r_solar = rs;
+        double S_solar = 3.14159265357*rs*rs;
+        
         
         double XX[4]={0.0}; // the solution of quartic equation
         int num_of_solution = 0;
-        
-//        double Kcoef[5] = {0.0};
-//        Kcoef[0] = K[0]*rs*rs - K[3]*rs + K[5];
-//        Kcoef[1] = 2*K[4]*rs - 4*K[1]*rs*rs;
-//        Kcoef[2] = 4.0*K[2]*rs*rs - 2.0*K[0]*rs*rs + 2.0*K[5];
-//        Kcoef[3] = 4.0*K[1]*rs*rs + 2.0*K[4]*rs;
-//        Kcoef[4] = K[0]*rs*rs + K[3]*rs + K[5];
-//        double Kce[4] = {Kcoef[1]/Kcoef[0],Kcoef[2]/Kcoef[0],Kcoef[3]/Kcoef[0],Kcoef[4]/Kcoef[0] };
-//
-//        num_of_solution = GMath::quarticSolver(Kce,XX);
-//        if( num_of_solution == 3 || num_of_solution == 4)
-//        {
-//            printf("WARNING: shadowfactor, %d intersections!", num_of_solution);
-//            //int testc = 0;
-//        }
         
         //calculate the eigen value and eigen vector of matrix B
         double tt =  (K[0]+K[2])*(K[0]+K[2]) - 4.0*(K[0]*K[2] - K[1]*K[1]) ;
@@ -1093,27 +1080,104 @@ namespace gfc
         Y[0] = r1[0]*K[3] + r2[0]*K[4];
         Y[1] = r1[1]*K[3] + r2[1]*K[4];
         
-        double EC[2]={0.0};
+        //double EC[2]={0.0};
         EC[0] = r1[0]*earth_centre.x + r2[0]*earth_centre.y;
         EC[1] = r1[1]*earth_centre.x + r2[1]*earth_centre.y;
         
         
         //calculate phi
-        double phi1 = Y[0]*Y[0]/4.0/lambda1 + Y[1]*Y[1]/4.0/lambda2 - K[5];
-        
         double phi = (  Y[0]*Y[0]/4.0/lambda1 + Y[1]*Y[1]/4.0/lambda2 - K[5] )/lambda1/lambda2;
         
         double CC[2] ={ -Y[0]/2.0/lambda1, -Y[1]/2.0/lambda2 }; // center X and Y
-        
-        //dis_centre = earth_centre.norm();
         
         //calculate the semi-major axis and semi-minor axis
         // since the curve can be a hyperbolor, thus
         double AA = lambda2*phi; // x axis, a^2 , including sign
         double BB = lambda1*phi; // y axis, b^2, including sign
         
-        dis_earth_boundary =  sqrt( (EC[0]-CC[0])*(EC[0]-CC[0]) + (EC[1]-CC[1])*(EC[1]-CC[1])   ) - sqrt(AA);
-        dis_earth_sun_proj   = earth_centre.norm();
+        
+        // ellipsoid
+        if(state == 2)
+        {
+            double n[2]={ EC[0]/sqrt(EC[0]*EC[0] + EC[1]*EC[1] ) , EC[1]/sqrt(EC[0]*EC[0] + EC[1]*EC[1] )  };
+            
+            double ma = BB*n[0]*n[0] + AA*n[1]*n[1];
+            double mb = -2.0*( n[0]*CC[0]*BB + n[1]*CC[1]*AA  );
+            double mc = BB*CC[0]*CC[0] + AA*CC[1]*CC[1] - AA*BB;
+            
+            double t1 = (-mb + sqrt(mb*mb - 4.0*ma*mc))/(2.0*ma);
+            double t2 = (-mb - sqrt(mb*mb - 4.0*ma*mc))/(2.0*ma);
+            double test = CC[0]*CC[0]/AA + CC[1]*CC[1]/BB - 1.0;
+            if(test <=0.0)
+            {
+                if(t1 < 0)
+                {
+                    t = t1;
+                }
+                if(t2 < 0)
+                {
+                    t = t2;
+                }
+            }
+            else
+            {
+                if(t1 > 0)
+                {
+                    t = t1;
+                }
+                if(t2 > 0)
+                {
+                    t = t2;
+                }
+            }
+            
+            EC_intersection[0] = t*n[0];
+            EC_intersection[1] = t*n[1];
+            
+            
+        }
+        else if(state == 1)  // hyperbola
+        {
+            
+            double n[2]={ EC[0]/sqrt(EC[0]*EC[0] + EC[1]*EC[1] ) , EC[1]/sqrt(EC[0]*EC[0] + EC[1]*EC[1] )  };
+            
+            double ma = BB*n[0]*n[0] + AA*n[1]*n[1];
+            double mb = -2.0*( n[0]*CC[0]*BB + n[1]*CC[1]*AA  );
+            double mc = BB*CC[0]*CC[0] + AA*CC[1]*CC[1] - AA*BB;
+            double t1 = (-mb + sqrt(mb*mb - 4.0*ma*mc))/(2.0*ma);
+            double t2 = (-mb - sqrt(mb*mb - 4.0*ma*mc))/(2.0*ma);
+            
+            double test = CC[0]*CC[0]/AA + CC[1]*CC[1]/BB - 1.0;
+            if(test >=0.0)
+            {
+                if(t1 < 0)
+                {
+                    t = t1;
+                }
+                if(t2 < 0)
+                {
+                    t = t2;
+                }
+            }
+            else
+            {
+                if(t1 > 0)
+                {
+                    t = t1;
+                }
+                if(t2 > 0)
+                {
+                    t = t2;
+                }
+            }
+            
+            EC_intersection[0] = t*n[0];
+            EC_intersection[1] = t*n[1];
+            int testc = 0;
+        }
+        
+        //dis_earth_boundary =  fabs( sqrt( (EC[0]-CC[0])*(EC[0]-CC[0]) + (EC[1]-CC[1])*(EC[1]-CC[1])   ) - sqrt(AA));
+        //dis_earth_sun_proj   = earth_centre.norm();
         
         
         //then solve the quartic equation
@@ -1481,18 +1545,24 @@ namespace gfc
         //double a = 6371.0; //km
         //double b = 6371.0; //km  6356.7523142
         
-        
         double hgt_atm = 50.0; // the hight of atmosphere
         
         //considering atmosphere
         double a_atm = a + hgt_atm; //km
         double b_atm = b*(a_atm/a); //km  6356.7523142
         
-        double Area_earth =0.0, Area_atm = 0.0, Area_solar=0.0, dis=0.0, dis_atm =0.0, dis_sun1=0.0,dis_sun2=0.0;
+        double Area_earth =0.0, Area_atm = 0.0, Area_solar=0.0;
         int state1 = -1, state2 =-1;
+        
+        double EC_intersection1[2]={0.0},EC_intersection2[2]={0.0}, EC[2]={0.0};
+
+        double x1 =0.0, x2 =0.0, dis0 =0.0, dis1 = 0.0, dis2 = 0.0, thickness;
+        double r_sun = 0.0;
+        
         if(hgt_atm == 0.0 )
         {
-            state2 = perspectiveProjection(a,b,sunpos_eci,satpos_eci,Area_solar, Area_earth, dis, dis_sun2);
+            state2 = perspectiveProjection(a,b,sunpos_eci,satpos_eci,r_sun, Area_earth,EC_intersection2, EC);
+            
             if(state2 == 0)
             {
                 factor = 1.0;
@@ -1509,15 +1579,12 @@ namespace gfc
         }
         else  // considering the atmosphere
         {
-            state1 = perspectiveProjection(a_atm,b_atm,sunpos_eci,satpos_eci,Area_solar, Area_atm, dis_atm, dis_sun1);
-            state2 = perspectiveProjection(a,b,sunpos_eci,satpos_eci,Area_solar, Area_earth, dis, dis_sun2);
+            //double testec[2]={0.0};
+            state1 = perspectiveProjection(a_atm,b_atm,sunpos_eci,satpos_eci,r_sun, Area_atm,EC_intersection1, EC);
+            state2 = perspectiveProjection(a,b,sunpos_eci,satpos_eci,r_sun, Area_earth,EC_intersection2, EC);
             
             double mu1 = 0.15;  // 大气层辐射通过系数, distance = 0
             double mu2 = 0.95;  // distance = 1;
-            
-            //double mu1 = 1.0/( 1+ exp(1.0) );  // 大气层辐射通过系数, distance = 0
-            //double mu2 = 1.0/( 1+ exp(-2.0) );  // distance = 1;
-            
             
             // so the linear model would be y = 0.6x + 0.3
             double a_exp = mu1;
@@ -1526,11 +1593,24 @@ namespace gfc
             double a_log = mu1;
             double b_log = (mu2-mu1)/std::log(2.0);
             
-            double r_sun = sqrt(Area_solar/3.14159265357);
-            double thickness = dis_atm - dis;
+            Area_solar = 3.14159265357*r_sun*r_sun;
             
-            double x1 = (dis_sun1-dis-r_sun)/thickness; // 下边界
-            double x2 = (dis_sun1-dis+r_sun)/thickness;  // 上边界
+            // the intersection between earth centre --> sun centre line and the solar circle
+            double sun_intersection[2] = {r_sun*EC[0]/sqrt(EC[0]*EC[0] + EC[1]*EC[1] ) , r_sun*EC[1]/sqrt(EC[0]*EC[0] + EC[1]*EC[1] ) };
+            
+            // the distance from earth centre to the intersection of atmosphere
+           dis1 = sqrt( ( EC[0] - EC_intersection1[0]  )*(EC[0] - EC_intersection1[0] )
+                               + (EC[1] - EC_intersection1[1] )*(EC[1] - EC_intersection1[1] )  );
+            
+            // the distance from earth centre to the intersection of solar circle
+           dis0 = sqrt( ( EC[0] - sun_intersection[0]  )*(EC[0] - sun_intersection[0] )
+                               + (EC[1] - sun_intersection[1] )*(EC[1] - sun_intersection[1] )  );
+            
+           dis2 = sqrt( ( EC[0] - EC_intersection2[0]  )*(EC[0] - EC_intersection2[0] )
+                               + (EC[1] - EC_intersection2[1] )*(EC[1] - EC_intersection2[1] )  );
+            
+            // the thickness of atmosphere
+           thickness = dis1 - dis2;
             
             //线性模型
             //double u1 = (mu2-mu1) * x1 + mu1;
@@ -1541,23 +1621,14 @@ namespace gfc
             //double u2 = a_exp*exp(b_exp*x2);
             
             //对数模型
-            double u1 = a_log + b_log*log(x1+1.0);
-            double u2 = a_log + b_log*log(x2+1.0);
+            //double u1 = a_log + b_log*log(x1+1.0);
+            //double u2 = a_log + b_log*log(x2+1.0);
+            
+            //double u = a_log + b_log*log(x+1.0);
             
             // S 曲线模型 Logistic function  y = L/(1 + aexp(bx));
             //double u1 = 1.0/( 1+ exp(-3*x1+1) );
             //double u2 = 1.0/( 1+ exp(-3*x2+1) );
-            
-            
-            if( x1 < 0.0 )
-            {
-                u1 = mu1;
-            }
-            
-            if( x2 >= 1.0 )
-            {
-                u2 = mu2;
-            }
             
             if(state1 == 0)  // full phase
             {
@@ -1568,9 +1639,14 @@ namespace gfc
                && state2 == 0
                )
             {
+                x1 = 1.0;
+                x2 = (thickness - (dis1 - dis0))/thickness;
+                
+                double u1 = a_log + b_log*log(x1+1.0);
+                double u2 = a_log + b_log*log(x2+1.0);
                 
                 double coeff = (u1+u2)/2.0;
-                
+                //double coeff = u;
                 factor = (Area_atm + (Area_solar - Area_atm)*coeff )/Area_solar;
                 //factor = 0.9;
             }
@@ -1578,12 +1654,26 @@ namespace gfc
             // totally in the atmosphere
             if( state1 == -1 && state2 == 0 )
             {
+                x1 = (dis0 - dis2)/thickness;
+                x2 = (dis0 - dis2 + 2.0*r_sun )/thickness;
+                
+                double u1 = a_log + b_log*log(x1+1.0);
+                double u2 = a_log + b_log*log(x2+1.0);
+                
                 factor = (u1+u2)/2.0;
+                //factor = u;
             }
             // partly in the earth and atmosphere
             if( state1 == -1 && (state2 == 1  || state2 == 2) )
             {
+                x1 = (2.0*r_sun - (dis2 - dis0))/thickness;
+                x2 = 0.0;
+                
+                double u1 = a_log + b_log*log(x1+1.0);
+                double u2 = a_log + b_log*log(x2+1.0);
+                
                 double coeff = (u1 + u2)/2.0;
+                
                 factor = (Area_earth*coeff )/Area_solar;
             }
             
@@ -1592,12 +1682,31 @@ namespace gfc
             {
                 factor = 0.0;
             }
+            
+            // the sun is very big, bigger than the atmosphere thickness
+            if( (state1 ==1 || state1 == 2)
+               && (state2 ==1 || state2 == 2)
+              )
+            {
+                //需要分成3段, 关键确定第2段大气层中的辐射系数
+                double area1 = Area_atm;
+                double area2 = Area_earth - Area_atm;
+                //double area3 = Area_solar - area1 - area2;
+                
+                x1 =  1.0;
+                x2 =  0.0;
+                //对数模型
+                double u1 = a_log + b_log*log(x1+1.0);
+                double u2 = a_log + b_log*log(x2+1.0);
+                
+                factor = (area1*1.0 + area2*(u1+u2)/2.0)/Area_solar;
+            }
         }
         
         //printf("%f %f %f \n", factor, f1, f2);
-        //printf("%f %d %d %f %f %f %f %f %f %f %f %f\n", factor, state1, state2, Area_solar, Area_atm, Area_earth, dis,dis_atm, dis_sun1,dis_sun2, (dis_sun1-dis-r_sun)/(dis_atm-dis),dis-dis_atm );
+        //printf("%f %d %d %f %f %f %f %f %f %f %f\n", factor, state1, state2, Area_solar, Area_atm, Area_earth,mydis, mydis1, mydis2, x1, x2 );
         
-        printf("%f %d %d\n", factor, state1, state2);
+        //printf("%f %d %d %f\n", factor, state1, state2, thickness);
         
         return factor;
     }
