@@ -307,10 +307,10 @@ int main(int argc, char* argv[])
     //argv[5] = "2007 01 20 02 04 05.000000"; // end time in GPST
     
     // two penumbra event
-    argv[4] = "2007 01 20 06 09 20.000000"; // start time in GPST
-    argv[5] = "2007 01 20 06 10 10.000000"; // end time in GPST
-    //argv[4] = "2007 01 20 06 45 15.000000"; // start time in GPST
-    //argv[5] = "2007 01 20 06 45 55.000000"; // end time in GPST
+    //argv[4] = "2007 01 20 06 09 20.000000"; // start time in GPST
+    //argv[5] = "2007 01 20 06 10 10.000000"; // end time in GPST
+    argv[4] = "2007 01 20 06 45 15.000000"; // start time in GPST
+    argv[5] = "2007 01 20 06 45 55.000000"; // end time in GPST
     
     
     

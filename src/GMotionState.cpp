@@ -108,9 +108,9 @@ namespace gfc
             //shadow_factor = shadowFactor(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
            
             
-            //shadow_factor = shadowFunction(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
             
-            shadow_factor = shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+            //shadow_factor = shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+            shadow_factor = myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
             
 //            double testshadow = shadowFunction(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
 //            
@@ -236,9 +236,9 @@ namespace gfc
             //shadow_factor = 1.0;
             
             
-            shadow_factor = shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
-            
-            //shadow_factor = shadowFunction(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+            //shadow_factor = shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+    
+            shadow_factor = myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
             
 //            double testshadow = shadowFunction(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
 //            
