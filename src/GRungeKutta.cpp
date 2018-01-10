@@ -155,18 +155,27 @@ namespace gfc
         for( int i = 0;i<m_order; i++ )
         {
             K[i] = new double[n];
-            memset(K[i],0,sizeof(double)*n);
+            //memset(K[i],0,sizeof(double)*n);
         }
         
         double* yk = new double[n];
         memcpy(yk,y0,sizeof(double)*n);
         
+        
+        //this is for index ==0
+        porb->getDerivatives(n, x0, yk, dydx);
+        for( int i = 0; i< n; i++ )
+        {
+            K[0][i] = dydx[i]*h;
+        }
+        
+        double coef = 0.0;
         for( int index = 0 ; index < m_order; index++ )
         {
-            for( int i = 0 ; i< n; i++ )
+            for(int i = 0 ; i< n; i++ )
             {
-                double coef = 0.0;
-                for( int j = 0; j< index; j++ )
+                coef = 0.0;
+                for(int j = 0; j< index; j++ )
                 {
                     coef += m_b[index*(m_order-1)+j]*K[j][i];
                 }

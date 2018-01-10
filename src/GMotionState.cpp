@@ -1235,7 +1235,7 @@ namespace gfc
         //double a = 6371.0; //km
         //double b = 6371.0; //km  6356.7523142
         
-        double hgt_atm = 50.0; // the hight of atmosphere
+        double hgt_atm = 0.0; // the hight of atmosphere
         
         //considering atmosphere
         double a_atm = a + hgt_atm; //km
@@ -1253,6 +1253,8 @@ namespace gfc
         {
             state2 = perspectiveProjection(a,b,sunpos_eci,satpos_eci,r_sun, Area_earth,EC_intersection2, EC);
             
+            Area_solar = 3.14159265357*r_sun*r_sun;
+            
             if(state2 == 0)
             {
                 factor = 1.0;
@@ -1264,6 +1266,7 @@ namespace gfc
             else
             {
                factor = Area_earth/Area_solar;
+               
             }
             
         }
