@@ -263,11 +263,12 @@ namespace   gfc
             
         }
         
-        
+        /*
         printf("%d %d %d %d %d %d %.6f\n", illumination[0],illumination[1],
                                        illumination[2],illumination[3],
                                        illumination[4],illumination[5],
                                       svAttitude->eta*180/M_PI);
+       */
         
 //        
 //        if( tx > 0.0 )  // the angle between flux and surface normal is less than 90, we want greater than 90

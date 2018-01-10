@@ -62,11 +62,11 @@ namespace gfc
     public:
         
         static double shadowFactor(double a, double b, GVector& sunpos_eci, GVector& satpos_eci);
+        
         static int perspectiveProjection(double a, double b,GVector& sunpos_eci, GVector& satpos_eci, double& r_solar,double& S, double* EC_intersection,double* EC );
         
         static double myshadowFactor(GVector& sunpos_eci, GVector& satpos_eci);
         
-        static double shadowFunction(GVector& sunpos_ecef, GVector& satposecef);
         
         // if on is false, it is the montenbruck's apporach
         // if on is true, it is the modified montenbruck's apporach, very close the real solution
