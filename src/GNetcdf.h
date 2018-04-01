@@ -34,7 +34,7 @@
 
 
 #include <stdio.h>
-#include "../lib/netcdf/netcdf.h"
+#include "netcdf.h"
 #include "GString.h"
 #include "GTime.h"
 

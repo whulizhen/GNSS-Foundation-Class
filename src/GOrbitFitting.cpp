@@ -732,7 +732,7 @@ namespace gfc
         
         //observation
         GMatrix l(3,1);
-        
+        int count = 0;
         //starting calculation
         while(1)
         {
@@ -964,7 +964,7 @@ namespace gfc
             
             
             GMatrix XX = !BTPB*BTPL;
-            
+            count++;
             /*
             cout<<"BTPB"<<endl;
             cout<< BTPB<<endl;
@@ -978,13 +978,15 @@ namespace gfc
             //cout << ~XX;
             //cout << ~X;
             
-            if( fabs(XX[0]-X[0])<0.0001
-               &&fabs(XX[1]-X[1])<0.0001
-               &&fabs(XX[2]-X[2])<0.0001
+            if(
+               (fabs(XX[0]-X[0])<0.001
+               &&fabs(XX[1]-X[1])<0.001
+               &&fabs(XX[2]-X[2])<0.001
                &&fabs(XX[3]-X[3])<0.00001
                &&fabs(XX[4]-X[4])<0.00001
                &&fabs(XX[5]-X[5])<0.00001
-               
+               )
+               || (count >=3)
                )
             {
                 

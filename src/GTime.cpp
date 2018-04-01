@@ -461,6 +461,7 @@ namespace gfc
     double GTime::TDBmTT( GTime TT ,double ut1mutc  , double* geocentricPOS  )
     {
         double tdbmtt = 0.0;
+        
         double date1 =0.0, date2 =0.0;
         double ut = 0.0; // the fraction of one day in ut1
         double elong =0.0;  // the longitude in radians
@@ -471,13 +472,13 @@ namespace gfc
             
         }
         
-        GTime tai = GTime::TT2TAI(TT);
-        GTime utc = GTime::TAI2UTC(tai);
-        GTime ut1 = GTime::UTC2UT1(utc, ut1mutc);
+        //GTime tai = GTime::TT2TAI(TT);
+        //GTime utc = GTime::TAI2UTC(tai);
+        //GTime ut1 = GTime::UTC2UT1(utc, ut1mutc);
         TimeSystem ts;
         long mjd=0, sod =0;
         double fsod = 0;
-        ut1.GetData(ts, mjd, sod, fsod);
+       // ut1.GetData(ts, mjd, sod, fsod);
         
         u = (sod + fsod)/86400.0;
         

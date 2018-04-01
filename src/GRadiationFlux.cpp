@@ -911,14 +911,16 @@ namespace gfc
 //         + 2.0*ceres_earth_rad * (ceres_earth_rad - dis_satpos) )/r2;
 //
         // get this formular according to the integral
-        double scale_factor_lw = 2.0*( 1.0-std::sqrt(satpos_ecef.norm2() - ceres_earth_rad2) / satpos_ecef.norm() );
+        //double scale_factor_lw = 2.0*( 1.0-std::sqrt(satpos_ecef.norm2() - ceres_earth_rad2) / satpos_ecef.norm() );
+        
+        double scale_factor_lw = ceres_earth_rad2/satpos_ecef.norm2();
         double scale_factor_sw = scale_factor_lw;
         
         fluxdata ecef_flux;
         
         //should use another scale_factor for shortwave,because the position of sun should be considered
-        GVector psun = normalise(sunpos_ecef);
-        GVector psat = normalise(satpos_ecef);
+        //GVector psun = normalise(sunpos_ecef);
+        //GVector psat = normalise(satpos_ecef);
         
         //double gamma = acos(dotproduct(psun, psat)/psun.norm()/psat.norm()); // (0,pi/2)
         //if( gamma > pi/2.0 ) gamma = gamma - pi/2.0;
@@ -954,8 +956,21 @@ namespace gfc
         ecef_flux.m_shortwave = scale_factor_sw* avg_earth_flux_sw;
         
         // Apply additional scaling to the shortwave flux based on sun position:
+        double test = dotproduct(normalise(sunpos_ecef), normalise(satpos_ecef));
+        if(test <= 0.0) // when the satellite is blocked by the earth, the atmospheric effect will provide some shortwave radiation
+        {
+            double factor = 0.0;
+            ecef_flux.m_shortwave *= factor;
+        }
+        else
+        {
+            ecef_flux.m_shortwave *= test;
+        }
+        
+        /*
         ecef_flux.m_shortwave *=
         (0.5 * dotproduct(normalise(sunpos_ecef), normalise(satpos_ecef)) + 0.5);
+        */
         
         ecef_flux.m_dir = normalise(satpos_ecef);
         
@@ -1223,7 +1238,7 @@ namespace gfc
             
             double cos_theta = ( r2 - Re2 - r_minus_p_mag2 )/(2.0*Re*r_minus_p_mag);
             
-            //reference: solano thesis
+            //reference: solano thesis, Knocke's PhD thesis
             coef = vis_triangles[i].area * cos_theta /( pi*r_minus_p_mag2 );
             
             ecef_flux.m_longwave = vis_triangles[i].longwave*coef;

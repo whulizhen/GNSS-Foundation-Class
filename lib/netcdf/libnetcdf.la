@@ -5,10 +5,10 @@
 # It is necessary for linking the library.
 
 # The name that we can dlopen(3).
-dlname='libnetcdf.11.dylib'
+dlname='libnetcdf.13.dylib'
 
 # Names of this library.
-library_names='libnetcdf.11.dylib libnetcdf.dylib'
+library_names='libnetcdf.13.dylib libnetcdf.dylib'
 
 # The name of the static archive.
 old_library='libnetcdf.a'
@@ -23,9 +23,9 @@ dependency_libs=' -lm -lz -lcurl'
 weak_library_names=''
 
 # Version information for libnetcdf.
-current=11
-age=0
-revision=0
+current=14
+age=1
+revision=1
 
 # Is this an already installed library?
 installed=yes
@@ -38,4 +38,4 @@ dlopen=''
 dlpreopen=''
 
 # Directory that this library needs to be installed in:
-libdir='/usr/lib/lib'
+libdir='/lib'

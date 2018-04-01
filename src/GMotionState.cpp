@@ -98,33 +98,10 @@ namespace gfc
             eps = acos( dotproduct( sat_sun_eci , -satpos_eci)/dis_sat/dis_sat_sun );
             GVector sunpos_u_eci = normalise( GSpaceEnv::planetPos_eci[GJPLEPH::SUN] );
             
-            //double shadowfactor = 1.0;
-            //shadow_factor = shadowFactor(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
-            //shadow_facor = 1.0;
-            //GTime gpst = GTime::UTC2GPST(epoch_utc);
-            //printf("%s %6.3f %6.3f ",GTime::GTime2CivilTime(gpst).TimeString().c_str(),beta*180.0/3.14159265357,eps*180.0/3.14159265357);
             
-            //double testShadow = GSpaceCraftAttitude::eclipse( GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef );
-            //shadow_factor = shadowFactor(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
-           
-            
-            
-            //shadow_factor = shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+            //shadow_factor = shadowFactor_SECM(false,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
             shadow_factor = myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
             
-//            double testshadow = shadowFunction(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
-//            
-//            if(shadow_factor < 1.0)
-//            {
-//               printf("%s %.6f %.6f\n",GTime::GTime2CivilTime(GTime::UTC2GPST(epoch_utc)).TimeString().c_str(),shadow_factor, testshadow);
-//            }
-            
-            //shadow_factor = 1.0;
-            
-            
-            //shadow_detector(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
-            
-           
             
             //printf("%.6f %.6f %.6f %.6f %.6f %.6f\n",satpos_ecef.x,satpos_ecef.y,satpos_ecef.z,
             //       GSpaceEnv::planetPos_ecef[GJPLEPH::SUN].x,
@@ -228,33 +205,13 @@ namespace gfc
             
             dis_factor = (GCONST("AU")/dis_sat_sun)*(GCONST("AU")/dis_sat_sun);
             
-            // test the eclipse state first,then the attitude
-            //double shadowfactor = 1.0;
-            // shadow_factor = shadowFactor(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
-            //shadow_factor = shadowFunction(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
-            
-            //shadow_factor = 1.0;
-            
-            
-            //shadow_factor = shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+            //shadow_factor = shadowFactor_SECM(false,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
             shadow_factor = myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
             
-//            double testshadow = shadowFunction(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
-//            
-//            if(shadow_factor <1.0)
-//            {
-//                printf("%s %.6f %.6f\n",GTime::GTime2CivilTime(GTime::UTC2GPST(epoch_utc)).TimeString().c_str(),shadow_factor, testshadow);
-//            }
-            
-            //shadow_factor = 1.0;
-            
-            
-            //shadow_detector(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
-            
-    //printf("%s %6.3f ",GTime::GTime2CivilTime(GTime::UTC2GPST(epoch_utc)).TimeString().c_str(),shadow_factor);
-            
-            
-            //printf("%10.8f\n",shadowfactor);
+            if(shadow_factor < 0.0 || shadow_factor > 1.0)
+            {
+                int testc = 0;
+            }
             
             //update attitude, always use ECI to update the attitude
             //shadow_facor = 1.0;
@@ -426,23 +383,22 @@ namespace gfc
         double zz = XSat.z * XSat.z;
         GVector n = crossproduct(XSat, sat_sun);
         
-        // If M is a matrix [[q,0,0],[0,q,0],[0,0,p]]
-        // A = M * M / p^2
-        // B = M / sqrt(p * q)
-        double rTAr = xxyy * q_p2 + zz;
-        double rTAs = (XSat.x * sat_sun.x + XSat.y * sat_sun.y) * q_p2 + (XSat.z * sat_sun.z);
-        double Br_cross_Bs_sqr = (n.x * n.x + n.y * n.y) + (n.z * n.z) * q_p2;
-        
-        // The discriminant of a quadratic used to solve for the linear combination
-        // of rso and sun vectors that give the Earth edge vector.
-        double disc = std::sqrt(((xxyy - p2) * q2 + zz * p2) / Br_cross_Bs_sqr);
-        
-        GVector edge = ((q2 - rTAs * disc) / rTAr - 1.0) * XSat + disc * sat_sun;
-        
-        GVector rr = edge + XSat;
-        
         if(on == true)
         {
+            // If M is a matrix [[q,0,0],[0,q,0],[0,0,p]]
+            // A = M * M / p^2
+            // B = M / sqrt(p * q)
+            double rTAr = xxyy * q_p2 + zz;
+            double rTAs = (XSat.x * sat_sun.x + XSat.y * sat_sun.y) * q_p2 + (XSat.z * sat_sun.z);
+            double Br_cross_Bs_sqr = (n.x * n.x + n.y * n.y) + (n.z * n.z) * q_p2;
+            
+            // The discriminant of a quadratic used to solve for the linear combination
+            // of rso and sun vectors that give the Earth edge vector.
+            double disc = std::sqrt(((xxyy - p2) * q2 + zz * p2) / Br_cross_Bs_sqr);
+            
+            GVector edge = ((q2 - rTAs * disc) / rTAr - 1.0) * XSat + disc * sat_sun;
+            
+            GVector rr = edge + XSat;
             //replace the radius of earth by the corrected rr.norm()
             rad_Earth = rr.norm();
         }
@@ -1229,13 +1185,14 @@ namespace gfc
     {
         double factor = 1.0;
        
-        double a = 6378.137; //km
-        double b = 6356.7523142; //km  6356.7523142
+        //double a = 6378.137; //km
+        //double b = 6356.7523142; //km  6356.7523142
         
-        //double a = 6371.0; //km
-        //double b = 6371.0; //km  6356.7523142
+        // for sphere test
+        double a = 6371.0; //km
+        double b = 6371.0; //km  6356.7523142
         
-        double hgt_atm = 0.0; // the hight of atmosphere
+        double hgt_atm = 50.0; // the hight of atmosphere
         
         //considering atmosphere
         double a_atm = a + hgt_atm; //km
@@ -1245,7 +1202,7 @@ namespace gfc
         int state1 = -1, state2 =-1;
         
         double EC_intersection1[2]={0.0},EC_intersection2[2]={0.0}, EC[2]={0.0};
-
+        
         double x1 =0.0, x2 =0.0, dis0 =0.0, dis1 = 0.0, dis2 = 0.0, thickness;
         double r_sun = 0.0;
         
@@ -1278,6 +1235,11 @@ namespace gfc
             
             double mu1 = 0.15;  // 大气层辐射通过系数, distance = 0
             double mu2 = 0.95;  // distance = 1;
+            
+            //double mu1 = 0.3;  // 大气层辐射通过系数, distance = 0
+            //double mu2 = 1.0;  // distance = 1;
+            
+            
             
             // so the linear model would be y = 0.6x + 0.3
             double a_exp = mu1;
@@ -1370,10 +1332,12 @@ namespace gfc
                 factor = (Area_earth*coeff )/Area_solar;
             }
             
-            // partly in the earth and atmosphere
+            // totally in the earth's shadow, umbra
+            // in umbra, the CERES data will capture the atmosphere effect
             if( state2 == -1  )
             {
                 factor = 0.0;
+                //printf("cccc\n");
             }
             
             // the sun is very big, bigger than the atmosphere thickness

@@ -93,7 +93,7 @@ namespace gfc
             
             
             eph.SetUnit(true);
-            eph.setEpoch(epoch_utc); ///here should be in TDB
+            //eph.setEpoch(epoch_utc); ///here should be in TDB
             
             // the maximum error is 2 us for this transformation of TT to TDB
             double tdbmtt = GTime::TDBmTT( tt ,eop.getUT1mUTC() , NULL  );

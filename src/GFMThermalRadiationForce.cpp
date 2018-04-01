@@ -166,12 +166,12 @@ namespace gfc
          // the flux in normal, the solar panel normal is always in front side
          double front_flux =0.0, back_flux = 0.0;
         
-        //get the flux on backside and front side
+        //get the flux on backside and front side, only the front side can generate electricity power
          double cos_theta_earth_flux_l = dotproduct(spacecraft->getStatePointer()->attitude_eci.phat, earthflux.totalFlux_lw ) ;
-         if( cos_theta_earth_flux_l <= 0.0 ) // front side longwave
-         {
+        if( cos_theta_earth_flux_l <= 0.0 ) // front side longwave
+        {
              front_flux += -cos_theta_earth_flux_l;
-         }
+        }
         else
         {
              back_flux += cos_theta_earth_flux_l;
@@ -202,6 +202,9 @@ namespace gfc
         // only the front side of solar panel is used to collect energy
         double power_draw = spacecraft->getSpaceCraftGemotry()->m_solarPanelPowerDraw;
         
+        // The efficiency of the solar cells should be considered
+        double efficiency = 0.2;
+        
         if( front_flux <= spacecraft->getSpaceCraftGemotry()->m_solarPanelPowerDraw )
         {
             power_draw = front_flux;
@@ -210,6 +213,7 @@ namespace gfc
         //front_flux = 1360.0;
         //back_flux = 0.0;
         double c = GCONST("CLIGHT");
+        
         getTemperatures(front_flux, back_flux, power_draw, spacecraft->getSpaceCraftGemotry());
         
         

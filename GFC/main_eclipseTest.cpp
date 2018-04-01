@@ -46,6 +46,8 @@
 
 #include "GQuaternion.hpp"
 
+//#include "GEarthRadiationModel.h"
+
 using namespace gfc;
 
 
@@ -163,57 +165,8 @@ void loadGRACE_acc_sca(GString filename, GSpaceCraft& mysatA, GSpaceCraft& mysat
 int main(int argc, char* argv[])
 {
    
-    
-    
-    //sp3/ilrsb.orb.lageos2.160416.v35.sp3   sp3/gfz.orb.lageos2.160416.v35.sp3
-    
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17860.sp3"); // wum18000.sp3,96,2014,4,6
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17861.sp3"); // wum18000.sp3,97
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17862.sp3"); // wum18000.sp3,98
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17863.sp3"); // wum18000.sp3,99
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17864.sp3"); // wum18000.sp3,100
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17865.sp3"); // wum18000.sp3,101
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17866.sp3"); // wum18000.sp3,101
-    //
-    //
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17870.sp3"); // wum18000.sp3,96,2014,4,6
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17871.sp3"); // wum18000.sp3,97
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17872.sp3"); // wum18000.sp3,98
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17873.sp3"); // wum18000.sp3,99
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17874.sp3"); // wum18000.sp3,100
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17875.sp3"); // wum18000.sp3,101
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17876.sp3"); // wum18000.sp3,102
-    //
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17880.sp3"); // wum18000.sp3,103
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17881.sp3"); // wum18000.sp3,104
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17882.sp3"); // wum18000.sp3,105
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17883.sp3");
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17884.sp3");
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17885.sp3");
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17886.sp3");
-    //
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17890.sp3");
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17891.sp3");
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17892.sp3");
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17893.sp3");
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17894.sp3");
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17895.sp3");
-    //  GSpaceCraftMgr::loadPreciseEphemeris("sp3/wum17896.sp3");
-    
-    
-    // choose a spacecraft, prn G11, svn46
-    //these are for the gps test ()
-    //   GSpaceCraftMgr::loadPreciseEphemeris("sp3/cod19142.eph");
-    //   GSpaceCraftMgr::loadPreciseEphemeris("sp3/cod19143.eph");
-    //   GSpaceCraftMgr::loadPreciseEphemeris("sp3/cod19144.eph");
-    //   GSpaceCraftMgr::loadPreciseEphemeris("sp3/cod19145.eph");
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/cod19146.eph");
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/cod19150.eph");
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/cod19151.eph");
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/cod19152.eph");
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/cod19153.eph");
-    //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/cod19154.eph");
-    //
+    //GEarthRadiationModel EarthRadiationModel;
+    //EarthRadiationModel.createFluxModel();
     
     //for galileo(ecllipse season)
     // GSpaceCraftMgr::loadPreciseEphemeris(sp3dir+"com18264.sp3");
@@ -237,49 +190,15 @@ int main(int argc, char* argv[])
     //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18332.sp3");
     //    GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18333.sp3");
     
-    /*
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18334.sp3"); // 226
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18335.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18336.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18340.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18341.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18342.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18343.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18344.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18345.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18346.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18350.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18351.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18352.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18353.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18354.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18355.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18356.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18360.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18361.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18362.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18363.sp3");
-     GSpaceCraftMgr::loadPreciseEphemeris("sp3/codsp3-2015/com18364.sp3");
-     */
-    
-    //GSpaceCraftMgr::loadPreciseEphemeris("sp3/com17821.sp3");
-    //GSpaceCraftMgr::loadPreciseEphemeris("sp3/com17822.sp3");
-    //GSpaceCraftMgr::loadPreciseEphemeris("sp3/com17823.sp3");
-    //GSpaceCraftMgr::loadPreciseEphemeris("sp3/com17824.sp3");
-    
-    
     //GSpaceCraftMgr::loadUCLEphemeris("sp3/ucl_svn46_01mar04.eci");
     
     // testing data
     
     GString sp3dir = "/Users/lizhen/experiments/data/sp3/2015codesp3/";
     
-    argv[1] = "/Users/lizhen/projects/GFC/GFC/gfcsetup.cfg";
-    argv[2] = "ssGRACE";  //satellite system; ssGRACE
-    argv[3] = "1";     //prn
-    
-    
-    
+    argv[1] = "/Users/lizhen/experiments/data/gfcsetup.cfg";
+    argv[2] = "ssGAL";  //satellite system; ssGRACE
+    argv[3] = "11";     //prn
     
     //2015/01/11/18:34:25.000000
     //argv[4] = "2015 1 11 17 34 30.00000000"; // start time in GPST
@@ -300,26 +219,45 @@ int main(int argc, char* argv[])
    // argv[4] = "2008 03 25 01 00 00.000000"; // start time in GPST
    // argv[5] = "2008 03 25 23 00 00.000000"; // end time in GPST
     
-    // one penumbra event
+    // one penumbra event grace
     //argv[4] = "2007 01 20 01 27 20.000000"; // start time in GPST
     //argv[5] = "2007 01 20 01 28 00.000000"; // end time in GPST
     //argv[4] = "2007 01 20 02 03 18.000000"; // start time in GPST
     //argv[5] = "2007 01 20 02 04 05.000000"; // end time in GPST
     
-    // two penumbra event
+    // two penumbra event grace
     //argv[4] = "2007 01 20 06 09 20.000000"; // start time in GPST
     //argv[5] = "2007 01 20 06 10 10.000000"; // end time in GPST
-    argv[4] = "2007 01 20 06 45 15.000000"; // start time in GPST
-    argv[5] = "2007 01 20 06 45 55.000000"; // end time in GPST
+    //argv[4] = "2007 01 20 06 45 15.000000"; // start time in GPST
+    //argv[5] = "2007 01 20 06 45 55.000000"; // end time in GPST
     
     
+    //eclipse orbit prediction test
+    //argv[4] = "2015 1 9 23 18 30.00000000"; // start time in GPST
+    //argv[5] = "2015 1 9 23 20 09.00000000"; // start time in GPST
+    
+    //argv[4] = "2015 1 10 00 16 40.00000000"; // start time in GPST
+    //argv[5] = "2015 1 10 00 18 20.00000000"; // end time in GPST
+    
+    //argv[4] = "2015 1 10 14 22 10.00000000"; // start time in GPST
+    //argv[5] = "2015 1 10 14 23 50.00000000"; // end time in GPST
+    
+    
+    argv[4] = "2015 1 11 17 34 30.00000000"; // start time in GPST
+    argv[5] = "2015 1 11 17 36 5.00000000"; // end time in GPST
+    
+    //argv[4] = "2015 1 11 18 33 5.00000000"; // start time in GPST
+    //argv[5] = "2015 1 11 18 34 40.00000000"; // end time in GPST
+    
+    
+    
+    argv[6] = "com18264.sp3,com18265.sp3,com18266.sp3,com18270.sp3,com18271.sp3,com18272.sp3,com18273.sp3,com18274.sp3,com18275.sp3,com18276.sp3,com18280.sp3,com18281.sp3,com18282.sp3,com18283.sp3";
     
     
     
 //    argv[4] = "2016 01 01 01 00 00.000000"; // start time in GPST
 //    argv[5] = "2016 01 01 23 00 30.000000"; // end time in GPST
-    
-    argv[6]="com18264.sp3,com18265.sp3,com18266.sp3,com18270.sp3,com18271.sp3";
+    //argv[6]="com18264.sp3,com18265.sp3,com18266.sp3,com18270.sp3,com18271.sp3";
     
     //argv[6]="sp3/whusp3-2015/wum18253.sp3,sp3/whusp3-2015/wum18254.sp3,sp3/whusp3-2015/wum18255.sp3,sp3/whusp3-2015/wum18256.sp3,sp3/whusp3-2015/wum18260.sp3";
     
@@ -335,12 +273,6 @@ int main(int argc, char* argv[])
     /*
     argv[6] = "sp3/codsp3-2015/com18342.sp3,sp3/codsp3-2015/com18343.sp3,sp3/codsp3-2015/com18344.sp3,sp3/codsp3-2015/com18345.sp3,sp3/codsp3-2015/com18346.sp3,sp3/codsp3-2015/com18350.sp3,sp3/codsp3-2015/com18351.sp3,sp3/codsp3-2015/com18352.sp3,sp3/codsp3-2015/com18353.sp3,sp3/codsp3-2015/com18354.sp3,sp3/codsp3-2015/com18355.sp3";
     */
-   
-     
-     
-     
-    //
-   
     
     double interval = atof(argv[7]);
     
@@ -372,18 +304,18 @@ int main(int argc, char* argv[])
     std::vector<GString> sp3file = sp3filelist.split(',');
     
     
-    GSpaceCraftMgr::loadGRACEEphemeris("/Users/lizhen/experiments/data/sp3/GRACE/nav_0120.data");
+    //GSpaceCraftMgr::loadGRACEEphemeris("/Users/lizhen/experiments/data/sp3/GRACE/nav_0120.data");
+    
     for(int i = 0 ; i< sp3file.size(); i++ )
     {
-        //GSpaceCraftMgr::loadPreciseEphemeris(sp3dir + sp3file[i]);
+        GSpaceCraftMgr::loadPreciseEphemeris(sp3dir + sp3file[i]);
     }
-    
     
     GSensorID myid(satsys, satprn); // C08  C06 and C14 , G11, E11(IOV101)
     GSpaceCraft& mysat = GSpaceCraftMgr::gSpacecraft[myid.getIDString()];
     
-    GSensorID myidB("ssGRACE", 2); // C08  C06 and C14 , G11, E11(IOV101)
-    GSpaceCraft& mysatB = GSpaceCraftMgr::gSpacecraft[myidB.getIDString()];
+    //GSensorID myidB("ssGRACE", 2); // C08  C06 and C14 , G11, E11(IOV101)
+    //GSpaceCraft& mysatB = GSpaceCraftMgr::gSpacecraft[myidB.getIDString()];
     
     
     
@@ -436,7 +368,9 @@ int main(int argc, char* argv[])
     //C14
     //GKeplerianElements mykpe(27905.3627291815599456,0.00156609722616517493127,0.956695310707969204244,3.56007288522406373232,3.54991651616790226953,4.91337390378707183913);
     GKeplerianElements
-    mykpe(6838.48265785065597999,0.00303136072481130849909,1.55413552698389439467,1.52503752498879021184,1.10049729087647997993,3.91570627917123768803);
+mykpe(6838.48265785065597999,0.00303136072481130849909,1.55413552698389439467,1.52503752498879021184,1.10049729087647997993,3.91570627917123768803);
+    
+    double shadow_factor = 0.0;
     
     while( 1 )
     {
@@ -454,7 +388,8 @@ int main(int argc, char* argv[])
         mysat.getEphValue_test(epoch_gps).getPV(mp_ecef,mv_ecef);
         mysat.getStatePointer()->updateState_ecef(epoch_utc, mp_ecef, mv_ecef);
         
-        
+        //get the shadow function from motion state
+       shadow_factor = mysat.getStatePointer()->shadow_factor;
 //
 //        printf("%.9E %.9E %.9E %.9E %.9E %.9E\n", double( mysat.getStatePointer()->keplerianElement.m_sma),
 //                                            double (mysat.getStatePointer()->keplerianElement.m_ecc),
@@ -478,7 +413,7 @@ int main(int argc, char* argv[])
         
        
         //printf("%s ",GTime::GTime2CivilTime(epoch_gps).TimeString().c_str());
-        double shadow_factor = GMotionState::myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN] ,mysat.getStatePointer()->satpos_eci);
+        //double shadow_factor = GMotionState::myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN] ,mysat.getStatePointer()->satpos_eci);
         
         //double shadow_factor = mysat.getStatePointer()->attitude_eci.eclipse(mysat.getStatePointer()->satpos_eci,GSpaceEnv::planetPos_eci[GJPLEPH::SUN]);
         
