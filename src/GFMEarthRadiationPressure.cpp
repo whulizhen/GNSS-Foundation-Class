@@ -49,60 +49,60 @@ namespace gfc
         double specularity = 0.0, reflectivity = 0.0;
         double panel_area = space_craft_geometry->solarArray[0].area;
         
-        for( int i = 0 ; i< earthRadiationflux->m_flux.size(); i++ )
-        {
-            double t = dotproduct(earthRadiationflux->m_flux[i].m_dir, svAttitude->phat);
-            
-            int test = 0;
-            GVector f_short, f_long;
-            GVector surfaceNomal;
-            
-            if( t < 0.0 )  // foreside
-            {
-                specularity = space_craft_geometry->solarArray[0].specularity;
-                
-                reflectivity = space_craft_geometry->solarArray[0].reflectivity;
-                
-                surfaceNomal = svAttitude->phat;
-                
-                //get force first
-               // f = GRadiationFlux::radiationForce(surfaceNomal, earthRadiationflux->m_flux[i].m_dir,earthRadiationflux->m_flux[i].m_shortwave,
-               //                                            panel_area, specularity, reflectivity);
-                test = 1;
-            }
-            else //backside
-            {
-                specularity = space_craft_geometry->solarArray[1].specularity;
-                
-                reflectivity = space_craft_geometry->solarArray[1].reflectivity;
-                surfaceNomal = -svAttitude->phat;
-                //get force first
-                //f = GRadiationFlux::radiationForce(surfaceNomal , earthRadiationflux->m_flux[i],
-                //                                           panel_area, specularity, reflectivity);
-                test = 0;
-            }
-            
-            
-            f_short = GRadiationFlux::radiationForce(surfaceNomal,
-                                                     earthRadiationflux->m_flux[i].m_dir,
-                                                     earthRadiationflux->m_flux[i].m_shortwave,
-                                                     panel_area, specularity, reflectivity);
-            
-            f_long = GRadiationFlux::radiationForce(surfaceNomal,
-                                                    earthRadiationflux->m_flux[i].m_dir,
-                                                    earthRadiationflux->m_flux[i].m_longwave,
-                                                    panel_area, specularity, reflectivity);
-            
-            //printf("%d\n",test);
-            
+        // the direction of radiation flux in ECI
+        GVector flux_dir = normalise(earthRadiationflux->totalFlux_lw);
         
-            //get acceleration
-            //a/= space_craft_geometry->m_mass;
-            // the vector addition
-            force += f_short;
-            force += f_long;
+        double t = dotproduct(flux_dir, svAttitude->phat);
+        
+        int test = 0;
+        GVector f_short, f_long;
+        GVector surfaceNomal;
+        
+        if( t < 0.0 )  // foreside
+        {
+            specularity = space_craft_geometry->solarArray[0].specularity;
             
+            reflectivity = space_craft_geometry->solarArray[0].reflectivity;
+            
+            surfaceNomal = svAttitude->phat;
+            
+            //get force first
+            // f = GRadiationFlux::radiationForce(surfaceNomal, earthRadiationflux->m_flux[i].m_dir,earthRadiationflux->m_flux[i].m_shortwave,
+            //                                            panel_area, specularity, reflectivity);
+            test = 1;
         }
+        else //backside
+        {
+            specularity = space_craft_geometry->solarArray[1].specularity;
+            
+            reflectivity = space_craft_geometry->solarArray[1].reflectivity;
+            surfaceNomal = -svAttitude->phat;
+            //get force first
+            //f = GRadiationFlux::radiationForce(surfaceNomal , earthRadiationflux->m_flux[i],
+            //                                           panel_area, specularity, reflectivity);
+            test = 0;
+        }
+        
+        
+        f_short = GRadiationFlux::radiationForce(surfaceNomal,
+                                                 flux_dir,
+                                                 earthRadiationflux->totalFlux_sw.norm(),
+                                                 panel_area, specularity, reflectivity);
+        
+        f_long = GRadiationFlux::radiationForce(surfaceNomal,
+                                                flux_dir,
+                                                earthRadiationflux->totalFlux_lw.norm(),
+                                                panel_area, specularity, reflectivity);
+        
+        //printf("%d\n",test);
+        
+        
+        //get acceleration
+        //a/= space_craft_geometry->m_mass;
+        // the vector addition
+        force += f_short;
+        force += f_long;
+    
         
         return force;
         
@@ -110,7 +110,7 @@ namespace gfc
     
     GVector GFMEarthRadiationPressure::erp_bus_simple( GEarthRadiationFlux& earthRadiationflux ,GSpaceCraftAttitude* svAttitude, GSpaceCraftModel* space_craft_geometry )
     {
-        
+        // attitude is in ECI
         GVector xhat = svAttitude->xhat, yhat=svAttitude->yhat, zhat=svAttitude->zhat;
         
         GVector acc;
@@ -130,75 +130,133 @@ namespace gfc
         refY = space_craft_geometry->busY[0].reflectivity;
         refZ = space_craft_geometry->busZ[0].reflectivity;
         
+        fluxdata radiation;
+        radiation.m_dir = normalise(earthRadiationflux.totalFlux_lw); // in ECI
+        radiation.m_shortwave = earthRadiationflux.totalFlux_sw.norm(); // in ECI
+        radiation.m_longwave = earthRadiationflux.totalFlux_lw.norm();
         
-        for( int i = 0 ; i< earthRadiationflux.m_flux.size(); i++ )
+        GVector ax_s,ax_l,ay_s,ay_l,az_s,az_l;
         
+        double tx = dotproduct(radiation.m_dir, svAttitude->xhat );
+        double ty = dotproduct(radiation.m_dir, svAttitude->yhat );
+        double tz = dotproduct(radiation.m_dir, svAttitude->zhat );
+        
+        if( tx > 0.0 )  // the angle between flux and surface normal is less than 90, we want greater than 90
         {
-            
-            GVector ax_s,ax_l,ay_s,ay_l,az_s,az_l;
-            
-            fluxdata& radiation = earthRadiationflux.m_flux[i];;
-            
-            
-            //radiation.m_dir = normalise(earthRadiationflux.totalFlux_lw);
-            //radiation.m_shortwave = earthRadiationflux.totalFlux_sw.norm();
-            //radiation.m_longwave = earthRadiationflux.totalFlux_lw.norm();
-            
-            double tx = dotproduct(radiation.m_dir, svAttitude->xhat );
-            double ty = dotproduct(radiation.m_dir, svAttitude->yhat );
-            double tz = dotproduct(radiation.m_dir, svAttitude->zhat );
-            
-            if( tx > 0.0 )  // the angle between flux and surface normal is less than 90, we want greater than 90
-            {
-                xhat = -xhat;
-                speX = space_craft_geometry->busX[1].specularity;
-                refX = space_craft_geometry->busX[1].reflectivity;
-            }
-            if( ty > 0.0 )
-            {
-                yhat = -yhat;
-                speY = space_craft_geometry->busY[1].specularity;
-                refY = space_craft_geometry->busY[1].reflectivity;
-            }
-            if(tz > 0.0 )
-            {
-                zhat = -zhat;
-                speZ = space_craft_geometry->busZ[1].specularity;
-                refZ = space_craft_geometry->busZ[1].reflectivity;
-            }
-            
-             ax_s = GRadiationFlux::radiationForce(xhat, radiation.m_dir, radiation.m_shortwave,
-                                                       areaX,
-                                                       speX,
-                                                       refX);
-             ax_l = GRadiationFlux::radiationForce(xhat, radiation.m_dir, radiation.m_longwave,
-                                                  areaX,
-                                                  speX,
-                                                  refX);
-            
-            
-             ay_s = GRadiationFlux::radiationForce(yhat, radiation.m_dir, radiation.m_shortwave,
-                                                       areaY,
-                                                       speY,
-                                                       refY);
-            
-            ay_l = GRadiationFlux::radiationForce(yhat, radiation.m_dir, radiation.m_longwave,
-                                                  areaY,
-                                                  speY,
-                                                  refY);
-            
-             az_s = GRadiationFlux::radiationForce(zhat, radiation.m_dir, radiation.m_shortwave,
-                                                       areaZ,
-                                                       speZ,
-                                                       refZ);
-            az_l = GRadiationFlux::radiationForce(zhat, radiation.m_dir, radiation.m_longwave,
-                                                  areaZ,
-                                                  speZ,
-                                                  refZ);
-            
-            acc += (ax_s + ax_l + ay_s + ay_l + az_s + az_l );
-           
+            xhat = -xhat;
+            speX = space_craft_geometry->busX[1].specularity;
+            refX = space_craft_geometry->busX[1].reflectivity;
         }
+        if( ty > 0.0 )
+        {
+            yhat = -yhat;
+            speY = space_craft_geometry->busY[1].specularity;
+            refY = space_craft_geometry->busY[1].reflectivity;
+        }
+        if(tz > 0.0 )
+        {
+            zhat = -zhat;
+            speZ = space_craft_geometry->busZ[1].specularity;
+            refZ = space_craft_geometry->busZ[1].reflectivity;
+        }
+        
+        ax_s = GRadiationFlux::radiationForce(xhat, radiation.m_dir, radiation.m_shortwave,
+                                              areaX,
+                                              speX,
+                                              refX);
+        ax_l = GRadiationFlux::radiationForce(xhat, radiation.m_dir, radiation.m_longwave,
+                                              areaX,
+                                              speX,
+                                              refX);
+        
+        ay_s = GRadiationFlux::radiationForce(yhat, radiation.m_dir, radiation.m_shortwave,
+                                              areaY,
+                                              speY,
+                                              refY);
+        
+        ay_l = GRadiationFlux::radiationForce(yhat, radiation.m_dir, radiation.m_longwave,
+                                              areaY,
+                                              speY,
+                                              refY);
+        
+        az_s = GRadiationFlux::radiationForce(zhat, radiation.m_dir, radiation.m_shortwave,
+                                              areaZ,
+                                              speZ,
+                                              refZ);
+        az_l = GRadiationFlux::radiationForce(zhat, radiation.m_dir, radiation.m_longwave,
+                                              areaZ,
+                                              speZ,
+                                              refZ);
+        
+        acc += (ax_s + ax_l + ay_s + ay_l + az_s + az_l );
+        
+//        for( int i = 0 ; i< earthRadiationflux.m_flux.size(); i++ )
+//        {
+//
+//            GVector ax_s,ax_l,ay_s,ay_l,az_s,az_l;
+//
+//            fluxdata& radiation = earthRadiationflux.m_flux[i];;
+//
+//
+//            //radiation.m_dir = normalise(earthRadiationflux.totalFlux_lw);
+//            //radiation.m_shortwave = earthRadiationflux.totalFlux_sw.norm();
+//            //radiation.m_longwave = earthRadiationflux.totalFlux_lw.norm();
+//
+//            double tx = dotproduct(radiation.m_dir, svAttitude->xhat );
+//            double ty = dotproduct(radiation.m_dir, svAttitude->yhat );
+//            double tz = dotproduct(radiation.m_dir, svAttitude->zhat );
+//
+//            if( tx > 0.0 )  // the angle between flux and surface normal is less than 90, we want greater than 90
+//            {
+//                xhat = -xhat;
+//                speX = space_craft_geometry->busX[1].specularity;
+//                refX = space_craft_geometry->busX[1].reflectivity;
+//            }
+//            if( ty > 0.0 )
+//            {
+//                yhat = -yhat;
+//                speY = space_craft_geometry->busY[1].specularity;
+//                refY = space_craft_geometry->busY[1].reflectivity;
+//            }
+//            if(tz > 0.0 )
+//            {
+//                zhat = -zhat;
+//                speZ = space_craft_geometry->busZ[1].specularity;
+//                refZ = space_craft_geometry->busZ[1].reflectivity;
+//            }
+//
+//             ax_s = GRadiationFlux::radiationForce(xhat, radiation.m_dir, radiation.m_shortwave,
+//                                                       areaX,
+//                                                       speX,
+//                                                       refX);
+//             ax_l = GRadiationFlux::radiationForce(xhat, radiation.m_dir, radiation.m_longwave,
+//                                                  areaX,
+//                                                  speX,
+//                                                  refX);
+//
+//
+//             ay_s = GRadiationFlux::radiationForce(yhat, radiation.m_dir, radiation.m_shortwave,
+//                                                       areaY,
+//                                                       speY,
+//                                                       refY);
+//
+//            ay_l = GRadiationFlux::radiationForce(yhat, radiation.m_dir, radiation.m_longwave,
+//                                                  areaY,
+//                                                  speY,
+//                                                  refY);
+//
+//             az_s = GRadiationFlux::radiationForce(zhat, radiation.m_dir, radiation.m_shortwave,
+//                                                       areaZ,
+//                                                       speZ,
+//                                                       refZ);
+//            az_l = GRadiationFlux::radiationForce(zhat, radiation.m_dir, radiation.m_longwave,
+//                                                  areaZ,
+//                                                  speZ,
+//                                                  refZ);
+//
+//            acc += (ax_s + ax_l + ay_s + ay_l + az_s + az_l );
+//
+//        }
         
         return acc;
     }
@@ -211,51 +269,39 @@ namespace gfc
         double R2D = GCONST("R2D");
         // make sure that the earthRadiationFlux is in ECI, NOT ECEF
         GVector body_frame;
-        for( int i = 0 ; i< earthRadiationflux.m_flux.size(); i++ )
-        {
-            
-            double W = earthRadiationflux.m_flux[i].m_longwave + earthRadiationflux.m_flux[i].m_shortwave;
-            
-            // the symmetric matrix, transfer from ECI to BFS
-            body_frame.x = - dotproduct(svAttitude->xhat, earthRadiationflux.m_flux[i].m_dir);
-            
-            body_frame.y = - dotproduct(svAttitude->yhat, earthRadiationflux.m_flux[i].m_dir);
-            
-            body_frame.z = - dotproduct(svAttitude->zhat, earthRadiationflux.m_flux[i].m_dir);
-            
-            body_frame.normalise();
-            
-            double lambda = atan2(body_frame.y, body_frame.x )*R2D;
-            //-pi to pi
-            double phi = 0.0;  // -pi/2 to pi/2
-            
-            if( fabs(body_frame.z - 1.0)<1.0E-14 )
-            {
-                phi = 90.0;
-            }
-            else if(fabs(body_frame.z + 1.0)<1.0E-14)
-            {
-                phi = -90.0;
-            }
-            else
-            {
-                phi = R2D * std::asin(body_frame.z);
-            }
-            
-            force_bfs += GRadiationGridMgr::getAcc_grid(space_craft_geometry->m_srpgriddata, lambda, phi)*W;  //uint: Newton
-            
-            int testc = 0;
-           
         
+        fluxdata radiation;
+        radiation.m_dir = normalise(earthRadiationflux.totalFlux_sw) ;
+        radiation.m_longwave = earthRadiationflux.totalFlux_lw.norm();
+        radiation.m_shortwave = earthRadiationflux.totalFlux_sw.norm();
+        
+        body_frame.x = - dotproduct(svAttitude->xhat, radiation.m_dir);
+        body_frame.y = - dotproduct(svAttitude->yhat, radiation.m_dir);
+        body_frame.z = - dotproduct(svAttitude->zhat, radiation.m_dir);
+        body_frame.normalise();
+        
+        double lambda = atan2(body_frame.y, body_frame.x )*R2D;
+        //-pi to pi
+        double phi = 0.0;  // -pi/2 to pi/2
+        
+        if( fabs(body_frame.z - 1.0)<1.0E-14 )
+        {
+            phi = 90.0;
+        }
+        else if(fabs(body_frame.z + 1.0)<1.0E-14)
+        {
+            phi = -90.0;
+        }
+        else
+        {
+            phi = R2D * std::asin(body_frame.z);
         }
         
-         force = force_bfs.x * svAttitude->xhat + force_bfs.y * svAttitude->yhat +force_bfs.z * svAttitude->zhat ;
+        // force in BFS
+        force_bfs += GRadiationGridMgr::getAcc_grid(space_craft_geometry->m_srpgriddata, lambda, phi)*(radiation.m_longwave+radiation.m_shortwave);  //uint: Newton
         
-        //need to transform from BFS to ECI
-        // force is in BFS, transform from bfs to eci
-//        force.x = force_bfs.x*svAttitude->xhat.x + force_bfs.y*svAttitude->yhat.x + force_bfs.z*svAttitude->zhat.x;
-//        force.y = force_bfs.x*svAttitude->xhat.y + force_bfs.y*svAttitude->yhat.y + force_bfs.z*svAttitude->zhat.y;
-//        force.z = force_bfs.x*svAttitude->xhat.z + force_bfs.y*svAttitude->yhat.z + force_bfs.z*svAttitude->zhat.z;
+        // force in ECI
+        force = force_bfs.x * svAttitude->xhat + force_bfs.y * svAttitude->yhat +force_bfs.z * svAttitude->zhat ;
         
         return force;
         
@@ -331,7 +377,7 @@ namespace gfc
         
         // other choice
         //force =  Solano_ERP(statePointer.satpos_eci,statePointer.satvel_eci);
-         
+        //the force is also in ECI
         setForce(force);
     }
     

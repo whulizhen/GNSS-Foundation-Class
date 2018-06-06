@@ -132,7 +132,9 @@ namespace gfc
                 
                 ((GFMSolarRadiationPressureEM *)it->second)->doCompute(spacecraft);
                 
-                GVector t_eci = it->second->getForce()/ spacecraft->getSpaceCraftGemotry()->m_mass;  //m/s^2
+                //GVector t_eci = it->second->getForce()/ spacecraft->getSpaceCraftGemotry()->m_mass;  //m/s^2
+                
+                GVector t_eci = it->second->getForce();  //m/s^2, here force is actually acceleration
                 
                 a_eci += t_eci ;
                 
@@ -292,6 +294,7 @@ namespace gfc
         a_eci += t_eci;
         
         //acceleration must be in ECI, X Y and Z direction respectively.
+        // change acceleration from m/s^2 to km/s^2
         dydx[3] =  a_eci.x/1000.0;
         dydx[4] =  a_eci.y/1000.0;
         dydx[5] =  a_eci.z/1000.0;

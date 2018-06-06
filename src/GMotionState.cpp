@@ -99,8 +99,9 @@ namespace gfc
             GVector sunpos_u_eci = normalise( GSpaceEnv::planetPos_eci[GJPLEPH::SUN] );
             
             
-            //shadow_factor = shadowFactor_SECM(false,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
-            shadow_factor = myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
+            shadow_factor = shadowFactor_SECM(false,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+            // myshadowFactor has bugs
+            //shadow_factor = myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
             
             
             //printf("%.6f %.6f %.6f %.6f %.6f %.6f\n",satpos_ecef.x,satpos_ecef.y,satpos_ecef.z,
@@ -130,10 +131,10 @@ namespace gfc
             //u = keplerianElement.m_argp + keplerianElement.m_tran;
             
             //update attitude
-            if( earthFlux.m_flux.size() > 0 )
-            {
-                earthFlux.m_flux.clear();
-            }
+//            if( earthFlux.m_flux.size() > 0 )
+//            {
+//                earthFlux.m_flux.clear();
+//            }
             
             //clock_t start, end;
             //start = clock();
@@ -141,13 +142,6 @@ namespace gfc
             //update the flux value, which will use the eclipse state  of the satellite
             earthFlux.makeFlux( ct.m_month - 1, GSpaceEnv::planetPos_ecef[GJPLEPH::SUN] , satpos_ecef, dis_sat );
             
-            for( int i = 0 ; i< earthFlux.m_flux.size(); i++ )
-            {
-                GVector t ;
-                GSpaceEnv::eop.ECEF2ECI_pos(earthFlux.m_flux[i].m_dir, t);
-                earthFlux.m_flux[i].m_dir = t;
-            }
-
             //end = clock();
             
             //double time = double(end - start)/CLOCKS_PER_SEC;
@@ -205,8 +199,9 @@ namespace gfc
             
             dis_factor = (GCONST("AU")/dis_sat_sun)*(GCONST("AU")/dis_sat_sun);
             
-            //shadow_factor = shadowFactor_SECM(false,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
-            shadow_factor = myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
+            shadow_factor = shadowFactor_SECM(false,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+            //// myshadowFactor has bugs
+            //shadow_factor = myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
             
             if(shadow_factor < 0.0 || shadow_factor > 1.0)
             {
@@ -246,16 +241,6 @@ namespace gfc
             
             //update the flux value, which will use the eclipse state  of the satellite, with ecef, use ct.m_month
             earthFlux.makeFlux( ct.m_month - 1, GSpaceEnv::planetPos_ecef[GJPLEPH::SUN] , satpos_ecef, dis_sat );
-            
-            //update the flux value, which will use the eclipse state  of the satellite, with eci
-            //earthFlux.makeFlux( ct.m_month - 1, GSpaceEnv::planetPos_eci[GJPLEPH::SUN] , satpos_eci, dis_sat );
-            
-            for( int i = 0 ; i< earthFlux.m_flux.size(); i++ )
-            {
-                GVector t ;
-                GSpaceEnv::eop.ECEF2ECI_pos(earthFlux.m_flux[i].m_dir, t);
-                earthFlux.m_flux[i].m_dir = t;
-            }
             
             solarFlux.makeFlux( GSpaceEnv::tsi*shadow_factor*dis_factor, sat_sunHat_eci, dis_sat_sun);
             
@@ -870,7 +855,7 @@ namespace gfc
             
             if(test > 1.0 && num_of_solution <2)
             {
-                state = -1;
+                state = -1; //umbra
                 return state;
             }
             
@@ -1184,13 +1169,13 @@ namespace gfc
     double GMotionState::myshadowFactor(GVector& sunpos_eci, GVector& satpos_eci)
     {
         double factor = 1.0;
-       
-        //double a = 6378.137; //km
-        //double b = 6356.7523142; //km  6356.7523142
+        
+        double a = 6378.137; //km
+        double b = 6356.7523142; //km  6356.7523142
         
         // for sphere test
-        double a = 6371.0; //km
-        double b = 6371.0; //km  6356.7523142
+       // double a = 6371.0; //km
+       // double b = 6371.0; //km  6356.7523142
         
         double hgt_atm = 50.0; // the hight of atmosphere
         
@@ -1250,7 +1235,7 @@ namespace gfc
             
             Area_solar = 3.14159265357*r_sun*r_sun;
             
-            // the intersection between earth centre --> sun centre line and the solar circle
+            // the intersection between earth centre --> sun centre line and the solar circle, the same side of the solid Earth
             double sun_intersection[2] = {r_sun*EC[0]/sqrt(EC[0]*EC[0] + EC[1]*EC[1] ) , r_sun*EC[1]/sqrt(EC[0]*EC[0] + EC[1]*EC[1] ) };
             
             // the distance from earth centre to the intersection of atmosphere

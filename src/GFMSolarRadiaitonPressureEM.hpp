@@ -54,13 +54,18 @@ namespace gfc
         
     public:
         
+        int type_opt; // the name of the type, 0 for ECOM1, 1 for ECOM2, 2 for DREMT
+        
         GFMSolarRadiationPressureEM();
         ~GFMSolarRadiationPressureEM();
         
         // the reduced ECOM 5 parameters model
         //ref CODE's new solar radiation pressure model for GNSS orbit determination
-        GVector reducedECOM( double* param,double u, double factor );
-        void reducedECOM_dadp(double u, GMatrix& daDYBdp );
+        GVector ECOM1( double* param,double u, double factor );
+        void ECOM1_dadp(double u, double factor, GMatrix& daDYBdp );
+        
+        GVector ECOM2( double* param,double u, double factor );
+        void ECOM2_dadp(double u, double factor, GMatrix& daDYBdp );
         
         
         GVector reducedECOM_XYZ(double* param,double phi, double factor );
@@ -84,8 +89,32 @@ namespace gfc
          factor: the scaling factor
          param: the parameters in this model
         */
-        GVector empXYZ(double* param,double phi, double factor);
-        void empXYZ_dadp(double phi,GMatrix& daXYZdp);
+        GVector DREM(double* param,double phi,double factor);
+        void DREM_dadp(double phi,double factor,GMatrix& daXYZdp);
+        
+        GVector DREMT(double* param,double phi,double factor);
+        void DREMT_dadp(double phi,double factor,GMatrix& daXYZdp);
+        
+        GVector DREM1T(double* param,double phi,double factor);
+        void DREM1T_dadp(double phi,double factor,GMatrix& daXYZdp);
+        
+        GVector DREM2T(double* param,double phi,double factor);
+        void DREM2T_dadp(double phi,double factor,GMatrix& daXYZdp);
+        
+        // combine with DREM2T with ECOM2?
+        GVector DREM3T(double* param,double phi,double eta,double factor);
+        void DREM3T_dadp(double phi,double eta,double factor,GMatrix& daXYZdp);
+        
+        GVector Montenbruck(double* param, double eps, double factor);
+        void Montenbruck_dadp(double eps,double factor,GMatrix& daXYZdp);
+        
+        
+        GVector DREM1(double* param,double phi,double factor);
+        void DREM1_dadp(double phi,double factor,GMatrix& daXYZdp);
+        
+        GVector DREM2(double* param,double phi,double factor);
+        void DREM2_dadp(double phi,double factor,GMatrix& daXYZdp);
+        
         
         GVector empDYB(double* param,double phi, double factor);
         void empDYB_dadp(double phi,GMatrix& daXYZdp);
@@ -96,6 +125,7 @@ namespace gfc
         
         void doCompute( GSpaceCraft* spacecraft );
         
+   
         
         
     }; // end of class GFMSolarRadiaitonPressureEM

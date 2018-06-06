@@ -177,6 +177,8 @@ namespace gfc
         
         res += "eta,"; // the angle of satellite measured from the midnight in orbital plane
         
+        res += "phi,"; // the phi angle used in radiation pressure calculation
+        
         res += "semi-major-axis,eccentricity,inclination,argument_of_perigee,longitude-of-ascending-node,true-anomaly,";
         std::map< GString, GForceModel* >::iterator   it = m_forceManager.m_forceModels.begin();
         for( ;it != m_forceManager.m_forceModels.end(); ++it )
@@ -228,6 +230,7 @@ namespace gfc
              
              + GString(m_spaceCraft->getStatePointer()->attitude_eci.eta*R2D) + ","
              
+             + GString(m_spaceCraft->getStatePointer()->attitude_eci.phi*R2D) + ","
              
              + GString(m_spaceCraft->getStatePointer()->keplerianElement.m_sma) + ","
              + GString(m_spaceCraft->getStatePointer()->keplerianElement.m_ecc) + ","

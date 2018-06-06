@@ -201,6 +201,65 @@ namespace gfc
         m_level = maxLevel;
     }
     
+    //compute the polygon area on spheres
+    // vertices are in CLOCKWISE order, NOT counter-clockwise
+    //[lat,lon]
+    double GEarthRadiationFlux::SphericalPolygonArea(std::vector<double* > vertices, double radius )
+    {
+        double area = 0.0;
+        unsigned long nv = vertices.size();
+        double flat,flon,blat,blon,sum=0.0;
+        double pi = 3.14159265357;
+        double dtr = pi/180.0;
+        for(int iv = 0 ; iv< nv ; iv++)
+        {
+            // the first vertex
+            if(iv == 0)
+            {
+                flat = *vertices[1];
+                flon = *(vertices[1]+1);
+                blat = *(vertices[nv-1]);
+                blon = *(vertices[nv-1]+1);
+            }
+            // the last vertex
+            else if (iv == nv -1)
+            {
+                flat = *vertices[0];
+                flon = *(vertices[0]+1);
+                blat = *(vertices[nv-2]);
+                blon = *(vertices[nv-2]+1);
+            }
+            
+            // in the middle
+            else
+            {
+                flat = *vertices[iv+1];
+                flon = *(vertices[iv+1]+1);
+                blat = *(vertices[iv-1]);
+                blon = *(vertices[iv-1]+1);
+            }
+            
+            double lat = *(vertices[iv]);
+            double lon = *(vertices[iv]+1);
+            
+            double t_f = sin( (flon - lon)*dtr ) * cos( flat*dtr );
+            double c_f = sin( flat*dtr )*cos(lat*dtr) - cos(flat*dtr)*sin(lat*dtr)*cos( (lon-flon)*dtr );
+            
+            double t_b = sin( (blon - lon)*dtr ) * cos( blat*dtr );
+            double c_b = sin( blat*dtr )*cos(lat*dtr) - cos(blat*dtr)*sin(lat*dtr)*cos( (lon-blon)*dtr );
+            
+            double tranlon_f = atan2(t_f, c_f);
+            double tranlon_b = atan2(t_b, c_b);
+            
+            double fvb = tranlon_b - tranlon_f;
+            if(fvb < 0.0 ) fvb += (2*pi);
+            sum += fvb;
+        }
+        
+        area = ( sum - (nv-2)*pi )*radius*radius;
+        
+        return area;
+    }
     
     void GEarthRadiationFlux::readingTriGridFile( gfc::GString filename, std::vector< GEarthRadiationFlux::triGridFlux >&  mydata)
     {
@@ -396,24 +455,28 @@ namespace gfc
         
         //calculate the area of every grid, the area is the same for all months
         
-        GString ellipoidName = "AVERAGE";//"CERES_SPHERE";//"CERES_SPHERE";
-        GEllipsoid myellipsoid = GEllipsoidMgr::GetEllipsoid(ellipoidName);
-        
-        
+        //GString ellipoidName = "AVERAGE";//"CERES_SPHERE";//"CERES_SPHERE";
+        //GEllipsoid myellipsoid = GEllipsoidMgr::GetEllipsoid(ellipoidName);
         
         double perimeter =0.0;
         double area = 0.0;
         double D2R = GCONST("D2R");
         double hgt = 0.0; // 30 km
+        double xyz[3]={0.0};
+        
+        double radius = 6408.137; // in km
+        //double radius = 6371.0;
+        
         //double totalArea = 0.0;
         
         //double total_longwave = 0.0;
         
-        /*
+        
         //first figure out the area for every grid
-        GeodesicExact geod(6371000.0,0.0 );
+        //GeodesicExact geod(6371000.0,0.0 );
         //Alternatively: const Geodesic& geod = Geodesic::WGS84();
-        PolygonAreaExact poly(geod);
+        //PolygonAreaExact poly(geod);
+        
         
         for( int i = 0 ; i< 360 ; i++ )
         {
@@ -426,21 +489,37 @@ namespace gfc
                 double blh[3] = {lat*D2R,lon*D2R,hgt};
                 
                 
-                 myellipsoid.BLH2XYZ(blh,ERPgrid_g[0][i][j].centroid.xyz );
-                 ERPgrid_g[0][i][j].centroid.xyz[0] /= 1000.0;
-                 ERPgrid_g[0][i][j].centroid.xyz[1] /= 1000.0;
-                 ERPgrid_g[0][i][j].centroid.xyz[2] /= 1000.0;
+                double sinb = sin(blh[0]);
+                double sinl = sin(blh[1]);
+                double cosb = cos(blh[0]);
+                double cosl = cos(blh[1]);
+                xyz[0] = (radius + blh[2])*cosb*cosl;
+                xyz[1] = (radius + blh[2])*cosb*sinl;
+                xyz[2] = (blh[2]+ radius)*sinb;
                 
                 
-                poly.AddPoint(lat-0.5, lon-0.5);
-                poly.AddPoint(lat-0.5, lon+0.5);
-                poly.AddPoint(lat+0.5, lon+0.5);
-                poly.AddPoint(lat+0.5, lon-0.5);
+                ERPgrid_g[0][i][j].centroid.xyz[0]= xyz[0];
+                ERPgrid_g[0][i][j].centroid.xyz[1]= xyz[1];
+                ERPgrid_g[0][i][j].centroid.xyz[2]= xyz[2];
                 
-                poly.Compute(false, true, perimeter, area);  // unit: m^2
+                std::vector<double*> cell;
+                double p1[2] = {lat-0.5, lon-0.5};
+                double p2[2] = {lat-0.5, lon+0.5};
+                double p3[2] = {lat+0.5, lon+0.5};
+                double p4[2] = {lat+0.5, lon-0.5};
+                
+                cell.push_back(p4);cell.push_back(p3);cell.push_back(p2);cell.push_back(p1);
+                
+                //poly.AddPoint(lat-0.5, lon-0.5);
+                //poly.AddPoint(lat-0.5, lon+0.5);
+                //poly.AddPoint(lat+0.5, lon+0.5);
+                //poly.AddPoint(lat+0.5, lon-0.5);
+                //poly.Compute(false, true, perimeter, area);  // unit: m^2
+                
+                double area = SphericalPolygonArea(cell, radius);
                 
                 //ceresFlux[i][j].area = area*1.0E-6; // unit: km^2
-                ERPgrid_g[0][i][j].area = area*1.0E-6;
+                ERPgrid_g[0][i][j].area = area;
                 
                 // totalArea += ceresFlux[i][j].area;
                 //ceresFlux[i][j].area = ceresFlux[i][j].area;
@@ -451,7 +530,7 @@ namespace gfc
                 {
                     printf("WARNING: area < 0 \n");
                 }
-                poly.Clear();
+                //poly.Clear();
                 
                 //total_longwave += ceresFlux[i][j].longwave*ceresFlux[i][j].area;
                 
@@ -465,7 +544,7 @@ namespace gfc
         {
             memcpy(ERPgrid_g[i], ERPgrid_g[0], sizeof(GEarthRadiationFlux::ceresGridFlux)*360*180);
         }
-        */
+        
         
         GString datadir= triFluxPath;
         for( int imonth = 0 ; imonth< 12; imonth++ )
@@ -499,9 +578,14 @@ namespace gfc
         {
             point centre = tri.centroid;
             
-            double rsrp = satpos_ecef.x*centre.xyz[0] + satpos_ecef.y*centre.xyz[1] + satpos_ecef.z*centre.xyz[2];
-            double rprp = centre.xyz[0]*centre.xyz[0] + centre.xyz[1]*centre.xyz[1] + centre.xyz[2]*centre.xyz[2];
-            if (rsrp > rprp)
+            GVector satmtri (satpos_ecef.x - centre.xyz[0],satpos_ecef.y - centre.xyz[1],satpos_ecef.z - centre.xyz[2]);
+            
+            //double rsrp = satpos_ecef.x*centre.xyz[0] + satpos_ecef.y*centre.xyz[1] + satpos_ecef.z*centre.xyz[2];
+            //double rprp = centre.xyz[0]*centre.xyz[0] + centre.xyz[1]*centre.xyz[1] + centre.xyz[2]*centre.xyz[2];
+            
+            double dot = satmtri.x * centre.xyz[0] + satmtri.y * centre.xyz[1] + satmtri.z * centre.xyz[2];
+            
+            if (dot >= 0) // visible
             {
                 myres.push_back(tri);
             }
@@ -807,68 +891,101 @@ namespace gfc
     
     void GEarthRadiationFlux::outputVisibleTri_py(std::vector<triGridFlux>& vis_triangles)
     {
-        FILE* pf = fopen("vt.py", "w+");
-        double pi = GCONST("PI");
-        
-        fprintf(pf, "Points=[\n");
-        
-        for( int i = 0 ; i< vis_triangles.size() ; i++ )
+        FILE* faceFile = fopen("visible_triangle.txt", "w+");
+        for( int j = 0 ; j < vis_triangles.size(); j++ )
         {
-            fprintf(pf, "[ ");
-            for(int j = 0 ; j<3 ; j++ )
-            {
-                double lat =0.0, lon =0.0;
-                
-                double dot1 =  sqrt( pow(vis_triangles[i].vertice[j].xyz[0],2.0) + pow(vis_triangles[i].vertice[j].xyz[1],2.0));
-                if(fabs(dot1)<1.0E-10)
-                {
-                    if( vis_triangles[i].vertice[j].xyz[2] >= 0 )
-                    {
-                        lat = 90.0;
-                        lon = 0.0;
-                    }
-                    else if(vis_triangles[i].vertice[j].xyz[2] < 0)
-                    {
-                        lat = -90.0;
-                        lon = 0.0;
-                    }
-                }
-                else
-                {
-                    lat =  atan(vis_triangles[i].vertice[j].xyz[2]/dot1)*180.0/pi; // -pi/2 ~ pi/2
-                    lon =  atan2(vis_triangles[i].vertice[j].xyz[1], vis_triangles[i].vertice[j].xyz[0])*180.0/pi;
-                    if( lon < 0.0 )
-                    {
-                        lon = lon + 360.0;
-                    }
-                }
-                
-                if(j == 2 )
-                {
-                   fprintf(pf, "[%9.6f, %9.6f] ",lon, lat);
-                }
-                else
-                {
-                    fprintf(pf, "[%9.6f, %9.6f], ",lon, lat);
-                }
-                
-                
-            }
-            
-           if( i == vis_triangles.size() - 1)
-           {
-               fprintf(pf, "]\n");
-           }
-           else
-           {
-              fprintf(pf, "],\n");
-           }
-        
+            double area = vis_triangles[j].area;
+            // the output of area , flux must be very high precision
+            fprintf(faceFile, "%9s %9s %9s %9s %9s %9s %12.4f %12.4f %12.4f %12.4f %12.4f %12.4f %12.4f %12.4f %12.4f %20.16f %20.12f %20.12f\n",
+                    vis_triangles[j].name.c_str(),
+                    vis_triangles[j].fname.c_str(),
+                    vis_triangles[j].cname[0].c_str(),
+                    vis_triangles[j].cname[1].c_str(),
+                    vis_triangles[j].cname[2].c_str(),
+                    vis_triangles[j].cname[3].c_str(),
+                    
+                    vis_triangles[j].vertice[0].xyz[0],
+                    vis_triangles[j].vertice[0].xyz[1],
+                    vis_triangles[j].vertice[0].xyz[2],
+                    
+                    vis_triangles[j].vertice[1].xyz[0],
+                    vis_triangles[j].vertice[1].xyz[1],
+                    vis_triangles[j].vertice[1].xyz[2],
+                    
+                    vis_triangles[j].vertice[2].xyz[0],
+                    vis_triangles[j].vertice[2].xyz[1],
+                    vis_triangles[j].vertice[2].xyz[2],
+                    area,
+                    vis_triangles[j].longwave,
+                    vis_triangles[j].shortwave
+                    );
         }
         
-        fprintf(pf, "];");
+        fclose(faceFile);
         
-        fclose(pf);
+//
+//        FILE* pf = fopen("vt.py", "w+");
+//        double pi = GCONST("PI");
+//
+//        fprintf(pf, "Points=[\n");
+//
+//        for( int i = 0 ; i< vis_triangles.size() ; i++ )
+//        {
+//            fprintf(pf, "[ ");
+//            for(int j = 0 ; j<3 ; j++ )
+//            {
+//                double lat =0.0, lon =0.0;
+//
+//                double dot1 =  sqrt( pow(vis_triangles[i].vertice[j].xyz[0],2.0) + pow(vis_triangles[i].vertice[j].xyz[1],2.0));
+//                if(fabs(dot1)<1.0E-10)
+//                {
+//                    if( vis_triangles[i].vertice[j].xyz[2] >= 0 )
+//                    {
+//                        lat = 90.0;
+//                        lon = 0.0;
+//                    }
+//                    else if(vis_triangles[i].vertice[j].xyz[2] < 0)
+//                    {
+//                        lat = -90.0;
+//                        lon = 0.0;
+//                    }
+//                }
+//                else
+//                {
+//                    lat =  atan(vis_triangles[i].vertice[j].xyz[2]/dot1)*180.0/pi; // -pi/2 ~ pi/2
+//                    lon =  atan2(vis_triangles[i].vertice[j].xyz[1], vis_triangles[i].vertice[j].xyz[0])*180.0/pi;
+//                    if( lon < 0.0 )
+//                    {
+//                        lon = lon + 360.0;
+//                    }
+//                }
+//
+//                if(j == 2 )
+//                {
+//                   fprintf(pf, "[%9.6f, %9.6f] ",lon, lat);
+//                }
+//                else
+//                {
+//                    fprintf(pf, "[%9.6f, %9.6f], ",lon, lat);
+//                }
+//
+//
+//            }
+//
+//           if( i == vis_triangles.size() - 1)
+//           {
+//               fprintf(pf, "]\n");
+//           }
+//           else
+//           {
+//              fprintf(pf, "],\n");
+//           }
+//
+//        }
+//
+//        fprintf(pf, "];");
+//
+//        fclose(pf);
         
     }
     
@@ -897,13 +1014,30 @@ namespace gfc
         double ceres_earth_rad = (a_ceres + b_ceres) / 2.0;
         double ceres_earth_rad2 = ceres_earth_rad * ceres_earth_rad;
         
+        
+        // the half angle of the satellite's visible field
+        double cos_theta = ceres_earth_rad / satpos_ecef.norm();
+        
+        //圆锥的顶角和立体角的关系
+        // OM is the solid angle https://en.wikipedia.org/wiki/Solid_angle
+        double OM = 2.0*pi*(1.0 - cos_theta);
+        
+        //the visible area
+        double A = OM*ceres_earth_rad2;
+        
+        double coef = A*2.0/(3.0 *pi*satpos_ecef.norm2() );
+        //double coef = ceres_earth_rad2/satpos_ecef.norm2();
+        
+        
+        
+        
         //double erp_flux_lw_scale = 0.5 * avg_earth_flux_lw;
         //double erp_flux_sw_scale = 0.5 * avg_earth_flux_sw;
         
         //double erp_flux_lw_scale = -2.0 * avg_earth_flux_lw;
         //double erp_flux_sw_scale = -2.0 * avg_earth_flux_sw;
         
-        double r2 = dis_satpos* dis_satpos;
+        //double r2 = dis_satpos* dis_satpos;
         
 //        double scale_factor =
 //        ( (ceres_earth_rad2 + r2) *
@@ -912,9 +1046,6 @@ namespace gfc
 //
         // get this formular according to the integral
         //double scale_factor_lw = 2.0*( 1.0-std::sqrt(satpos_ecef.norm2() - ceres_earth_rad2) / satpos_ecef.norm() );
-        
-        double scale_factor_lw = ceres_earth_rad2/satpos_ecef.norm2();
-        double scale_factor_sw = scale_factor_lw;
         
         fluxdata ecef_flux;
         
@@ -950,29 +1081,25 @@ namespace gfc
         
        // double p1[2]={0.0}, p2[2]={0.0};
         
+        ecef_flux.m_dir = normalise(satpos_ecef);
         
-        ecef_flux.m_longwave = scale_factor_lw * avg_earth_flux_lw;
-        
-        ecef_flux.m_shortwave = scale_factor_sw* avg_earth_flux_sw;
+        ecef_flux.m_longwave = coef * avg_earth_flux_lw;
+        ecef_flux.m_shortwave = coef* avg_earth_flux_sw;
         
         // Apply additional scaling to the shortwave flux based on sun position:
         double test = dotproduct(normalise(sunpos_ecef), normalise(satpos_ecef));
-        if(test <= 0.0) // when the satellite is blocked by the earth, the atmospheric effect will provide some shortwave radiation
+        if( test <= 0.0 )
         {
-            double factor = 0.0;
-            ecef_flux.m_shortwave *= factor;
+            ecef_flux.m_shortwave = 0.0;
         }
-        else
-        {
-            ecef_flux.m_shortwave *= test;
-        }
+        
         
         /*
         ecef_flux.m_shortwave *=
         (0.5 * dotproduct(normalise(sunpos_ecef), normalise(satpos_ecef)) + 0.5);
         */
         
-        ecef_flux.m_dir = normalise(satpos_ecef);
+        
         
         // here m_flux is the ECEF flux
         m_flux.push_back(ecef_flux);
@@ -997,98 +1124,64 @@ namespace gfc
         std::vector<polygon> visibleArea;
         */
         
-        double pi = GCONST("PI");
-        
-        double satxyz_wgs84[3] = {satpos_ecef.x*1000.0, satpos_ecef.y*1000.0, satpos_ecef.z*1000.0}, satxyz_ceres[3];
-        double sunxyz_wgs84[3] = {sunpos_ecef.x*1000.0, sunpos_ecef.y*1000.0, sunpos_ecef.z*1000.0}, sunxyz_ceres[3];
-        
-        double satblh_wgs84[3] = {0.0},sunblh_wgs84[3] = {0.0};
-        //EllipsoidMgr::GetEllipsoid("WGS84").XYZ2BLH(satxyz_wgs84, satblh_wgs84);
-        //EllipsoidMgr::GetEllipsoid("WGS84").XYZ2BLH(sunxyz_wgs84, sunblh_wgs84);
-        //EllipsoidMgr::GetEllipsoid("CERES").BLH2XYZ(satblh_wgs84, satxyz_ceres);
-        //EllipsoidMgr::GetEllipsoid("CERES").BLH2XYZ(sunblh_wgs84, sunxyz_ceres);
-        
-        sunxyz_ceres[0] = sunpos_ecef.x;sunxyz_ceres[1] = sunpos_ecef.y;sunxyz_ceres[2] = sunpos_ecef.z;
-        satxyz_ceres[0] = satpos_ecef.x;satxyz_ceres[1] = satpos_ecef.y;satxyz_ceres[2] = satpos_ecef.z;
+        double pi = 3.14159265357;
         
         fluxdata myflux;
         
-        double coef_lw = 0.0, coef_sw = 0.0 ;
+        double coef = 0.0 ;
         
-        GVector r(satxyz_ceres[0],satxyz_ceres[1],satxyz_ceres[2]);
+        //the position of the satellite
+        //GVector r = satpos_ecef;
+        //GVector s = sunpos_ecef;
         
-        GVector s(sunxyz_ceres[0],sunxyz_ceres[1],sunxyz_ceres[2]);
-        
-        GVector totalFLux;
+       // GVector totalFLux;
         int count = 0;
         
         //FILE* pf = fopen("visible.txt", "w+");
-        
         
         for( int i = 0 ; i< 360 ; i++ )
         {
             for( int j = 0; j< 180; j++ )
             {
+                // ECEF pos of the cells (the centroid of the cell)
+                GVector gridpos(ERPgrid_g[imonth][i][j].centroid.xyz[0],ERPgrid_g[imonth][i][j].centroid.xyz[1],ERPgrid_g[imonth][i][j].centroid.xyz[2]);
                 
-                GVector R( ERPgrid_g[imonth][i][j].centroid.xyz[0],
-                           ERPgrid_g[imonth][i][j].centroid.xyz[1],
-                           ERPgrid_g[imonth][i][j].centroid.xyz[2]);
+                double r_grid = gridpos.norm();
                 
-                double Rr = dotproduct(R, r);
+                GVector satmgrid = satpos_ecef - gridpos;
                 
-                double RR = R.norm2();
+                GVector sunmgrid = sunpos_ecef - gridpos;
                 
-                double Rs = dotproduct(R, s);
+                double r_satmgrid = satmgrid.norm();
                 
-                GVector rmR = r - R;
+                double cos_theta = dotproduct(gridpos, satmgrid)/(r_grid*satmgrid.norm());
                 
-                double cos_theta = dotproduct(rmR, R)/sqrt(RR)/rmR.norm();
+                double cos_theta_s = dotproduct(gridpos, sunmgrid)/ (r_grid*sunmgrid.norm());
                 
-                if( RR <= Rr ) // visible for the satellite
+                // the direction of the earth radiation flux
+                myflux.m_dir = normalise(gridpos);
+                
+                if( cos_theta > 0 ) // visible for the satellite
                 {
-                  
-                    double point_blh_ceres[3] = {0.5+i, -89.5+j,0.0};
+                    coef = ERPgrid_g[imonth][i][j].area*cos_theta/(pi*r_satmgrid*r_satmgrid);
                     
-                    /*
-                    polygon plg;
-                    double p1[2] = {0.5+i+0.5, -89.5+j-0.5};
-                    double p2[2] = {0.5+i+0.5, -89.5+j+0.5};
-                    double p3[2] = {0.5+i-0.5, -89.5+j-0.5};
-                    double p4[2] = {0.5+i-0.5, -89.5+j+0.5};
-                    plg.lat.push_back(p1[1]);plg.lat.push_back(p2[1]);plg.lat.push_back(p4[1]);plg.lat.push_back(p3[1]);
-                    plg.lon.push_back(p1[0]);plg.lon.push_back(p2[0]);plg.lon.push_back(p4[0]);plg.lon.push_back(p3[0]);
-                    visibleArea.push_back(plg);
-                    */
+                    myflux.m_longwave = ERPgrid_g[imonth][i][j].longwave*coef;
                     
-                    double point_xyz_ceres[3] = {0.0};
-                   // EllipsoidMgr::GetEllipsoid("CERES").BLH2XYZ(point_blh_ceres, point_xyz_ceres);
-                   // GVector dir(point_xyz_ceres[0],point_xyz_ceres[1],point_xyz_ceres[2]);
-                    myflux.m_dir = normalise(rmR);
+                    myflux.m_shortwave = ERPgrid_g[imonth][i][j].shortwave*coef;
                     
-                    double dis_p_sat2 = rmR.norm2();
-                    
-                    
-//                    ceresFlux[i][j].longwave = 239.6;
-//                    ceresFlux[i][j].shortwave = 99.6;
-                    
-                    coef_sw = ERPgrid_g[imonth][i][j].area*cos_theta/(pi*dis_p_sat2);
-                    
-                    coef_lw = ERPgrid_g[imonth][i][j].area*cos_theta/(pi*dis_p_sat2);
-                    
-                    myflux.m_longwave = ERPgrid_g[imonth][i][j].longwave*coef_lw;
-                    
-                    myflux.m_shortwave = ERPgrid_g[imonth][i][j].shortwave*coef_sw;
-                    
-                    if( RR > Rs) // invisible for the sun
+                    if( cos_theta_s <= 0) // invisible for the sun
                     {
                         myflux.m_shortwave = 0.0;
                     }
                     
                     count++;
                     
-                    m_flux.push_back(myflux);
+                    //m_flux.push_back(myflux);
                     
-                    totalFLux += myflux.m_dir*(myflux.m_longwave + myflux.m_shortwave);
+                    totalFlux_lw += myflux.m_dir*myflux.m_longwave;
+                    totalFlux_sw += myflux.m_dir*myflux.m_shortwave;
+                    
+                    //totalFLux += myflux.m_dir*(myflux.m_longwave + myflux.m_shortwave);
                 }
             }
         }
@@ -1180,6 +1273,7 @@ namespace gfc
         
         fluxdata ecef_flux;
         
+        
         std::vector< triGridFlux > vis_triangles;
         vis_triangles.reserve(4*pow(4,m_level));
         m_flux.reserve(4*pow(4,m_level));
@@ -1188,20 +1282,13 @@ namespace gfc
         
         visibleArea_origin(satpos_ecef, ERPgrid_t[imonth], vis_triangles);
         
-       // outputVisibleTri_py( vis_triangles );
+        outputVisibleTri_py( vis_triangles );
         
         double sin_sun_elev = 0.0, r_minus_p_mag=0.0, r_minus_p_mag2 = 0.0, coef =0.0;
         
         GVector p(0.0,0.0,0.0);
         
-        double r = satpos_ecef.norm();
-        
-        double r2 = r*r;
-        
-        double Re2 = Re*Re;
-        
-        
-        GVector totalFlux;
+        //GVector totalFlux;
         
         for( int i =0; i< vis_triangles.size(); i++ )
         {
@@ -1211,67 +1298,25 @@ namespace gfc
             
             GVector s_p =  sunpos_ecef - p;
             
-            double dt = (satpos_ecef - Re).norm()/c;
+            ecef_flux.m_dir = normalise(p);
             
-            if( dotproduct(p, satpos_ecef) < p.norm2() )
-            {
-                printf("WARNING: INVISIBLE\n");
-                int testc =0;
-            }
+            double cos_theta = dotproduct(r_p, p)/(r_p.norm()*p.norm());
             
+            coef = vis_triangles[i].area * cos_theta /( pi*r_p.norm2() );
             
-            //double rotationAngle = - dt*1.002737909350795*2*pi/86400.0;  // in radians, negative means the opposite direction
-            
-            //should rotate x and y coordinate , z keep the same
-           // p.x = vis_triangles[i].centroid.xyz[0]*cos(rotationAngle) - vis_triangles[i].centroid.xyz[1]*sin(rotationAngle);
-           // p.y = vis_triangles[i].centroid.xyz[0]*sin(rotationAngle) + vis_triangles[i].centroid.xyz[1]*cos(rotationAngle);
-            
-            r_p = satpos_ecef - p;
-            
-            ecef_flux.m_dir = r_p;
-            
-            r_minus_p_mag = ecef_flux.m_dir.norm();
-            
-            r_minus_p_mag2 = r_minus_p_mag*r_minus_p_mag;
-            
-            ecef_flux.m_dir /= r_minus_p_mag;
-            
-            double cos_theta = ( r2 - Re2 - r_minus_p_mag2 )/(2.0*Re*r_minus_p_mag);
-            
-            //reference: solano thesis, Knocke's PhD thesis
-            coef = vis_triangles[i].area * cos_theta /( pi*r_minus_p_mag2 );
-            
-            ecef_flux.m_longwave = vis_triangles[i].longwave*coef;
-            
+            ecef_flux.m_longwave =  vis_triangles[i].longwave*coef;
             ecef_flux.m_shortwave = vis_triangles[i].shortwave*coef;
             
-            double RS = dotproduct(s_p, p);
-            
-            //sin_sun_elev = dotproduct(p, sunpos_ecef);
-            
-            if( RS >= p.norm2() ) // visible for the sun
-            {
-                //double cosBeta = dotproduct(sunpos_ecef, p)/(p.norm()*sunpos_ecef.norm());
-                int testc =0;
-            }
-            else
+            //if invisible for the Sun, the shortwave flux is set to be 0
+            if(dotproduct(s_p, p) < 0.0 )
             {
                 ecef_flux.m_shortwave = 0.0;
             }
             
+            //m_flux.push_back(ecef_flux);
             
-            m_flux.push_back(ecef_flux);
-            
-            
-//            totalFlux += ecef_flux.m_dir*(ecef_flux.m_longwave + ecef_flux.m_shortwave);
-//            
-//            if( ecef_flux.m_shortwave <0.0 || ecef_flux.m_longwave < 0.0)
-//            {
-//                int testc =0;
-//            }
-            
-            
-            
+            totalFlux_lw += ecef_flux.m_dir*ecef_flux.m_longwave;
+            totalFlux_sw += ecef_flux.m_dir*ecef_flux.m_shortwave;
         }
         
        // double test = 0.0;
@@ -1280,6 +1325,9 @@ namespace gfc
        //     test += (m_flux[i].m_longwave+ m_flux[i].m_shortwave);
        // }
         
+        //totalFlux_lw = totalFlux_lw.norm()*normalise(satpos_ecef);
+        //totalFlux_sw = totalFlux_sw.norm()*normalise(satpos_ecef);
+        
         int test_int = 0;
     }
     
@@ -1287,6 +1335,13 @@ namespace gfc
     //use the simple flux model
     void gfc::GEarthRadiationFlux::makeFlux( int imonth, GVector& sunpos_ecef, GVector& satpos_ecef, double dis_satpos  )
     {
+        
+        totalFlux_lw.x =0.0;
+        totalFlux_lw.y =0.0;
+        totalFlux_lw.z =0.0;
+        totalFlux_sw.x =0.0;
+        totalFlux_sw.y =0.0;
+        totalFlux_sw.z =0.0;
         
         if( ceres_tri == true)
         {
@@ -1301,30 +1356,23 @@ namespace gfc
             Flux_simple( sunpos_ecef,satpos_ecef, dis_satpos);
         }
         
-        totalFlux_lw.x =0.0;
-        totalFlux_lw.y =0.0;
-        totalFlux_lw.z =0.0;
-        totalFlux_sw.x =0.0;
-        totalFlux_sw.y =0.0;
-        totalFlux_sw.z =0.0;
         
-//        GVector t;
-//        
+        
 //        for( int i =0; i< m_flux.size() ; i++ )
 //        {
-//            GSpaceEnv::eop.ECEF2ECI_pos(m_flux[i].m_dir, t);
-//            t.normalise();
-//            m_flux[i].m_dir = t;
 //            totalFlux_lw += m_flux[i].m_dir*m_flux[i].m_longwave;
 //            totalFlux_sw += m_flux[i].m_dir*m_flux[i].m_shortwave;
 //        }
         
+        //convert the Earth flux from ECEF to ECI
+        GVector t;
+        GSpaceEnv::eop.ECEF2ECI_pos(totalFlux_lw, t);
+        totalFlux_lw = t;
+        GSpaceEnv::eop.ECEF2ECI_pos(totalFlux_sw, t);
+        totalFlux_sw = t;
+        
         int testc = 0;
         
     } // end of function makeFlux
-    
-    
-    
-    
     
 } // end of namespace

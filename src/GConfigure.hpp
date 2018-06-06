@@ -43,7 +43,7 @@ namespace gfc
             int erp_option; // 0 for no srp , 1 for box-wing, 2 for grid file
             int earth_radiation_option;  // 0 for no model, 1 for simple, 2 for ceres_trangle, 3 for ceres_original
             int max_earth_division;  // the maximum division of the TOA for CERES earth radiation flux
-            
+            int emp_option; // the option for the empirical model, 0 for ECOM1, 1 for ECOM2 , 2 for DREMT
             cfgdata()
             {
                 earthGravityDegree = 0;
@@ -53,6 +53,7 @@ namespace gfc
                 ocean_earth_tide = false;
                 polar_tide = false;
                 y_bias = false;
+                emp_option = -1;
             }
             
         };

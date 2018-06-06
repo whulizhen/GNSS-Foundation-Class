@@ -187,7 +187,7 @@ namespace gfc
         
         static void populateCERESGrid();
         
-        
+        static double SphericalPolygonArea(std::vector<double* > vertices, double radius );
         
         static GString  triFluxPath;  // this should be set in the configure file
         

@@ -200,25 +200,27 @@ namespace gfc
         // this is always the case
         zhat = -eR;
         
-        GVector satsun_u = normalise(satsun_eci);
+        GVector sun_u = normalise(sunpos_eci);
         GVector midnight_u, noon_u;
         
-        beta = asin( dotproduct(satsun_u, n )/( satsun_u.norm()*n.norm() ) );
+        beta = asin( dotproduct(sun_u, n )/( sun_u.norm()*n.norm() ) );
         
-        midnight_u = sin(beta)*n - satsun_u;
-        noon_u = - midnight_u;
-        midnight_u.normalise();
+        noon_u = sun_u - sin(beta)*n;
+        
+        //midnight_u = - noon_u;
+        //midnight_u.normalise();
         noon_u.normalise();
         
         int d = 1;
         //calculating the orbital angle measured from midnight
-        GVector t = crossproduct(midnight_u, eR) ;
+        GVector t = crossproduct(noon_u, eR) ;
         if( ( normalise(t) - n).norm() >1.0E-8 )
         {
             d = -1;
         }
         
-        eta = atan2( t.norm()*d, dotproduct(midnight_u, eR) );
+        // tan(u) = sin(u) / cos(u)
+        eta = atan2( t.norm()*d, dotproduct(noon_u, eR) );
         
         if(eta < 0.0) {eta += M_PI*2;}
         
@@ -258,11 +260,11 @@ namespace gfc
 //            myPitch = atan2( t2.norm()*d, dotproduct(zz, satsun_u) );
 //
             //****the accuracy is about 1E-5, which is basically wrong *****
-            attitudeLaw_Galileo(eta, beta);
-            setFromYaw_Pitch(yaw_model, pitch_model);
+            //attitudeLaw_Galileo(eta, beta);
+            //setFromYaw_Pitch(yaw_model, pitch_model);
             
             //conduct the nominal attitude
-            //NorminalYawSteering_gal(satpos_eci, sunpos_eci, satsun_eci, satvel_eci);
+            NorminalYawSteering_gal(satpos_eci, sunpos_eci, satsun_eci, satvel_eci);
             
             //test EPS angle
             

@@ -646,11 +646,18 @@ namespace gfc
         
         std::vector<double> phi; // latitude of sun in bfs
         std::vector<double> eta; // the eta angle for ECOM
+        std::vector<double> beta;
+        std::vector<double> eps;
         
         std::vector<GSpaceCraftAttitude> attitude;
         std::vector<GVector> acc_eci;
+        std::vector<GVector> pos_fit; // fitted position
+        std::vector<GVector> vel_fit; // fitted velocity
         
+        std::vector<GVector> pos_obs; // fitted position
+        std::vector<GVector> vel_obs; // fitted velocity
         
+        std::vector<GTime>   time_fit; //fitted time
         
         //ouput to file
         FILE* fout = fopen(m_outputFile.c_str(), "w+");
@@ -664,6 +671,8 @@ namespace gfc
         fprintf(fout, "Reference Time: %s \t %s\n",GTime::GTime2CivilTime(m_initialEpoch).TimeString().c_str(),m_initialEpoch.getTimeSystem().getTimeSystemName().c_str());
         
         fprintf(fout, "%s\t%3d\n",sensorID.getSystem().c_str(),sensorID.getIDnum());
+        fprintf(fout, "%s\t%.5f\n","mass:",m_spaceCraft->getSpaceCraftGemotry()->m_mass);
+        
         
         GVector po_ecf,vo_ecf,po_eci,vo_eci,pc,vc;
         
@@ -711,7 +720,9 @@ namespace gfc
         
         //double ecomParam[5]={ -0.00000010042745184630757, -0.00000000020611988712060707, 0.0000000016151040633494485,-0.0000000004195205808724743,0.0000000031361947345823236};
         // they are in units of m/s^2
-        double ecomParam[10]={0.0};
+        double *ecomParam = new double[np];
+        memset(ecomParam,0,sizeof(double)*np);
+        
         fprintf(fout, "++ a priori value\n");
         fprintf(fout, "PX:%20.8f\n",m_initialP.x);
         fprintf(fout, "PY:%20.8f\n",m_initialP.y);
@@ -720,11 +731,11 @@ namespace gfc
         fprintf(fout, "VY:%20.8f\n",m_initialV.y);
         fprintf(fout, "VZ:%20.8f\n",m_initialV.z);
         
-        fprintf(fout, "D0:%20.8E\n",ecomParam[0]);
-        fprintf(fout, "Y0:%20.8E\n",ecomParam[1]);
-        fprintf(fout, "B0:%20.8E\n",ecomParam[2]);
-        fprintf(fout, "Bc:%20.8E\n",ecomParam[3]);
-        fprintf(fout, "Bs:%20.8E\n",ecomParam[4]);
+        for(int i = 0 ; i< np; i++ )
+        {
+            fprintf(fout,"%c%d:%20.8E\n",'X',i+1,ecomParam[i]);
+        }
+        
         fprintf(fout, "-- a priori value\n");
         //these two variables used to record the original initial value
         GVector pp = m_initialP;
@@ -733,6 +744,8 @@ namespace gfc
         //observation
         GMatrix l(3,1);
         int count = 0;
+        
+        
         //starting calculation
         while(1)
         {
@@ -741,19 +754,13 @@ namespace gfc
             
             m_initialV.x += X[3]/1000.0;m_initialV.y += X[4]/1000.0;m_initialV.z += X[5]/1000.0;
             
-            //mysat.getStatePointer()->updateState_ecef(start_utc, ps, vs);
-            
-            
             for( int i = 0 ; i< np; i++ )
             {
                 ecomParam[i] += X[6+i];
             }
             
             
-            if( np > 0)
-            {
-               m_forceManager.m_forceModels["GFMEMP"]->setModelParameters(np, ecomParam);
-            }
+           
             
             
             BTPB.resize(6+np, 6+np);
@@ -778,6 +785,11 @@ namespace gfc
             m_spaceCraft->getStatePointer()->updateTransitionMatrix(PHI);
             m_spaceCraft->getStatePointer()->senMatrix.resize(6, np);
             
+            if( np > 0)
+            {
+                ((GFMSolarRadiationPressureEM*)m_forceManager.m_forceModels["GFMEMP"])->setModelParameters(np, ecomParam);
+                ((GFMSolarRadiationPressureEM*)m_forceManager.m_forceModels["GFMEMP"])->doCompute(m_spaceCraft);
+            }
             /*
              because there are two types of observations
              the covariance compnents estimation should be applied to get the weight matrix
@@ -785,23 +797,38 @@ namespace gfc
             
             int iobs = 0;
             average_ele= 0.0;
+            
             phi.clear();
             eta.clear();
+            beta.clear();
+            eps.clear();
             
             acc_eci.clear();
             attitude.clear();
             
+            pos_fit.clear();
+            vel_fit.clear();
+            pos_obs.clear();
+            vel_obs.clear();
+            
+            time_fit.clear();
+            
             //从初始历元的下一个历元开始
-            GTime ct_utc = m_initialEpoch + 900;
+            GTime ct_utc = m_initialEpoch ;
             
             GPreciseEphemeris peph;
             //*  2004  2 29 21  0  0.00000000
-            for( iobs = 0 ; ct_utc < m_endEpoch ; iobs++,ct_utc = ct_utc + interval )
+            for( iobs = 0 ; ct_utc <=m_endEpoch ; iobs++,ct_utc = ct_utc + interval )
             {
                 
                // if(iobs>=20) break;
                 
-                //printf("epoch: %d--%s ", iobs,GTime::GTime2CivilTime(ct_utc).TimeString().c_str() );
+                //printf("epoch: %d--%s\n", iobs,GTime::GTime2CivilTime(ct_utc).TimeString().c_str() );
+                
+//                if(iobs == 111)
+//                {
+//                    int testc = 0;
+//                }
                 
                 //GTime ct_utc = m_initialEpoch + 900*(iobs+1);
                 
@@ -823,25 +850,42 @@ namespace gfc
                 // call the propagator, to get the calculation value and state transition matrix
                 PropagateTo( ct_utc ); //here ct must be in UTC
                 
+               
+                
                 //get the calculation value, in km
                 pc = m_spaceCraft->getStatePointer()->satpos_eci;
-                //vc = m_spaceCraft->getStatePointer()->satvel_eci;
+                vc = m_spaceCraft->getStatePointer()->satvel_eci;
                 
                 GEarthOrientationParameter myeop(ct_utc);
                 myeop.ECEF2ECI_pos(po_ecf, po_eci);
-                //myeop.ECEF2ECI_vel(po_ecf, vo_ecf, vo_eci);
+                myeop.ECEF2ECI_vel(po_ecf, vo_ecf, vo_eci);
                 
                 
                 average_ele += m_spaceCraft->getStatePointer()->attitude_eci.beta;
+                
+                time_fit.push_back(ct_gps);
                 
                 phi.push_back(m_spaceCraft->getStatePointer()->attitude_eci.phi);
                 
                 eta.push_back(m_spaceCraft->getStatePointer()->attitude_eci.eta);
                 
+                beta.push_back(m_spaceCraft->getStatePointer()->attitude_eci.beta);
+                
+                eps.push_back(m_spaceCraft->getStatePointer()->eps);
+                
+                pos_fit.push_back(pc);
+                
+                vel_fit.push_back(vc);
+                
+                pos_obs.push_back(po_eci);
+                vel_obs.push_back(vo_eci);
+                
                 attitude.push_back(m_spaceCraft->getStatePointer()->attitude_eci);
                 
-               // printf("%s, %12.6f %12.6f %12.6f %12.8f %12.8f %12.8f\n",GTime::GTime2CivilTime(ct_utc).TimeString().c_str(),
-               //        pc.x, pc.y,pc.z,vc.x,vc.y,vc.z);
+                //output the acc
+                acc_eci.push_back(m_forceManager.m_forceModels["GFMEMP"]->getForce());
+                
+                //printf("%s, %f\n",GTime::GTime2CivilTime(ct_utc).TimeString().c_str(),m_spaceCraft->getStatePointer()->shadow_factor);
                 
                 //GVector ecom_eci = m_forceManager.m_forceModels["GFMSRP"]->getForce();
                 GVector ecom_eci;
@@ -1018,32 +1062,9 @@ namespace gfc
                 
                // printf("%.8E,%.8E,%.8E,%.8E,%.8E\n", ecomParam[0],ecomParam[1],ecomParam[2],ecomParam[3],ecomParam[4]);
                 
-                /*
-                printf("acc_x, acc_y, acc_z\n");
-                for( int i = 0 ; i< phi.size(); i++ )
-                {
-                    double myphi = phi[i];
-                    double delta = myphi > 0.0 ?1.0 : -1.0;
-                    //double delta = 1.0;
-                    
-                    GVector acc_xyz;
-                    GMatrix T(3,3), temp1(3,1),temp2;
-                    T(0,0) = attitude[i].xhat.x; T(0,1) = attitude[i].xhat.y; T(0,2) = attitude[i].xhat.z;
-                    T(1,0) = attitude[i].yhat.x; T(1,1) = attitude[i].yhat.y; T(1,2) = attitude[i].yhat.z;
-                    T(2,0) = attitude[i].zhat.x; T(2,1) = attitude[i].zhat.y; T(2,2) = attitude[i].zhat.z;
-                    temp1(0,0) = acc_eci[i].x/m_spaceCraft->getSpaceCraftGemotry()->m_mass;
-                    temp1(1,0) = acc_eci[i].y/m_spaceCraft->getSpaceCraftGemotry()->m_mass;
-                    temp1(2,0) = acc_eci[i].z/m_spaceCraft->getSpaceCraftGemotry()->m_mass;
-                    
-                    temp2 = T*temp1;
-                    
-                    acc_xyz.x = temp2[0];acc_xyz.y = temp2[1];acc_xyz.z = temp2[2];
-                    
-                    
-                    printf("%.3f,%.8E,%.8E,%.8E\n",myphi,acc_xyz.x,acc_xyz.y,acc_xyz.z);
-                    
-                }
-                */
+                
+                //printf("acc_x, acc_y, acc_z\n");
+                
                 
                 fprintf(fout, "++ estimated\n");
                 fprintf(fout, "PX:%20.8f\n",m_initialP.x);
@@ -1053,13 +1074,23 @@ namespace gfc
                 fprintf(fout, "VY:%20.8f\n",m_initialV.y);
                 fprintf(fout, "VZ:%20.8f\n",m_initialV.z);
                 
-                fprintf(fout, "D0:%20.8E\n",ecomParam[0]);
-                fprintf(fout, "Y0:%20.8E\n",ecomParam[1]);
-                fprintf(fout, "B0:%20.8E\n",ecomParam[2]);
-                fprintf(fout, "Bc:%20.8E\n",ecomParam[3]);
-                fprintf(fout, "Bs:%20.8E\n",ecomParam[4]);
+                for(int i = 0 ; i< np; i++ )
+                {
+                    fprintf(fout,"%c%d:%20.8E\n",'X',i+1,ecomParam[i]);
+                }
+//
+//                fprintf(fout, "D0:%20.8E\n",ecomParam[0]);
+//                fprintf(fout, "Y0:%20.8E\n",ecomParam[1]);
+//                fprintf(fout, "B0:%20.8E\n",ecomParam[2]);
+//                fprintf(fout, "Bc:%20.8E\n",ecomParam[3]);
+//                fprintf(fout, "Bs:%20.8E\n",ecomParam[4]);
                 
                 fprintf(fout, "RMS:%20.6f\n",vtv);
+                fprintf(fout, "phi:%20.6f\n",phi[0]);
+                fprintf(fout, "u:%20.6f\n",eta[0]);
+                fprintf(fout, "beta:%20.6f\n",beta[0]);
+                fprintf(fout, "eps:%20.6f\n",eps[0]);
+                
                 fprintf(fout, "CONVARIANCE:\n");
                 for(int i = 0 ; i< 6+np; i++ )
                 {
@@ -1075,8 +1106,51 @@ namespace gfc
                 
                 fprintf(fout, "END of Orbit Fitting Parameters\n");
                 
+                
+                for( int i = 0 ; i< pos_fit.size(); i++ )
+                {
+                    double myphi = phi[i];
+                    double delta = myphi > 0.0 ?1.0 : -1.0;
+                    //double delta = 1.0;
+                    
+                    
+                    GString timeStr =  GTime::GTime2CivilTime(time_fit[i]).TimeString();
+                    
+                    GVector acc_xyz = acc_eci[i];
+                    GVector acc_dyb;
+                    
+                    
+                    GVector& ed = attitude[i].eD;
+                    GVector& ey = attitude[i].eY;
+                    GVector& eb = attitude[i].eB;
+                    GMatrix T(3,3);
+                    T(0,0) = ed.x ; T(0,1) = ey.x; T(0,2) = eb.x;
+                    T(1,0) = ed.y ; T(1,1) = ey.y; T(1,2) = eb.y;
+                    T(2,0) = ed.z ; T(2,1) = ey.z; T(2,2) = eb.z;
+                    //they are in m/s^2
+                    acc_dyb.x = T(0,0) * acc_xyz.x + T(1,0)*acc_xyz.y + T(2,0)*acc_xyz.z;
+                    acc_dyb.y = T(0,1) * acc_xyz.x + T(1,1)*acc_xyz.y + T(2,1)*acc_xyz.z;
+                    acc_dyb.z = T(0,2) * acc_xyz.x + T(1,2)*acc_xyz.y + T(2,2)*acc_xyz.z;
+                    
+                    
+                    
+                    //printf("%.3f,%.8E,%.8E,%.8E\n",myphi,acc_xyz.x,acc_xyz.y,acc_xyz.z);
+//                   printf( "%s %8.6f %8.6f %8.6f %8.6f %20.12E %20.12E %20.12E\n",
+//                            timeStr.c_str(), phi[i], eta[i], beta[i], eps[i], acc_dyb.x,acc_dyb.y,acc_dyb.z );
+                    
+                    fprintf(fout, "%s %8.6f %8.6f %8.6f %8.6f %20.8f %20.8f %20.8f %20.8f %20.8f %20.8f %20.12E %20.12E %20.12E %20.12E %20.12E %20.12E\n",
+                            timeStr.c_str(), phi[i], eta[i], beta[i], eps[i], pos_fit[i].x,pos_fit[i].y,pos_fit[i].z,pos_obs[i].x,pos_obs[i].y,pos_obs[i].z,acc_eci[i].x,acc_eci[i].y,acc_eci[i].z,acc_dyb.x,acc_dyb.y,acc_dyb.z );
+                    
+                    
+                }
+                
                 fclose(fout);
                 
+                if(ecomParam != NULL)
+                {
+                    delete[] ecomParam;
+                    ecomParam=NULL;
+                }
                 
                 
                 
@@ -1311,7 +1385,7 @@ namespace gfc
         
         //printf("%f %f %f %f %f %f\n",p.x, p.y, p.z, v.x, v.y, v.z);
         
-        GTime testT(57094,55784,0.0,"tsUTC");
+       // GTime testT(57094,55784,0.0,"tsUTC");
         
 //        if(t == testT)
 //        {

@@ -210,6 +210,7 @@ namespace gfc
                             {
                                 config.erp_option = 2;
                                 config.forcelist.push_back("GFMERP");
+                                
                             }
                         }
                         
@@ -235,6 +236,18 @@ namespace gfc
                             if(value != "NO")
                             {
                                 config.forcelist.push_back("GFMEMP");
+                            }
+                            if(value == "ECOM1")
+                            {
+                                config.emp_option = 0;
+                            }
+                            else if(value == "ECOM2")
+                            {
+                                config.emp_option =1;
+                            }
+                            else if(value == "DREMT")
+                            {
+                                config.emp_option = 2;
                             }
                         }
                         
@@ -385,6 +398,36 @@ namespace gfc
                 ((GFMEarthGravity*)modelMgr.m_forceModels["GFMGravity"])->solid_tide = config.solid_earth_tide;
                 ((GFMEarthGravity*)modelMgr.m_forceModels["GFMGravity"])->ocean_tide = config.ocean_earth_tide;
                 ((GFMEarthGravity*)modelMgr.m_forceModels["GFMGravity"])->polar_tide  = config.polar_tide;
+            }
+            
+            if(config.forcelist[i] == "GFMEMP")
+            {
+                if(config.emp_option == 0 )  // ECOM1
+                {
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->num_param = 5;
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->type_opt = 0;
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->parameters.resize(5);
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->m_dadp.resize(3, 5);
+                }
+                else if(config.emp_option == 1) // ECOM2
+                {
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->num_param = 7;
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->type_opt = 1;
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->parameters.resize(7);
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->m_dadp.resize(3, 7);
+                }
+                else if(config.emp_option == 2) //DREMT
+                {
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->num_param = 6;
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->type_opt = 2;
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->parameters.resize(6);
+                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->m_dadp.resize(3, 6);
+                }
+                
+                
+               
+                
+                
             }
             
             if( config.forcelist[i] == "GFMSRP" )

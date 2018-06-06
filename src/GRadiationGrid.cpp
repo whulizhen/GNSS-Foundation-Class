@@ -113,10 +113,10 @@ namespace gfc
         // Read in grid node values.
         // Populate grid with decreasing row index - maintaining the Surfer6 format (upside Mercator).
         //data.resize(grid_rows);
-        for ( uint_fast16_t i = 0; i < grid_rows; ++i )
+        for ( uint_fast16_t i = 0; i < grid_rows; ++i ) //181
         {
             //data[i].resize(grid_cols);
-            for ( uint_fast16_t j = 0; j < grid_cols; ++j )
+            for ( uint_fast16_t j = 0; j < grid_cols; ++j ) //361
             {
                 grid_file >> data(i,j);
                 
@@ -174,79 +174,88 @@ namespace gfc
         GMatrix& z_grid = griddata[2];
         
         GVector acc;
+        
+        //double min_longitude = -180, max_longitude = 180;
+        //double min_latitude = -90, max_latitude = 90;
+        
         // Check input for validity.
-        if (longitude < min_longitude) {
+        if (longitude < min_longitude)
+        {
             longitude = min_longitude;
-        } else if (longitude > max_longitude) {
+        }
+        else if (longitude > max_longitude)
+        {
             longitude = max_longitude;
         }
         
-        if (latitude < min_latitude) {
+        if (latitude < min_latitude)
+        {
             latitude = min_latitude;
-        } else if (latitude > max_latitude) {
+        }
+        else if (latitude > max_latitude)
+        {
             latitude = max_latitude;
         }
-
+        
         
         //find the minimum grid first;
         // the grid is 1 by 1 degree
         double u_interval = 1.0;
         double v_interval = 1.0;
-        int u = floor((latitude - min_latitude)/u_interval);
-        int v = floor((longitude - min_longitude)/v_interval);
+        
+        int u = floor((latitude - min_latitude)/u_interval);  // latitude
+        int v = floor((longitude - min_longitude)/v_interval); // longitude
+        
+        int u_max = floor((max_latitude - min_latitude)/u_interval);
+        int v_max = floor((max_longitude - min_longitude)/v_interval);
         
         //make del_u and del_v both less than 1.0
         double del_u = (latitude - min_latitude -  u*u_interval)/u_interval;
         double del_v = (longitude - min_longitude - v*v_interval)/v_interval;
-        int u12 =0 ,v12 = 0;
-        u12 = u +1; v12 = v+1;
         
-        if(v12 >= 361 )
+        
+        double a_u1 = 0.0, a_u2 =0.0;
+        
+        double grid_x_u_v =0.0, grid_x_u_1_v =0, grid_x_u_v_1 =0,  grid_x_u_1_v_1 =0;
+        double grid_y_u_v =0.0, grid_y_u_1_v =0, grid_y_u_v_1 =0,  grid_y_u_1_v_1 =0;
+        double grid_z_u_v =0.0, grid_z_u_1_v =0, grid_z_u_v_1 =0,  grid_z_u_1_v_1 =0;
+        
+        grid_x_u_v = x_grid(u,v);
+        grid_y_u_v = y_grid(u,v);
+        grid_z_u_v = z_grid(u,v);
+        
+        if(u+1<= u_max)
         {
-            if(u12 >= 181 ) // only one point
-            {
-                acc.x = x_grid(u,v);
-                acc.y = y_grid(u,v);
-                acc.z = z_grid(u,v);
-            }
-            else  // interpolate with latitude
-            {
-                acc.x = x_grid(u,v) + del_u*(x_grid(u12,v) - x_grid(u,v) );
-                acc.y = y_grid(u,v) + del_u*(y_grid(u12,v) - y_grid(u,v) );
-                acc.z = z_grid(u,v) + del_u*(z_grid(u12,v) - z_grid(u,v) );
-                
-            }
+            grid_x_u_1_v = x_grid(u+1,v);
+            grid_y_u_1_v = y_grid(u+1,v);
+            grid_z_u_1_v = z_grid(u+1,v);
         }
-        else
+        
+        if(v+1 <= v_max)
         {
-            if(u12 >= 181 ) // inerpolate with longitude
-            {
-                acc.x = x_grid(u,v) + del_v*(x_grid(u,v12) - x_grid(u,v) );
-                acc.y = y_grid(u,v) + del_v*(y_grid(u,v12) - y_grid(u,v) );
-                acc.z = z_grid(u,v) + del_v*(z_grid(u,v12) - z_grid(u,v) );
-            }
-            else  // normal situation
-            {
-                
-                //find the 4 points for the grid and do the interpolation
-                double row1 =0.0, row2 =0.0;
-                row1 = x_grid(u,v) + del_v*(x_grid(u,v+1) - x_grid(u,v) );
-                row2 = x_grid(u,v) + del_v*(x_grid(u+1,v) - x_grid(u,v) );
-                acc.x =  row1 + (row2 - row1) * del_u ;
-                
-                row1 = y_grid(u,v) + del_v*(y_grid(u,v+1) - y_grid(u,v) );
-                row2 = y_grid(u,v) + del_v*(y_grid(u+1,v) - y_grid(u,v) );
-                acc.y =  row1 + (row2 - row1) * del_u ;
-                
-                row1 = z_grid(u,v) + del_v*(z_grid(u,v+1) - z_grid(u,v) );
-                row2 = z_grid(u,v) + del_v*(z_grid(u+1,v) - z_grid(u,v) );
-                acc.z =  row1 + (row2 - row1) * del_u ;
-            }
-
+            grid_x_u_v_1 =x_grid(u,v+1);
+            grid_y_u_v_1 =y_grid(u,v+1);
+            grid_z_u_v_1 =z_grid(u,v+1);
+        }
+        if(v+1 <= v_max && u+1<= u_max )
+        {
+            grid_x_u_1_v_1 = x_grid(u+1,v+1);
+            grid_y_u_1_v_1 = y_grid(u+1,v+1);
+            grid_z_u_1_v_1 = z_grid(u+1,v+1);
         }
         
         
+        a_u1 = (1.0 - del_u)*grid_x_u_v + del_u * grid_x_u_1_v;
+        a_u2 = (1.0 - del_u)*grid_x_u_v_1 + del_u * grid_x_u_1_v_1;
+        acc.x = (1.0 - del_v)*a_u1  + del_v * a_u2;
         
+        a_u1 = (1.0 - del_u)*grid_y_u_v + del_u * grid_y_u_1_v;
+        a_u2 = (1.0 - del_u)*grid_y_u_v_1 + del_u *grid_y_u_1_v_1;
+        acc.y = (1.0 - del_v)*a_u1  + del_v * a_u2;
+        
+        a_u1 = (1.0 - del_u)*grid_z_u_v + del_u * grid_z_u_1_v;
+        a_u2 = (1.0 - del_u)*grid_z_u_v_1 + del_u *grid_z_u_1_v_1;
+        acc.z = (1.0 - del_v)*a_u1  + del_v * a_u2;
         
         return acc;
     }
@@ -282,7 +291,7 @@ namespace gfc
         double del_u = u_raw - u_floor;
         double del_v = v_raw - v_floor;
         
-        double tol = 0x1.0p-30; // ~10^-9
+        double tol = 1.0E-9; // ~10^-9
         
         uint_fast16_t i1, i2, j1, j2;
         
@@ -345,9 +354,9 @@ namespace gfc
         GVector force;
         
         // the results is newton per flux
-        force = bilinear_interp(griddata, longitude, latitude);
+        //force = bilinear_interp(griddata, longitude, latitude);
         
-        //force =  mybilinear_interp(griddata, longitude, latitude);
+        force =  mybilinear_interp(griddata, longitude, latitude);
         
         
         return force;

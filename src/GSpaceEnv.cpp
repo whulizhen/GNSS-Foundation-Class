@@ -38,7 +38,7 @@ namespace gfc
     
     double GSpaceEnv::Kp;  // Kp index
     
-    double GSpaceEnv::tsi = 1362;  //the total solar index at 1 AU, 1362w/m^2
+    double GSpaceEnv::tsi = 1361;  //the total solar index at 1 AU, 1362w/m^2
     
     GTime GSpaceEnv::epoch_utc;  // the time in UTC
     GTime GSpaceEnv::epoch_tdb; // the time in tdb;
@@ -85,7 +85,7 @@ namespace gfc
             
             Kp = 100;
             
-            tsi = 1362.0;
+            tsi = 1361.0;
             
             JDTime jdt = GTime::GTime2JDTime( epoch_utc );
             GTime tai = GTime::UTC2TAI(epoch_utc);

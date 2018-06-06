@@ -155,7 +155,7 @@ namespace gfc
         for( int i = 0;i<m_order; i++ )
         {
             K[i] = new double[n];
-            //memset(K[i],0,sizeof(double)*n);
+            memset(K[i],0,sizeof(double)*n);
         }
         
         double* yk = new double[n];
@@ -429,7 +429,7 @@ namespace gfc
 //
         
         //here collect the state and acceleration information
-        porb->collectStateInformation();
+       // porb->collectStateInformation();
         
         return 0;
     }
