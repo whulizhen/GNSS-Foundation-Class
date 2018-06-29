@@ -1030,7 +1030,7 @@ namespace gfc
                &&fabs(XX[4]-X[4])<0.00001
                &&fabs(XX[5]-X[5])<0.00001
                )
-               || (count >=3)
+               || (count >=4)
                )
             {
                 

@@ -67,16 +67,10 @@ namespace gfc
         GVector ECOM2( double* param,double u, double factor );
         void ECOM2_dadp(double u, double factor, GMatrix& daDYBdp );
         
+        // the reduces ECOM2
+        GVector ECOM3( double* param,double u, double factor );
+        void ECOM3_dadp(double u, double factor, GMatrix& daDYBdp );
         
-        GVector reducedECOM_XYZ(double* param,double phi, double factor );
-        void reducedECOM_dadp_XYZ(double phi, GMatrix& daXYZdp );
-        
-        // the ECOM with only 3 constant parameters in DYB
-        GVector constantDYB(double* param,double u, double factor);
-        void constantDYB_dadp(GMatrix& daDYBdp);
-        
-        GVector constantXYZ(double* param, double factor);
-        void constantXYZ_dadp(GMatrix& daXYZdp);
         
         
         /*
@@ -98,12 +92,16 @@ namespace gfc
         GVector DREM1T(double* param,double phi,double factor);
         void DREM1T_dadp(double phi,double factor,GMatrix& daXYZdp);
         
+        GVector DREM1T_eps(double* param,double eps,double eta,double factor);
+        void DREM1T_eps_dadp(double eps,double eta, double factor,GMatrix& daDYBdp);
+        
+        
         GVector DREM2T(double* param,double phi,double factor);
         void DREM2T_dadp(double phi,double factor,GMatrix& daXYZdp);
         
         // combine with DREM2T with ECOM2?
-        GVector DREM3T(double* param,double phi,double eta,double factor);
-        void DREM3T_dadp(double phi,double eta,double factor,GMatrix& daXYZdp);
+        GVector DREM3T(double* param,double phi,double beta, double eta,double factor);
+        void DREM3T_dadp(double phi,double beta, double eta,double factor,GMatrix& daXYZdp);
         
         GVector Montenbruck(double* param, double eps, double factor);
         void Montenbruck_dadp(double eps,double factor,GMatrix& daXYZdp);
@@ -116,12 +114,12 @@ namespace gfc
         void DREM2_dadp(double phi,double factor,GMatrix& daXYZdp);
         
         
-        GVector empDYB(double* param,double phi, double factor);
-        void empDYB_dadp(double phi,GMatrix& daXYZdp);
-        
-        
-        void empXYZ_dadp_DYB(double phi,GMatrix& daXYZdp);
-        GVector empXYZ_DYB(double* param,double phi, double factor);
+//        GVector empDYB(double* param,double phi, double factor);
+//        void empDYB_dadp(double phi,GMatrix& daXYZdp);
+//        
+//        
+//        void empXYZ_dadp_DYB(double phi,GMatrix& daXYZdp);
+//        GVector empXYZ_DYB(double* param,double phi, double factor);
         
         void doCompute( GSpaceCraft* spacecraft );
         

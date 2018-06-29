@@ -201,9 +201,41 @@ namespace gfc
         res += "EarthFlux(shortwave)_Y(w/m^2),";
         res += "EarthFlux(shortwave)_Z(w/m^2),";
         
+        res += "refpos_X,";
+        res += "refpos_Y,";
+        res += "refpos_Z,";
+        res += "refvel_X,";
+        res += "refvel_Y,";
+        res += "refvel_Z,";
+        
         //res.strip_v(',');
         res += "\n";
         return res;
+    }
+    
+    
+   // add more information to the m_logStr
+    void GOrbitPredictor::addStateInformation(GVector& refpos, GVector& refvel)
+    {
+        if(log_on == true)
+        {
+            m_logStr = m_logStr.substr(0, m_logStr.length() - 1);
+            m_logStr +=
+            ( GString(refpos.x*1000.0,6) + ","
+             + GString(refpos.y*1000.0,6) + ","
+             + GString(refpos.z*1000.0,6) + ","
+             + GString(refvel.x*1000.0,6) + ","
+             + GString(refvel.y*1000.0,6) + ","
+             + GString(refvel.z*1000.0,6) + ","
+             );
+            
+            m_logStr+="\n";
+        }
+    }
+    
+    void GOrbitPredictor::outputLog()
+    {
+       m_orbitLog << m_logStr;
     }
     
     void GOrbitPredictor::collectStateInformation()
@@ -268,7 +300,7 @@ namespace gfc
             //m_logStr.strip_v(',');
             m_logStr += "\n";
             
-            m_orbitLog << m_logStr;
+            
         }
         
     }

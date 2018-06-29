@@ -13,8 +13,7 @@ namespace gfc
     {
         setForceName("GFMEMP");
         
-        //num_param = 6;  //3,  5, 6, 7  10 for +-z , 7 for the common z panel, 5 for ecom
-        
+        //num_param = 7;  //3,  5, 6, 7  10 for +-z , 7 for the common z panel, 5 for ecom
         //parameters.resize(num_param);
         //m_dadp.resize(3, num_param);
         
@@ -118,124 +117,49 @@ namespace gfc
     }
     
     
-    
-    /*
-     the Body Fixed Frame version of ECOM
-     */
-    GVector GFMSolarRadiationPressureEM::reducedECOM_XYZ(double* param,double phi, double factor )
+    //param[5]: D0, Y0,B0, Bc and Bs, u is the satellite's argument of latitude
+    // here factor should be distance factor times shadow_factor
+    GVector GFMSolarRadiationPressureEM::ECOM3(double* param,double u, double factor )
     {
-        GVector acc_xyz;
-        //X
-        acc_xyz.x = -param[0]*cos(phi) + param[2]*sin(phi) + 0.5*param[3]*(1.0-cos(2.0*phi)) + 0.5*param[4]*sin(2.0*phi);
-        //Y
-        acc_xyz.y = -param[1];
-        //Z
-        acc_xyz.z = param[0]*sin(phi) + param[2]*cos(phi) + 0.5*param[3]*sin(2.0*phi) + 0.5*param[4]*(cos(2.0*phi)+1.0);
-        
-        acc_xyz = acc_xyz*factor;
-        
-        return acc_xyz*1.0E-9;
-        
-    }
-    
-    void GFMSolarRadiationPressureEM::reducedECOM_dadp_XYZ(double phi, GMatrix& daXYZdp )
-    {
-        daXYZdp(0,0) = -cos(phi); daXYZdp(0,1) = 0.0; daXYZdp(0,2) = sin(phi); daXYZdp(0,3) = 0.5*(1.0-cos(2.0*phi));
-        daXYZdp(0,4) = 0.5*sin(2.0*phi);
-        daXYZdp(1,1) = -1.0;
-        daXYZdp(2,0) = sin(phi);daXYZdp(2,1) = 0.0;daXYZdp(2,2) = cos(phi);daXYZdp(2,3) = 0.5*sin(2.0*phi);daXYZdp(2,4) = 0.5*(cos(2.0*phi)+1.0);
-        
-        daXYZdp = daXYZdp*1.0E-9;
-        
-    }
-
-    
-    GVector GFMSolarRadiationPressureEM::constantDYB(double *param, double u, double factor)
-    {
-        GVector acc_dyb;
+        GVector acc_dyb,acc_xyz;
         //D
-        acc_dyb.x = param[0];
+        acc_dyb.x = param[0] + param[1]*cos(2*u) + param[2]*sin(u);
         //Y
-        acc_dyb.y = param[1];
+        acc_dyb.y = param[6];
         //B
-        acc_dyb.z = param[2];
+        acc_dyb.z = param[3] + param[4]*cos(u) + param[5]*sin(u);
         
-        acc_dyb = acc_dyb*factor;
+        acc_dyb.x = acc_dyb.x*factor;
+        
+        acc_dyb.z = acc_dyb.z*factor;
         
         return acc_dyb*1.0E-9;
+        
     }
     
-    void GFMSolarRadiationPressureEM::constantDYB_dadp(GMatrix& daDYBdp)
+    /*  da_eci/dp = dT/dp*a_dyb + T* da_dyb/dp. T is the transformation matrix from DYB to ECI
+     *  the parameters in ECOM model is independent from T
+     *  thus, dT/dp = 0, i.e da_eci/dp = T*da_dyb/dp
+     *
+     *   da_dby     | 1  0  0  0     0    |
+     *   ------ =   | 0  1  0  0     0    |
+     *     dp       | 0  0  1  cosu  sinu |
+     *
+     */
+    
+    void GFMSolarRadiationPressureEM::ECOM3_dadp(double u, double factor, GMatrix& daDYBdp )
     {
-        daDYBdp(0,0) = 1.0;
-        daDYBdp(1,1) = 1.0;
-        daDYBdp(2,2) = 1.0;
+        
+        daDYBdp(0,0) = 1.0*factor; daDYBdp(0,1) = cos(2*u)*factor;daDYBdp(0,2) = sin(u)*factor;
+        
+        daDYBdp(1,6) = 1.0;
+        
+        daDYBdp(2,3) = 1.0*factor;
+        daDYBdp(2,4) = cos(u)*factor;
+        daDYBdp(2,5) = sin(u)*factor;
+        
+        
         daDYBdp = daDYBdp*1.0E-9;
-    }
-    
-    /*
-     
-     
-     */
-    GVector GFMSolarRadiationPressureEM::empXYZ_DYB(double* param,double phi, double factor)
-    {
-        double delta = 0.0;
-        if( phi >= 0.0 )
-        {
-            delta = 1.0;
-        }
-        else
-        {
-            delta = -1.0;
-        }
-        
-        GVector acc_dyb;
-        
-        //D
-        acc_dyb.x = -param[0]*cos(phi)*cos(phi) - param[1]*cos(phi)*(1.0+cos(2*phi)) - param[2]*delta*cos(phi)*sin(2.0*phi) - param[3]*sin(phi)*sin(phi) + param[4]*delta*sin(phi)*(cos(2.0*phi)-1.0) - param[5]*sin(phi)*sin(2.0*phi);
-        
-        //Y
-        acc_dyb.y = -param[6];
-        //B
-        acc_dyb.z = param[0]*sin(phi)*cos(phi) + param[1]*sin(phi)*(1.0+cos(2.0*phi)) + delta*param[2]*sin(phi)*sin(2.0*phi) - param[3]*sin(phi)*cos(phi) + param[4]*delta*cos(phi)*(cos(2.0*phi)-1.0) - param[5]*cos(phi)*sin(2.0*phi) ;
-
-         acc_dyb = acc_dyb*factor;
-        
-        return acc_dyb*1.0E-9;
-        
-    }
-    
-    void GFMSolarRadiationPressureEM::empXYZ_dadp_DYB(double phi,GMatrix& daXYZdp)
-    {
-        daXYZdp.clear();
-        
-        double delta = 0.0;
-        if(phi >= 0.0)
-        {
-            delta = 1.0;
-        }
-        else
-        {
-            delta = -1.0;
-        }
-        
-        daXYZdp(0,0) = -cos(phi)*cos(phi);
-        daXYZdp(0,1) = -cos(phi)*(1.0+cos(2.0*phi));
-        daXYZdp(0,2) = -delta*sin(2.0*phi)*cos(phi);
-        daXYZdp(0,3) = -sin(phi)*sin(phi);
-        daXYZdp(0,4) = delta*sin(phi)*(cos(2.0*phi) - 1.0);
-        daXYZdp(0,5) = -sin(phi)*sin(2.0*phi);
-        
-        daXYZdp(1,6) = -1.0;
-        
-        daXYZdp(2,0) = sin(phi)*cos(phi);
-        daXYZdp(2,1) = sin(phi)*(1.0+cos(2.0*phi));
-        daXYZdp(2,2) = delta*sin(2.0*phi)*sin(phi);
-        daXYZdp(2,3) = -sin(phi)*cos(phi);
-        daXYZdp(2,4) = delta*cos(phi)*(cos(2.0*phi) - 1.0);
-        daXYZdp(2,5) = -cos(phi)*sin(2.0*phi);
-        
-        daXYZdp = daXYZdp*1.0E-9;
         
     }
     
@@ -639,7 +563,94 @@ namespace gfc
     }
     
     
-    GVector GFMSolarRadiationPressureEM::DREM3T(double* param,double phi,double eta, double factor)
+    
+    /* the  DREM with TRR, assume +-z are the same*/
+    GVector GFMSolarRadiationPressureEM::DREM1T_eps(double* param,double eps,double eta, double factor)
+    {
+        GVector acc_dyb;
+        double d=0;
+        double pi = 3.13159265357;
+        double W_C = 1361.0/299792458.0;
+        double cp = cos(eps);
+        double c2p = cos(2.0*eps);
+        double cp2 = cp*cp;
+        
+        double sp  = sin(eps);
+        double sp2 = sp*sp;
+        double s2p = sin(2.0*eps);
+        
+        if ( eps >= pi/2.0) // +z
+        {
+            d = -1.0;
+        }
+        else  // -z
+        {
+            d = 1.0;
+        }
+        
+        
+        //X
+        acc_dyb.x =  param[0] + param[1]*c2p - param[2]*fabs(cp) + param[3]*sin(2*eta) - param[6]*sp;// + param[3]*sp*cp2 + param[4]*sp2*fabs(cp);
+        //Y
+        acc_dyb.y =  param[5];  // y bias
+        //Z
+        acc_dyb.z =  param[1]*s2p + param[4]*cos(2*eta) ; //+ param[3]*cp*sp2 - d*param[4]*sp*cp2;
+        
+        
+        // y bias does not apply the shadow factor
+        acc_dyb.x = acc_dyb.x*factor*W_C;
+        acc_dyb.z = acc_dyb.z*factor*W_C;
+        
+        return acc_dyb;
+        
+    }
+    /*assume +-z are the same*/
+    void GFMSolarRadiationPressureEM::DREM1T_eps_dadp(double eps,double eta, double factor,GMatrix& daDYBdp)
+    {
+        double d=0;
+        double pi = 3.13159265357;
+        double W_C = 1361.0/299792458.0;
+        double cp = cos(eps);
+        double c2p = cos(2.0*eps);
+        double cp2 = cp*cp;
+        
+        double sp  = sin(eps);
+        double sp2 = sp*sp;
+        double s2p = sin(2.0*eps);
+        
+        if ( eps >= pi/2.0) // +z
+        {
+            d = -1.0;
+        }
+        else  // -z
+        {
+            d = 1.0;
+        }
+        
+        
+        // D component
+        daDYBdp(0,0) =  1.0*factor*W_C;
+        daDYBdp(0,1) = c2p*factor*W_C;
+        //daDYBdp(0,2) = -sp*factor*W_C;
+        daDYBdp(0,2) = -fabs(cp)*factor*W_C;
+        daDYBdp(0,3) = sin(2*eta)*factor*W_C;
+        daDYBdp(0,6) = -sp*factor*W_C;
+        
+        //daDYBdp(0,3) = sp*cp2*factor*W_C;
+        //daDYBdp(0,4) = sp2*fabs(cp)*factor*W_C;
+        
+        // Y component
+        daDYBdp(1,5) = 1.0;
+        // B component
+        daDYBdp(2,1) = s2p*factor*W_C;
+        daDYBdp(2,4) = cos(2*eta)*factor*W_C;
+        
+        //daDYBdp(2,3) = cp*sp2*factor*W_C;
+        //daDYBdp(2,4) = -d*sp*cp2*factor*W_C;
+        
+    }
+    
+    GVector GFMSolarRadiationPressureEM::DREM3T(double* param,double phi,double beta, double eta, double factor)
     {
         GVector acc_dyb;
         double d=0;
@@ -652,6 +663,9 @@ namespace gfc
         double sp2 = sp*sp;
         double s2p = sin(2.0*phi);
         
+        double sb = sin(beta);
+        double cb = cos(beta);
+        
         if (phi >= 0) // +z
         {
             d =1.0;
@@ -662,11 +676,13 @@ namespace gfc
         }
         
         //D
-        acc_dyb.x =  param[0] - param[1]*c2p -param[2]*fabs(sp) + param[3]* sin(2*eta)  /*+ param[2]*sin(2*eta)*/ ;  //param[3]*sin(2.0*eta);
+        acc_dyb.x =  param[0] - param[1]*c2p -param[2]*fabs(sp) //
+                    + param[3]*sin(2*eta);
+                      //+ param[3]*sin(2.2*eta) ;  //param[3]*sin(2.0*eta);
         //Y
         acc_dyb.y =  param[5];  // y bias
         //B
-        acc_dyb.z =  param[1]*s2p + param[4]*cos(2*eta); //- d*param[3]*cp*sp2; param[4]*cos(2.0*eta)
+        acc_dyb.z =  param[1]*s2p + param[4]*cos(2*eta);
 //
         
 //        //D
@@ -678,15 +694,15 @@ namespace gfc
         
         
         
-        acc_dyb.x = acc_dyb.x*factor*W_C;
-        acc_dyb.z = acc_dyb.z*factor*W_C;
+        acc_dyb.x = acc_dyb.x*factor;
+        acc_dyb.z = acc_dyb.z*factor;
         
-        return acc_dyb;
+        return acc_dyb*1.0E-9;
         
     }
     
     
-    void GFMSolarRadiationPressureEM::DREM3T_dadp(double phi,double eta, double factor,GMatrix& daXYZdp)
+    void GFMSolarRadiationPressureEM::DREM3T_dadp(double phi,double beta, double eta, double factor,GMatrix& daXYZdp)
     {
         double d=0;
         double W_C = 1361.0/299792458.0;
@@ -698,6 +714,9 @@ namespace gfc
         double sp2 = sp*sp;
         double s2p = sin(2.0*phi);
         
+        double sb = sin(beta);
+        double cb = cos(beta);
+        
         if (phi >= 0)
         {
             d=1.0;
@@ -708,18 +727,21 @@ namespace gfc
         }
         
         // D
-        daXYZdp(0,0) =  1.0*factor*W_C;
-        daXYZdp(0,1) = -c2p*factor*W_C;
-        daXYZdp(0,2) =  -fabs(sp)*factor*W_C;
+        daXYZdp(0,0) =  1.0*factor;
+        daXYZdp(0,1) = -c2p*factor;
+        daXYZdp(0,2) =  -fabs(sp)*factor;
+        daXYZdp(0,3) =  sin(2*eta)*factor;//  sin(2.2*eta)*factor;
         //daXYZdp(0,2) =  phi*phi*factor*W_C; //sin(2.0*eta)*factor*W_C; //sin(2.0*eta)*factor*W_C;
-        daXYZdp(0,3) =  sin(2*eta)*factor*W_C;
-        //daXYZdp(0,4) = -cp*factor*W_C;
+        //daXYZdp(0,3) = -cp*factor;  //sin(2*eta)*factor*W_C;
+        //daXYZdp(0,3) = cos(phi*16.0)*sin(phi*16.0)*factor;
         
         // Y component
         daXYZdp(1,5) = 1.0;
         // B component
-        daXYZdp(2,1) = s2p*factor*W_C;
-        daXYZdp(2,4) = cos(2*eta)*factor*W_C; //cp*sp2*factor*W_C  cos(2.0*eta)*factor*W_C  - d*param[4]*cp*sp2
+        daXYZdp(2,1) = s2p*factor;
+        //daXYZdp(2,4) = sp*cp2*factor; //cos(2*eta)*factor*W_C; //cp*sp2*factor*W_C  cos(2.0*eta)*factor*W_C  - d*param[4]*cp*sp2
+        daXYZdp(2,4) = cos(2*eta)*factor;
+        daXYZdp = daXYZdp*1.0E-9;
         
     }
     
@@ -1089,64 +1111,6 @@ namespace gfc
         
     }
     
-    /*
-     This is to validate the simplified empirial model in DYB system
-     D = D0
-     B = (D0 + P1)*cot(phi) + P2*cos(phi)*cos(phi)/sin(phi) - 2*d2*P3*cos(phi) + 2*d1*P4*cos(phi)
-     it is still under developing
-     */
-    GVector GFMSolarRadiationPressureEM::empDYB(double* param,double phi, double factor)
-    {
-        double d1 = 0, d2 = 0,mass = 696.815;
-        
-        if (phi >= 0)
-        {
-            d1 = 1;
-            d2 = 0;
-        }
-        else
-        {
-            d1 = 0.0;
-            d2 = 1.0;
-        }
-        
-        double W_C = 1368/299792458.0/mass;
-        
-        GVector acc_dyb;
-        
-        acc_dyb.x = param[0];
-        acc_dyb.y = param[5];
-        acc_dyb.y = param[1]/tan(phi) + param[2]*cos(phi)/tan(phi) - 2*d2*param[3]*cos(phi) + 2*d1*param[4]*cos(phi);
-        
-        // y bias does not to apply the factor
-        acc_dyb.x = acc_dyb.x*factor*W_C;
-        acc_dyb.z = acc_dyb.z*factor*W_C;
-        
-        return acc_dyb;
-        
-    }
-    
-    void GFMSolarRadiationPressureEM::empDYB_dadp(double phi,GMatrix& daXYZdp)
-    {
-        double delta = 0.0;
-        if(phi >= 0.0)
-        {
-            delta = 1.0;
-        }
-        else
-        {
-            delta = -1.0;
-        }
-
-        
-        daXYZdp.clear(); // set it to zeros
-        
-        
-        
-    }
-    
-    
-    
     
     //must implement doCompute function !!!!
     void GFMSolarRadiationPressureEM::doCompute(GSpaceCraft* spacecraft )
@@ -1162,6 +1126,8 @@ namespace gfc
         double eps = spacecraft->getStatePointer()->eps;
         
         double phi = spacecraft->getStatePointer()->attitude_eci.phi;
+        
+        double beta = spacecraft->getStatePointer()->attitude_eci.beta;
         
         double test = spacecraft->getStatePointer()->keplerianElement.m_tran +spacecraft->getStatePointer()->keplerianElement.m_argp;
         
@@ -1182,7 +1148,12 @@ namespace gfc
         }
         else if(type_opt == 2)
         {
-            acc_dyb = DREM3T(&parameters[0], phi ,eta, factor);
+            acc_dyb = DREM3T(&parameters[0], phi ,beta,eta, factor);
+            //acc_dyb =  DREM1T_eps(&parameters[0], eps,eta, factor);
+        }
+        else if (type_opt == 3)
+        {
+            acc_dyb =  ECOM3(&parameters[0], eta, factor);
         }
         
         
@@ -1262,7 +1233,12 @@ namespace gfc
             }
             else if(type_opt == 2)
             {
-                 DREM3T_dadp(phi,eta,factor, mydadp);
+                DREM3T_dadp(phi,beta,eta,factor, mydadp);
+                //DREM1T_eps_dadp(eps, eta, factor, mydadp);
+            }
+            else if (type_opt == 3)
+            {
+               ECOM3_dadp( eta ,factor, mydadp);
             }
             
             m_dadp = T*mydadp; // m_dadp in ECI, for ECOM

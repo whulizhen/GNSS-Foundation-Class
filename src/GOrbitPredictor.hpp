@@ -63,6 +63,8 @@ namespace gfc
         GString getLogHeader();
         //collect the state information
         void collectStateInformation();
+        void addStateInformation(GVector& refpos, GVector& refvel);
+        void outputLog();
         
     private:
         

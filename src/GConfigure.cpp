@@ -249,6 +249,10 @@ namespace gfc
                             {
                                 config.emp_option = 2;
                             }
+                            else if(value == "ECOM3")
+                            {
+                                config.emp_option = 3;
+                            }
                         }
                         
                         if(param == "Atmosphere Drag")
@@ -402,27 +406,29 @@ namespace gfc
             
             if(config.forcelist[i] == "GFMEMP")
             {
+                int num_param = 5;
                 if(config.emp_option == 0 )  // ECOM1
                 {
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->num_param = 5;
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->type_opt = 0;
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->parameters.resize(5);
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->m_dadp.resize(3, 5);
+                    num_param =5;
                 }
                 else if(config.emp_option == 1) // ECOM2
                 {
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->num_param = 7;
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->type_opt = 1;
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->parameters.resize(7);
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->m_dadp.resize(3, 7);
+                    num_param =7;
                 }
                 else if(config.emp_option == 2) //DREMT
                 {
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->num_param = 6;
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->type_opt = 2;
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->parameters.resize(6);
-                    ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->m_dadp.resize(3, 6);
+                    num_param = 6;
                 }
+                
+                else if(config.emp_option == 3) //reduced ECOM2
+                {
+                    num_param = 7;
+                }
+                
+                ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->num_param = num_param;
+                ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->type_opt = config.emp_option;
+                ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->parameters.resize(num_param);
+                ((GFMSolarRadiationPressureEM*)modelMgr.m_forceModels["GFMEMP"])->m_dadp.resize(3, num_param);
                 
                 
                
