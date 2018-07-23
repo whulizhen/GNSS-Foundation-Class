@@ -222,7 +222,7 @@ namespace gfc
         (   spacecraft->getSpaceCraftGemotry()->solarArray[1].emmisivity*pow( m_temperatures[2],4.0)
          -  spacecraft->getSpaceCraftGemotry()->solarArray[0].emmisivity*pow( m_temperatures[0],4.0)
          )/c;
-        
+        // the direction of the force is opposite to the solar panel normal, here magnitude is negative
         GVector force = magnitude*spacecraft->getStatePointer()->attitude_eci.phat;
         
         setForce(force);

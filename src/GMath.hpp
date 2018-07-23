@@ -456,6 +456,10 @@ namespace gfc
         
         
         /* quadratic, cubic and quartic equation solution */
+        
+        static unsigned int solveP3(double *x,double a,double b,double c);
+        static unsigned int solve_quartic(double a, double b, double c, double d,double x[4] );
+        
         static unsigned int quadraticSolver(double * ce,  double * roots);
         static unsigned int cubicSolver(double * ce, double *roots);
         static unsigned int quarticSolver(double * ce, double *roots);

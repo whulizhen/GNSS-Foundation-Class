@@ -49,28 +49,39 @@ using namespace gfc;
 int main( int argc,char* argv[] )
 {
     
-    GString sp3dir = "/Users/lizhen/experiments/data/sp3/2015codesp3/";
+    double xx[4];
+    double cex[4]={0,3/8.0*2*2,-2,-1};
+    int sol_num = GMath::solve_quartic(cex[0], cex[1], cex[2], cex[3], xx);
+    
+    GString sp3dir = "/Users/lizhen/experiments/data/sp3/2016codesp3/";
     // testing data
-    argv[1] = "/Users/lizhen/experiments/data/gfcsetup.cfg";
+   //argv[1] = "/Users/lizhen/experiments/data/gfcsetup_test.cfg";
+    argv[1] = "/Users/lizhen/papers/eclipse_shadow_function/data_for_eclipse/E24/gfcsetup.cfg";
     argv[2] = "ssGAL";  //satellite system;
-    argv[3] = "11";     //prn
-    
-    
+    argv[3] = "24";     //prn
+
+
     //for orbit fit test,comparing with PANDA
-    //argv[4] = "2016 10 14 0 0 0.00000000"; // start time in GPST
-    //argv[5] = "2016 10 17 0 0 0.00000000"; // end time in GPST
+//argv[4] = "2016 03 8 6 0 0.00000000"; // start time in GPST
+//argv[5] = "2016 03 17 8 0 0.00000000"; // end time in GPST
+//argv[6]="com18870.sp3,com18871.sp3,com18872.sp3,com18873.sp3,com18874.sp3,com18875.sp3,com18876.sp3,com18880.sp3,com18881.sp3,com18882.sp3,com18883.sp3,com18884.sp3,com18885.sp3,com18886.sp3,com18890.sp3";
+//
+//
+    argv[4] = "2016 01 10  6 0 0.00000000"; // start time in GPST
+    argv[5] = "2016 01 17  8 0 0.00000000"; // end time in GPST
+    argv[6] ="com18775.sp3,com18776.sp3,com18780.sp3,com18781.sp3,com18782.sp3,com18783.sp3,com18784.sp3,com18785.sp3,com18786.sp3,com18790.sp3,com18791.sp3,com18792.sp3,com18793.sp3,com18794.sp3,com18795.sp3,com18796.sp3,com18800.sp3,com18801.sp3";
     
-    /*
-    argv[4] = "2015 3 11 20 0 0.00000000"; // start time in GPST
-    argv[5] = "2015 3 14 20 0 0.00000000"; // end time in GPST
-    argv[6] ="com18353.sp3,com18354.sp3,com18355.sp3,com18356.sp3,com18360.sp3,com18361.sp3,com18362.sp3,com18363.sp3,com18364.sp3,com18365.sp3,com18366.sp3,com18370.sp3";
-    */
+    
+//    argv[4] = "2015 3 11 20 0 0.00000000"; // start time in GPST
+//    argv[5] = "2015 3 16 20 0 0.00000000"; // end time in GPST
+//    argv[6] ="com18353.sp3,com18354.sp3,com18355.sp3,com18356.sp3,com18360.sp3,com18361.sp3,com18362.sp3,com18363.sp3,com18364.sp3,com18365.sp3,com18366.sp3,com18370.sp3";
+    
     
     //non eclipse test
-    //argv[4] = "2015 3 8 3 0 0.00000000"; // start time in GPST
-    //argv[5] = "2015 3 10 3 0.00000000"; // end time in GPST
-    //argv[6] = "sp3/codsp3-2015/com18342.sp3,sp3/codsp3-2015/com18343.sp3,sp3/codsp3-2015/com18344.sp3,sp3/codsp3-2015/com18345.sp3,sp3/codsp3-2015/com18346.sp3,sp3/codsp3-2015/com18350.sp3,sp3/codsp3-2015/com18351.sp3,sp3/codsp3-2015/com18352.sp3,sp3/codsp3-2015/com18353.sp3,sp3/codsp3-2015/com18354.sp3,sp3/codsp3-2015/com18355.sp3";
-    
+//    argv[4] = "2015 3 4 3 0 0.00000000"; // start time in GPST
+//    argv[5] = "2015 3 13 3 0.00000000"; // end time in GPST
+//    argv[6] = "com18342.sp3,com18343.sp3,com18344.sp3,com18345.sp3,com18346.sp3,com18350.sp3,com18351.sp3,com18352.sp3,com18353.sp3,com18354.sp3,com18355.sp3,com18356.sp3,com18360.sp3,com18361.sp3,com18362.sp3,com18363.sp3,com18364.sp3,com18365.sp3";
+
     
     
     //2014 data
@@ -88,13 +99,14 @@ int main( int argc,char* argv[] )
     
     
     //eclipse orbit prediction test
-    argv[4] = "2015 1 8 17 24 58.00000000"; // start time in GPST
-    argv[5] = "2015 1 10 17 36 58.00000000"; // end time in GPST
-    argv[6] = "com18264.sp3,com18265.sp3,com18266.sp3,com18270.sp3,com18271.sp3,com18272.sp3,com18273.sp3,com18274.sp3,com18275.sp3,com18276.sp3,com18280.sp3,com18281.sp3,com18282.sp3,com18283.sp3";
+    
+//    argv[4] = "2015 1 8 17 24 58.00000000"; // start time in GPST
+//    argv[5] = "2015 1 10 17 36 58.00000000"; // end time in GPST
+//    argv[6] = "com18264.sp3,com18265.sp3,com18266.sp3,com18270.sp3,com18271.sp3,com18272.sp3,com18273.sp3,com18274.sp3,com18275.sp3,com18276.sp3,com18280.sp3,com18281.sp3,com18282.sp3,com18283.sp3";
     
     
     argv[7] = "1";  // 0 for without fitting, 1 for with fitting
-    argv[8] = "48";  // the hours for orbit fitting measured from the start time
+    argv[8] = "2";  // the hours for orbit fitting measured from the start time
     argv[9] = "./";  // the directory of the log files
     
     /*
@@ -111,8 +123,6 @@ int main( int argc,char* argv[] )
     GConfigure config;
     config.parseCfg(configfile);
     
-    
-    
     GForceModelMgr myforceModelManager;
     config.configForceModelMgr(myforceModelManager);
     
@@ -126,8 +136,6 @@ int main( int argc,char* argv[] )
     
     GEarthOrientationParameter::loadEOP(config.config.eopfile);
     
-    
-    
     GString satsys = argv[2];
     int satprn = atoi(argv[3]);
     
@@ -140,6 +148,7 @@ int main( int argc,char* argv[] )
     std::vector<GString> sp3file = sp3filelist.split(',');
     for(int i = 0 ; i< sp3file.size(); i++ )
     {
+        //GSpaceCraftMgr::loadPreciseEphemeris(sp3file[i]);
         GSpaceCraftMgr::loadPreciseEphemeris(sp3dir + sp3file[i]);
     }
     
@@ -361,7 +370,7 @@ int main( int argc,char* argv[] )
     //mysat.getEphValue(start_gps).getPV(ps,vs);  // these values are in ECEF
     
     mysat.getEphValue_test(start_gps).getPV(ps,vs);  // these values are in ECEF
-    
+    //ps.x += 0.05/1000.0;
     
     GSpaceEnv::updateSpaceEnvironment(start_utc);
     mysat.getStatePointer()->updateState_ecef(start_utc, ps, vs);
@@ -412,6 +421,7 @@ int main( int argc,char* argv[] )
         //orbfit.calculate_SRPModel();
         
         myforceModelManager = orbfit.getForceManager();
+        
     }
     
     
@@ -492,7 +502,7 @@ int main( int argc,char* argv[] )
         GVector mean_data;
         int obscount = 0;
         
-        double interval = 30.0;  // 15 minutes
+        double interval = 900.0;  // 15 minutes
         
         double t0 = clock();
         //double tt = 0.0;
@@ -524,6 +534,9 @@ int main( int argc,char* argv[] )
             GSpaceEnv::eop.ECI2ECEF_pos(mp_eci, p2);
             
             GSpaceEnv::eop.ECI2ECEF_vel(mp_eci, mv_eci, v2);
+            
+            op.addStateInformation(p1, v1);
+            op.outputLog();
             
             predictedOrbit.push_back(mp_eci);
             preciseOrbit.push_back(p1);
@@ -575,7 +588,7 @@ int main( int argc,char* argv[] )
             
             rms_data.push_back(diff_rtn);
             
-            printf("%s, %.8f, %.8f, %.8f, %.8f, \n",timeUTC[i].TimeString().c_str(), diff_rtn.x,diff_rtn.y,diff_rtn.z ,diff_rtn.norm());
+            //printf("%s, %.8f, %.8f, %.8f, %.8f, \n",timeUTC[i].TimeString().c_str(), diff_rtn.x,diff_rtn.y,diff_rtn.z ,diff_rtn.norm());
         }
         
         

@@ -883,7 +883,10 @@ namespace gfc
                 attitude.push_back(m_spaceCraft->getStatePointer()->attitude_eci);
                 
                 //output the acc
-                acc_eci.push_back(m_forceManager.m_forceModels["GFMEMP"]->getForce());
+                if(np != 0)
+                {
+                    acc_eci.push_back(m_forceManager.m_forceModels["GFMEMP"]->getForce());
+                }
                 
                 //printf("%s, %f\n",GTime::GTime2CivilTime(ct_utc).TimeString().c_str(),m_spaceCraft->getStatePointer()->shadow_factor);
                 
@@ -1116,21 +1119,25 @@ namespace gfc
                     
                     GString timeStr =  GTime::GTime2CivilTime(time_fit[i]).TimeString();
                     
-                    GVector acc_xyz = acc_eci[i];
                     GVector acc_dyb;
-                    
-                    
-                    GVector& ed = attitude[i].eD;
-                    GVector& ey = attitude[i].eY;
-                    GVector& eb = attitude[i].eB;
-                    GMatrix T(3,3);
-                    T(0,0) = ed.x ; T(0,1) = ey.x; T(0,2) = eb.x;
-                    T(1,0) = ed.y ; T(1,1) = ey.y; T(1,2) = eb.y;
-                    T(2,0) = ed.z ; T(2,1) = ey.z; T(2,2) = eb.z;
-                    //they are in m/s^2
-                    acc_dyb.x = T(0,0) * acc_xyz.x + T(1,0)*acc_xyz.y + T(2,0)*acc_xyz.z;
-                    acc_dyb.y = T(0,1) * acc_xyz.x + T(1,1)*acc_xyz.y + T(2,1)*acc_xyz.z;
-                    acc_dyb.z = T(0,2) * acc_xyz.x + T(1,2)*acc_xyz.y + T(2,2)*acc_xyz.z;
+                    GVector acc_xyz;
+                    if(np != 0)
+                    {
+                        acc_xyz = acc_eci[i];
+                        
+                        GVector& ed = attitude[i].eD;
+                        GVector& ey = attitude[i].eY;
+                        GVector& eb = attitude[i].eB;
+                        GMatrix T(3,3);
+                        T(0,0) = ed.x ; T(0,1) = ey.x; T(0,2) = eb.x;
+                        T(1,0) = ed.y ; T(1,1) = ey.y; T(1,2) = eb.y;
+                        T(2,0) = ed.z ; T(2,1) = ey.z; T(2,2) = eb.z;
+                        //they are in m/s^2
+                        acc_dyb.x = T(0,0) * acc_xyz.x + T(1,0)*acc_xyz.y + T(2,0)*acc_xyz.z;
+                        acc_dyb.y = T(0,1) * acc_xyz.x + T(1,1)*acc_xyz.y + T(2,1)*acc_xyz.z;
+                        acc_dyb.z = T(0,2) * acc_xyz.x + T(1,2)*acc_xyz.y + T(2,2)*acc_xyz.z;
+                    }
+                   
                     
                     
                     
@@ -1139,7 +1146,7 @@ namespace gfc
 //                            timeStr.c_str(), phi[i], eta[i], beta[i], eps[i], acc_dyb.x,acc_dyb.y,acc_dyb.z );
                     
                     fprintf(fout, "%s %8.6f %8.6f %8.6f %8.6f %20.8f %20.8f %20.8f %20.8f %20.8f %20.8f %20.12E %20.12E %20.12E %20.12E %20.12E %20.12E\n",
-                            timeStr.c_str(), phi[i], eta[i], beta[i], eps[i], pos_fit[i].x,pos_fit[i].y,pos_fit[i].z,pos_obs[i].x,pos_obs[i].y,pos_obs[i].z,acc_eci[i].x,acc_eci[i].y,acc_eci[i].z,acc_dyb.x,acc_dyb.y,acc_dyb.z );
+                            timeStr.c_str(), phi[i], eta[i], beta[i], eps[i], pos_fit[i].x,pos_fit[i].y,pos_fit[i].z,pos_obs[i].x,pos_obs[i].y,pos_obs[i].z,acc_xyz.x,acc_xyz.y,acc_xyz.z,acc_dyb.x,acc_dyb.y,acc_dyb.z );
                     
                     
                 }

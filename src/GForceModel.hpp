@@ -219,7 +219,7 @@ class GFMAntennaThrust : public GForceModel {
             setForceName("GFMBFSbias");
         }
         
-        // ybias is in Nano Newton
+        // ybias is in nm s^{-2}
         void setParam(GVector bias)
         {
             m_bias = bias*1.0E-9;

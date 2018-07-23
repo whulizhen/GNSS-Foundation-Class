@@ -181,6 +181,7 @@ namespace gfc
         //GLS
         //GAL
         modelstorage["GALIOV"] = mymodel;
+        modelstorage["GALFOC"] = mymodel;
         
         return modelstorage;
     }
@@ -213,6 +214,11 @@ namespace gfc
                 {
                     memset(tmp,0,sizeof(char)*2048);
                     infile.getline(tmp, 2048);
+                    
+                    if (strstr(tmp,"//") )
+                    {
+                        continue;
+                    }
                     
                     GString str(tmp);
                     
@@ -458,10 +464,11 @@ namespace gfc
                     }
                     else if(strstr(tmp,"BFSbias"))
                     {
+                        // in the unit of nm/s^{-2}
                         split = str.split();
-                        mymodel.m_bias.x = split[1].asDOUBLE()*mymodel.m_mass;
-                        mymodel.m_bias.y = split[2].asDOUBLE()*mymodel.m_mass;
-                        mymodel.m_bias.z = split[3].asDOUBLE()*mymodel.m_mass;
+                        mymodel.m_bias.x = split[1].asDOUBLE();
+                        mymodel.m_bias.y = split[2].asDOUBLE();
+                        mymodel.m_bias.z = split[3].asDOUBLE();
                         
                         //printf("18\n");
                     }

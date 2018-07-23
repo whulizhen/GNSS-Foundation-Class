@@ -194,19 +194,26 @@ int main(int argc, char* argv[])
     
     // testing data
     
-    GString sp3dir = "/Users/lizhen/experiments/data/sp3/2015codesp3/";
+    GString sp3dir = "/Users/lizhen/experiments/data/sp3/2016codesp3/";
     
-    argv[1] = "/Users/lizhen/experiments/data/gfcsetup.cfg";
+    argv[1] = "/Users/lizhen/experiments/data/gfcsetup_test.cfg";
     argv[2] = "ssGAL";  //satellite system; ssGRACE
-    argv[3] = "11";     //prn
+    argv[3] = "22";     //prn
     
     //2015/01/11/18:34:25.000000
-    //argv[4] = "2015 1 11 17 34 30.00000000"; // start time in GPST
-    //argv[5] = "2015 1 11 17 36 04.00000000"; // end time in GPST
+//    argv[4] = "2015 1 11 17 34 30.00000000"; // start time in GPST
+//    argv[5] = "2015 1 12 17 34 30.00000000"; // end time in GPST
+    
+    
+    argv[4] = "2016 01 7  15 28 22.00000000"; // start time in GPST
+    argv[5] = "2016 01 7 15 28 40.00000000"; // end time in GPST
+    argv[6] ="com18775.sp3,com18776.sp3,com18780.sp3,com18781.sp3,com18782.sp3,com18783.sp3,com18784.sp3,com18785.sp3,com18786.sp3,com18790.sp3,com18791.sp3,com18792.sp3,com18793.sp3,com18794.sp3,com18795.sp3";
+    
+    
     
     //for galileo
     //argv[4] = "2015 1 11 18 33 04.00000000"; // start time in GPST
-    //argv[5] = "2015 1 11 18 34 28.00000000"; // end time in GPST
+    //argv[5] = "2015 1 11 18 34 40.00000000"; // end time in GPST
     
     //for bds
     //argv[4] = "2015 01 01 00 00 00.00000000"; // start time in GPST
@@ -243,15 +250,15 @@ int main(int argc, char* argv[])
     //argv[5] = "2015 1 10 14 23 50.00000000"; // end time in GPST
     
     
-    argv[4] = "2015 1 11 17 34 30.00000000"; // start time in GPST
-    argv[5] = "2015 1 11 17 36 5.00000000"; // end time in GPST
+    //argv[4] = "2015 1 11 17 34 30.00000000"; // start time in GPST
+    //argv[5] = "2015 1 11 17 36 5.00000000"; // end time in GPST
     
     //argv[4] = "2015 1 11 18 33 5.00000000"; // start time in GPST
     //argv[5] = "2015 1 11 18 34 40.00000000"; // end time in GPST
     
     
     
-    argv[6] = "com18264.sp3,com18265.sp3,com18266.sp3,com18270.sp3,com18271.sp3,com18272.sp3,com18273.sp3,com18274.sp3,com18275.sp3,com18276.sp3,com18280.sp3,com18281.sp3,com18282.sp3,com18283.sp3";
+    //argv[6] = "com18264.sp3,com18265.sp3,com18266.sp3,com18270.sp3,com18271.sp3,com18272.sp3,com18273.sp3,com18274.sp3,com18275.sp3,com18276.sp3,com18280.sp3,com18281.sp3,com18282.sp3,com18283.sp3";
     
     
     
@@ -421,7 +428,7 @@ mykpe(6838.48265785065597999,0.00303136072481130849909,1.55413552698389439467,1.
         //double shadow_factor = GMotionState::shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN] , mp_ecef);
         
         
-        printf("%s %f\n",GTime::GTime2CivilTime(epoch_gps).TimeString().c_str(), shadow_factor );
+        printf("%s %f %f\n",GTime::GTime2CivilTime(epoch_gps).TimeString().c_str(), shadow_factor,mysat.getStatePointer()->attitude_eci.eta*180/3.1415926 );
         
         
         //mysat.getStatePointer()->updateState_ecef(epoch_utc, mp_ecef, mv_ecef);

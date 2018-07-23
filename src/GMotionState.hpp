@@ -65,6 +65,11 @@ namespace gfc
         
         static int perspectiveProjection(double a, double b,GVector& sunpos_eci, GVector& satpos_eci, double& r_solar,double& S, double* EC_intersection,double* EC );
         
+        static double area_ellispe(double Q1[2], double Q2[2], double Os[2], double Rs,double a, double b, bool in_out);
+        static double area_hyperbola(double Q1[2], double Q2[2], double Os[2], double Rs,double a, double b, bool in_out, bool x_axis);
+        
+        static int myperspectiveProjection(double a, double b, GVector& sunpos_ecef, GVector& satpos_ecef, double& r_solar, double& area_bright, double& dis_boundary, double& dis_circle);
+        
         static double myshadowFactor(GVector& sunpos_eci, GVector& satpos_eci);
         
         

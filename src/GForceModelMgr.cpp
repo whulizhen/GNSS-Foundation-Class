@@ -236,7 +236,8 @@ namespace gfc
                 ((GFMBFSbias *)it->second)->doCompute(nx,ny,nz);
                 
                 f_eci =  it->second->getForce();
-                a_eci += (f_eci/spacecraft->getSpaceCraftGemotry()->m_mass);
+                a_eci += f_eci;
+                //a_eci += (f_eci/spacecraft->getSpaceCraftGemotry()->m_mass);
                 dadr += it->second->m_dadr;
             }
             
