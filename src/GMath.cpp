@@ -1489,33 +1489,17 @@ namespace gfc
     // Attention - this function returns dynamically allocated array. It has to be released afterwards.
     unsigned int GMath::solve_quartic(double a, double b, double c, double d,double x[4] )
     {
-        double eps = 1e-9;
+        double eps = 1e-6;
         int num_real = 0;
         std::complex<double> retval[4];
         
         // https://math.stackexchange.com/questions/785/is-there-a-general-formula-for-solving-4th-degree-equations-quartic
         double A = b - 3.0/8.0*a*a;
         double B = c - a*b/2.0 + a*a*a/8.0;
-        double C = d - a*c/4.0 + a*a*b/16.0 - 3*a*a*a*a/256;
+        double C = d - a*c/4.0 + a*a*b/16.0 - 3.0*a*a*a*a/256;
+        //original quartic turns to y^4 + Ay^2 + By + C = 0
         
-        double coef3[3]={0.0};
-        coef3[0] = -A/2.0;
-        coef3[1] = -C;
-        coef3[2] = (4*A*C-B*B)/8;
-        double x3[3];
-        unsigned int iZeroes = solveP3(x3, coef3[0], coef3[1], coef3[2]);
-        double s = x3[0];
-        // The essence - choosing s with maximal absolute value.
-        if(iZeroes != 1)
-        {
-            if( fabs(x3[1]) > fabs(s)) s = x3[1];
-            if( fabs(x3[2]) > fabs(s)) s = x3[2];
-        }
-
-
-        // what is the solution ? A= 2s, i.e. B==0
-        // y^4 + Ay^2 + C = 0
-        if( fabs(B)< eps)
+        if( fabs(B)< eps) //// what is the solution ? A= 2s, i.e. B==0 // y^4 + Ay^2 + C = 0
         {
             double D = A*A -4*C;
             complex<double> x1 = (-A + sqrt(D))*0.5;
@@ -1528,18 +1512,44 @@ namespace gfc
         }
         else
         {
+            double coef3[3]={0.0};
+            coef3[0] = -A/2.0;
+            coef3[1] = -C;
+            coef3[2] = (4*A*C-B*B)/8.0;
+            
+//            coef3[0] = A;
+//            coef3[1] = A*A/4.0 - C;
+//            coef3[2] = -B*B/8.0;
+//
+            
+            
+            double x3[3];
+            unsigned int iZeroes = solveP3(x3, coef3[0], coef3[1], coef3[2]);
+            double s = x3[0];
+            // The essence - choosing s with maximal absolute value. s should not be ZERO!
+            if(iZeroes != 1)
+            {
+                if( fabs(x3[1]) > fabs(s)) s = x3[1];
+                if( fabs(x3[2]) > fabs(s)) s = x3[2];
+            }
+            
             complex<double> sqD1 = sqrt(2*s -A);
             complex<double> sqD2 = sqrt(-2*s - A + 2*B/sqD1);
             complex<double> sqD3 = sqrt(-2*s - A - 2*B/sqD1);
-
+            
             retval[0] = -0.5*sqD1 + 0.5*sqD2 - a/4.0;
             retval[1] = -0.5*sqD1 - 0.5*sqD2 - a/4.0;
             retval[2] =  0.5*sqD1 + 0.5*sqD3 - a/4.0;
             retval[3] =  0.5*sqD1 - 0.5*sqD3 - a/4.0;
+            //
+//            complex<double> delta1 = sqrt( 2*s - 4.0*( A/2.0 + s - B/2.0/sqrt(2.0*s) )  );
+//            complex<double> delta2 = sqrt( 2*s - 4.0*( A/2.0 + s + B/2.0/sqrt(2.0*s) )  );
+//            retval[0] = -0.5*sqrt(2*s) + 0.5*delta1 - a/4.0;
+//            retval[1] = -0.5*sqrt(2*s) - 0.5*delta1 - a/4.0;
+//            retval[2] =  0.5*sqrt(2*s) + 0.5*delta2 - a/4.0;
+//            retval[3] =  0.5*sqrt(2*s) - 0.5*delta2 - a/4.0;
+            
         }
-        
-        
-        
         
         
         

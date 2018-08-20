@@ -176,6 +176,7 @@ namespace gfc
         GVector totalFlux_sw;
         
         int m_level;   // the level for the current choice
+        std::vector< triGridFlux > vis_triangles;
         
         GEarthRadiationFlux();
         

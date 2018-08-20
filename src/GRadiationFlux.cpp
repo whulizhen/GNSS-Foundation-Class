@@ -199,6 +199,8 @@ namespace gfc
     GEarthRadiationFlux::GEarthRadiationFlux()
     {
         m_level = maxLevel;
+        vis_triangles.reserve(4*pow(4,m_level));
+        m_flux.reserve(4*pow(4,m_level));
     }
     
     //compute the polygon area on spheres
@@ -1267,68 +1269,54 @@ namespace gfc
     
     void gfc::GEarthRadiationFlux::Flux_ceres(int imonth, GVector& sunpos_ecef, GVector& satpos_ecef, double dis_satpos)
     {
-        double pi = GCONST("PI");
-        
-        double c = GCONST("CLIGHT");
-        
-        fluxdata ecef_flux;
-        
-        
-        std::vector< triGridFlux > vis_triangles;
-        vis_triangles.reserve(4*pow(4,m_level));
-        m_flux.reserve(4*pow(4,m_level));
-        //m_level = 0;
-        //visibleArea( satpos_ecef, ERPgrid[imonth],vis_triangles);
-        
-        visibleArea_origin(satpos_ecef, ERPgrid_t[imonth], vis_triangles);
-        
-        outputVisibleTri_py( vis_triangles );
-        
-        double sin_sun_elev = 0.0, r_minus_p_mag=0.0, r_minus_p_mag2 = 0.0, coef =0.0;
+       double pi = 3.14159265357;
         
         GVector p(0.0,0.0,0.0);
+        fluxdata ecef_flux;
+        int levelID = m_level;
+       
+        double coef =0.0;
         
-        //GVector totalFlux;
-        
-        for( int i =0; i< vis_triangles.size(); i++ )
+        for (int i = 0 ; i< ERPgrid_t[imonth][levelID].size(); i++ )
         {
-            p.set( vis_triangles[i].centroid.xyz[0], vis_triangles[i].centroid.xyz[1], vis_triangles[i].centroid.xyz[2]);
+            GVector gridpos(ERPgrid_t[imonth][levelID][i].centroid.xyz[0], ERPgrid_t[imonth][levelID][i].centroid.xyz[1], ERPgrid_t[imonth][levelID][i].centroid.xyz[2]);
             
-            GVector r_p =  satpos_ecef - p;
+            double r_grid = gridpos.norm();
             
-            GVector s_p =  sunpos_ecef - p;
+            GVector satmgrid = satpos_ecef - gridpos;
             
-            ecef_flux.m_dir = normalise(p);
+            GVector sunmgrid = sunpos_ecef - gridpos;
             
-            double cos_theta = dotproduct(r_p, p)/(r_p.norm()*p.norm());
+            double r_satmgrid = satmgrid.norm();
             
-            coef = vis_triangles[i].area * cos_theta /( pi*r_p.norm2() );
+            double cos_theta = dotproduct(gridpos, satmgrid)/(r_grid*satmgrid.norm());
             
-            ecef_flux.m_longwave =  vis_triangles[i].longwave*coef;
-            ecef_flux.m_shortwave = vis_triangles[i].shortwave*coef;
+            double cos_theta_s = dotproduct(gridpos, sunmgrid)/ (r_grid*sunmgrid.norm());
             
-            //if invisible for the Sun, the shortwave flux is set to be 0
-            if(dotproduct(s_p, p) < 0.0 )
+            // the direction of the earth radiation flux
+            ecef_flux.m_dir = normalise(gridpos);
+            
+            if( cos_theta > 0 ) // visible for the satellite
             {
-                ecef_flux.m_shortwave = 0.0;
+                
+                //vis_triangles.push_back(ERPgrid_t[imonth][levelID][i]);
+                
+                coef = ERPgrid_t[imonth][levelID][i].area*cos_theta/(pi*r_satmgrid*r_satmgrid);
+
+                ecef_flux.m_longwave = ERPgrid_t[imonth][levelID][i].longwave*coef;
+
+                ecef_flux.m_shortwave = ERPgrid_t[imonth][levelID][i].shortwave*coef;
+                
+                if( cos_theta_s <= 0) // invisible for the sun
+                {
+                     ecef_flux.m_shortwave = 0.0;
+                }
+                
+                totalFlux_lw +=  ecef_flux.m_dir* ecef_flux.m_longwave;
+                totalFlux_sw +=  ecef_flux.m_dir* ecef_flux.m_shortwave;
             }
-            
-            //m_flux.push_back(ecef_flux);
-            
-            totalFlux_lw += ecef_flux.m_dir*ecef_flux.m_longwave;
-            totalFlux_sw += ecef_flux.m_dir*ecef_flux.m_shortwave;
         }
-        
-       // double test = 0.0;
-       // for( int i = 0 ; i< m_flux.size(); i++ )
-       // {
-       //     test += (m_flux[i].m_longwave+ m_flux[i].m_shortwave);
-       // }
-        
-        //totalFlux_lw = totalFlux_lw.norm()*normalise(satpos_ecef);
-        //totalFlux_sw = totalFlux_sw.norm()*normalise(satpos_ecef);
-        
-        int test_int = 0;
+        //outputVisibleTri_py( vis_triangles );
     }
     
     
@@ -1343,20 +1331,32 @@ namespace gfc
         totalFlux_sw.y =0.0;
         totalFlux_sw.z =0.0;
         
-        if( ceres_tri == true)
+        //struct timespec requestStart, requestEnd;
+        //double accum = 0.0;
+        if(ceres_tri == true)
         {
+            //clock_gettime(CLOCK_REALTIME, &requestStart);
             Flux_ceres( imonth, sunpos_ecef, satpos_ecef, dis_satpos);
+            //clock_gettime(CLOCK_REALTIME, &requestEnd);
+            //accum = ( requestEnd.tv_sec - requestStart.tv_sec )*1.0E9 +( requestEnd.tv_nsec - requestStart.tv_nsec );
+            //accum = accum /1.0E6;
         }
         else if(ceres_original == true)
         {
-             Flux_ceresOriginal( imonth, sunpos_ecef, satpos_ecef, dis_satpos);
+            //int testc = 0;
+            //clock_gettime(CLOCK_REALTIME, &requestStart);
+            Flux_ceresOriginal( imonth, sunpos_ecef, satpos_ecef, dis_satpos);
+            //clock_gettime(CLOCK_REALTIME, &requestEnd);
+            //accum = ( requestEnd.tv_sec - requestStart.tv_sec )*1.0E9
+            //+ ( requestEnd.tv_nsec - requestStart.tv_nsec );
+            //accum = accum /1.0E6;
         }
         else if(simple==true)
         {
             Flux_simple( sunpos_ecef,satpos_ecef, dis_satpos);
         }
         
-        
+        //printf( "%f\n", accum );
         
 //        for( int i =0; i< m_flux.size() ; i++ )
 //        {

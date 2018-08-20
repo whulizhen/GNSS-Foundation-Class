@@ -49,16 +49,16 @@ using namespace gfc;
 int main( int argc,char* argv[] )
 {
     
-    double xx[4];
-    double cex[4]={0,3/8.0*2*2,-2,-1};
-    int sol_num = GMath::solve_quartic(cex[0], cex[1], cex[2], cex[3], xx);
+//    double xx[4];
+//    double cex[4]={0,3/8.0*2*2,-2,-1};
+//    int sol_num = GMath::solve_quartic(cex[0], cex[1], cex[2], cex[3], xx);
     
-    GString sp3dir = "/Users/lizhen/experiments/data/sp3/2016codesp3/";
+    GString sp3dir = "/Users/lizhen/experiments/data/sp3/2015codesp3/";
     // testing data
-   //argv[1] = "/Users/lizhen/experiments/data/gfcsetup_test.cfg";
-    argv[1] = "/Users/lizhen/papers/eclipse_shadow_function/data_for_eclipse/E24/gfcsetup.cfg";
+    argv[1] = "/Users/lizhen/experiments/data/gfcsetup_test.cfg";
+    //argv[1] = "/Users/lizhen/papers/eclipse_shadow_function/data_for_eclipse/E24/gfcsetup.cfg";
     argv[2] = "ssGAL";  //satellite system;
-    argv[3] = "24";     //prn
+    argv[3] = "11";     //prn
 
 
     //for orbit fit test,comparing with PANDA
@@ -67,13 +67,13 @@ int main( int argc,char* argv[] )
 //argv[6]="com18870.sp3,com18871.sp3,com18872.sp3,com18873.sp3,com18874.sp3,com18875.sp3,com18876.sp3,com18880.sp3,com18881.sp3,com18882.sp3,com18883.sp3,com18884.sp3,com18885.sp3,com18886.sp3,com18890.sp3";
 //
 //
-    argv[4] = "2016 01 10  6 0 0.00000000"; // start time in GPST
-    argv[5] = "2016 01 17  8 0 0.00000000"; // end time in GPST
-    argv[6] ="com18775.sp3,com18776.sp3,com18780.sp3,com18781.sp3,com18782.sp3,com18783.sp3,com18784.sp3,com18785.sp3,com18786.sp3,com18790.sp3,com18791.sp3,com18792.sp3,com18793.sp3,com18794.sp3,com18795.sp3,com18796.sp3,com18800.sp3,com18801.sp3";
+//    argv[4] = "2016 01 12  0 0 0.00000000"; // start time in GPST
+//    argv[5] = "2016 01 13  0 0 0.00000000"; // end time in GPST
+//    argv[6] ="com18775.sp3,com18776.sp3,com18780.sp3,com18781.sp3,com18782.sp3,com18783.sp3,com18784.sp3,com18785.sp3,com18786.sp3,com18790.sp3,com18791.sp3,com18792.sp3,com18793.sp3,com18794.sp3,com18795.sp3,com18796.sp3,com18800.sp3,com18801.sp3,com18802.sp3,com18803.sp3,com18804.sp3,com18805.sp3,com18806.sp3,com18810.sp3";
     
     
 //    argv[4] = "2015 3 11 20 0 0.00000000"; // start time in GPST
-//    argv[5] = "2015 3 16 20 0 0.00000000"; // end time in GPST
+//    argv[5] = "2015 3 12 20 0 0.00000000"; // end time in GPST
 //    argv[6] ="com18353.sp3,com18354.sp3,com18355.sp3,com18356.sp3,com18360.sp3,com18361.sp3,com18362.sp3,com18363.sp3,com18364.sp3,com18365.sp3,com18366.sp3,com18370.sp3";
     
     
@@ -100,12 +100,12 @@ int main( int argc,char* argv[] )
     
     //eclipse orbit prediction test
     
-//    argv[4] = "2015 1 8 17 24 58.00000000"; // start time in GPST
-//    argv[5] = "2015 1 10 17 36 58.00000000"; // end time in GPST
-//    argv[6] = "com18264.sp3,com18265.sp3,com18266.sp3,com18270.sp3,com18271.sp3,com18272.sp3,com18273.sp3,com18274.sp3,com18275.sp3,com18276.sp3,com18280.sp3,com18281.sp3,com18282.sp3,com18283.sp3";
+    argv[4] = "2015 1 9 17 00 00.00000000"; // start time in GPST
+    argv[5] = "2015 1 10 17 00 00.00000000"; // end time in GPST
+    argv[6] = "com18264.sp3,com18265.sp3,com18266.sp3,com18270.sp3,com18271.sp3,com18272.sp3,com18273.sp3,com18274.sp3,com18275.sp3,com18276.sp3,com18280.sp3,com18281.sp3,com18282.sp3,com18283.sp3";
     
     
-    argv[7] = "1";  // 0 for without fitting, 1 for with fitting
+    argv[7] = "0";  // 0 for without fitting, 1 for with fitting
     argv[8] = "2";  // the hours for orbit fitting measured from the start time
     argv[9] = "./";  // the directory of the log files
     
@@ -121,9 +121,23 @@ int main( int argc,char* argv[] )
     GString configfile = argv[1];
     
     GConfigure config;
-    config.parseCfg(configfile);
     
+//    struct timespec requestStart, requestEnd;
+//    double accum = 0.0;
+//    clock_gettime(CLOCK_REALTIME, &requestStart);
+//
+//    clock_gettime(CLOCK_REALTIME, &requestEnd);
+//    accum = ( requestEnd.tv_sec - requestStart.tv_sec )*1.0E9
+//    + ( requestEnd.tv_nsec - requestStart.tv_nsec );
+//    accum = accum /1.0E6;
+//    printf("%f\n",accum);
+    
+    config.parseCfg(configfile);
     GForceModelMgr myforceModelManager;
+    
+    
+   
+    
     config.configForceModelMgr(myforceModelManager);
     
     //printf("read spacecraft1 %s\n", config.config.spacecraftmodel.c_str());

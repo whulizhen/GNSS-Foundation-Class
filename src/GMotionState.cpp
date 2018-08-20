@@ -94,21 +94,25 @@ namespace gfc
             
             //GVector mysunpos_eci = GSpaceEnv::planetPos_eci[GJPLEPH::SUN];
             
+//            if(!strcmp("2007/01/20/22:59:48.000000", GTime::GTime2CivilTime(epoch_utc).TimeString().c_str()))
+//            {
+//                int testc = 0;
+//            }
+            
             // get the eps angle
             eps = acos( dotproduct( sat_sun_eci , -satpos_eci)/dis_sat/dis_sat_sun );
             GVector sunpos_u_eci = normalise( GSpaceEnv::planetPos_eci[GJPLEPH::SUN] );
             
-            
-            
-            if(GTime::GTime2CivilTime(epoch_utc).TimeString().c_str()=="2016/01/15/17:19:02.166667" )
-            {
-                int tesc = 0;
-            }
             // myshadowFactor has bugs
-            shadow_factor = myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
-            //shadow_factor = shadowFactor_SECM(false,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+            shadow_factor = myshadowFactor(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+            //shadow_factor = GSpaceCraftAttitude::eclipse( satpos_eci,GSpaceEnv::planetPos_eci[GJPLEPH::SUN] );
             
-            if(shadow_factor < 0.0 || shadow_factor > 1.0)
+            //shadow_factor = shadowFactor_SECM(true,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+            
+            //shadow_factor = shadowFactor(<#double a#>, <#double b#>, GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
+            
+            //printf("%s : %f\n",GTime::GTime2CivilTime(epoch_utc).TimeString().c_str(), shadow_factor);
+            if(shadow_factor < 0.0 || shadow_factor > 1.0 || isnan(shadow_factor))
             {
                 printf("%s : %f \n",GTime::GTime2CivilTime(epoch_utc).TimeString().c_str(), shadow_factor);
                 int testc = 0;
@@ -211,18 +215,20 @@ namespace gfc
             dis_factor = (GCONST("AU")/dis_sat_sun)*(GCONST("AU")/dis_sat_sun);
             
             //// myshadowFactor has bugs
-            if(GTime::GTime2CivilTime(epoch_utc).TimeString().c_str()=="2016/01/15/17:19:02.166667" )
+            if(!strcmp(GTime::GTime2CivilTime(epoch_utc).TimeString().c_str(),"2015/01/09/21:29:18.166667") )
             {
                 int tesc = 0;
             }
-            shadow_factor = myshadowFactor(GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
+            
+            shadow_factor = myshadowFactor(GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
             //shadow_factor = shadowFactor_SECM(false,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], satpos_ecef);
+            //shadow_factor = GSpaceCraftAttitude::eclipse( satpos_eci,GSpaceEnv::planetPos_eci[GJPLEPH::SUN] );
             
             //printf("%s : %f \n",GTime::GTime2CivilTime(epoch_utc).TimeString().c_str(), shadow_factor);
             
             if(shadow_factor < 0.0 || shadow_factor > 1.0)
             {
-                printf("%s : %f \n",GTime::GTime2CivilTime(epoch_utc).TimeString().c_str(), shadow_factor);
+                printf("%s: %f\n",GTime::GTime2CivilTime(epoch_utc).TimeString().c_str(), shadow_factor);
                 int testc = 0;
             }
             
@@ -307,18 +313,20 @@ namespace gfc
     {
         static double pre_factor = 1.0;
         static bool first  = true;
+        bool static umbra_start = false;
+        
         double myfactor = 1.0;
         if(first == true)
         {
-            //myfactor = GMotionState::shadowFactor(XSun, XSat);
-            myfactor = GMotionState::shadowFactor_SECM(true, XSun, XSat);
+            myfactor = GMotionState::myshadowFactor(XSun,XSat);
+            //myfactor = GMotionState::shadowFactor_SECM(true, XSun, XSat);
             pre_factor = myfactor;
             first = false;
             return;
         }
    
-        //myfactor = GMotionState::shadowFactor(XSun, XSat);
-        myfactor = GMotionState::shadowFactor_SECM(true, XSun, XSat);
+        myfactor = GMotionState::myshadowFactor(XSun,XSat);
+        //myfactor = GMotionState::shadowFactor_SECM(true, XSun, XSat);
         //printf("%f %f\n",myfactor1,myfactor);
         
         //GTime     gpst =  epoch_gps;
@@ -332,27 +340,38 @@ namespace gfc
             //judge the eclipse event according to pre_facor and myfactor
             if(pre_factor == 1.0 && myfactor < 1.0)
             {
-                printf("eclipse_start: %16.10f ", ct  );
+                umbra_start=true;
+                //printf("eclipse_start: %16.10f\n", ct  );
+                printf("eclipse_start: %16.10f %s\n", ct, GTime::GTime2CivilTime(gpst).TimeString().c_str());
                 //printf("pre:%f -- cur:%f\n",pre_factor,myfactor);
             }
             else if(pre_factor > 0.0 && myfactor == 0.0)
             {
-                printf("umbra_s: %16.10f ", ct);
+                umbra_start = false;
+                //printf("umbra_s: %16.10f\n", ct);
+                printf("umbra_e: %16.10f %s\n", ct, GTime::GTime2CivilTime(gpst).TimeString().c_str());
                 //printf("pre:%f -- cur:%f\n",pre_factor,myfactor);
             }
             else if(pre_factor == 0.0 && myfactor > 0.0)
             {
-                printf("umbra_e: %16.10f ", ct);
+                umbra_start= true;
+                //printf("umbra_s: %16.10f\n", ct);
+                printf("umbra_s: %16.10f %s\n", ct, GTime::GTime2CivilTime(gpst).TimeString().c_str());
                 //printf("pre:%f -- cur:%f\n",pre_factor,myfactor);
             }
             else if(pre_factor < 1.0 && myfactor == 1.0)
             {
+                umbra_start = false;
                 printf("eclipse_end: %16.10f %s\n", ct, GTime::GTime2CivilTime(gpst).TimeString().c_str());
                 //printf("pre:%f -- cur:%f\n",pre_factor,myfactor);
             }
             
             pre_factor = myfactor;
-            
+            if(umbra_start == true)
+            {
+                printf("shadow factor: %f\n",myfactor);
+            }
+           
         }
         
         
@@ -456,6 +475,12 @@ namespace gfc
         GVector r = satpos_ecef;
         GVector rs = sunpos_ecef;
         
+        double t =0.0, t1 = 0.0, t2 =0.0, dis =0, s1 = 0, s2=0,ds1 = 0.0, ds2 =0.0;
+        //A: first test if the satellite is in the front of earth,
+        // if it is in the front of earth, it is always full phase
+        // otherwise,using the photogrammetry method
+        // A= diag{1/a2,1/a2, 1/b2 }, A^{-1} = diag{a2, a2, b2}
+        
         GVector o, u, v, n;
         double f = 1000.0;
         n = r - rs;
@@ -463,17 +488,16 @@ namespace gfc
         double dis_sat_sun = n.norm();
         n.normalise();
         
-        //A: first test if the satellite is in the front of earth,
-        // if it is in the front of earth, it is always full phase
-        // otherwise,using the photogrammetry method
-        // A= diag{1/a2,1/a2, 1/b2 }, A^{-1} = diag{a2, a2, b2}
-        double nAn = n.x*n.x*a2 + n.y*n.y*a2 + + n.z*n.z*b2;
-        double s1 = sqrt(1.0/nAn);
-        double s2 = - s1;
+        double nAin = n.x*n.x*a2 + n.y*n.y*a2 + + n.z*n.z*b2;
         double rtn = dotproduct(r, n);
         double ntn = dotproduct(n, n);
-        double t1 = (rtn - 1.0/s1)/ntn;
-        double t2 = (rtn - 1.0/s2)/ntn;
+        
+        
+        s1 = sqrt(1.0/nAin);
+        s2 = - s1;
+        
+        t1 = (rtn - 1.0/s1)/ntn;
+        t2 = (rtn - 1.0/s2)/ntn;
         
         //GVector xp1(s1*n.x/a2, s1*n.y/b2, s1*n.z/b2 );
         //GVector xp2(s2*n.x/a2, s2*n.y/b2, s2*n.z/b2 );
@@ -481,17 +505,58 @@ namespace gfc
         GVector xs1 = r - t1*n;
         GVector xs2 = r - t2*n;
         
-        double ds1 = (xs1-rs).norm();
-        double ds2 = (xs2-rs).norm();
+        ds1 = (xs1-rs).norm();
+        ds2 = (xs2-rs).norm();
         
-        double t =0.0;
+        
         t = (ds1 <= ds2) ? ds1:ds2;
         ds2 = (ds1 >= ds2)? ds1:ds2;
         ds1 = t;
         
+        
+       
+        
+        
+        double nAn = n.x*n.x/a2 + n.y*n.y/a2 + n.z*n.z/b2;
+        double rsAn = n.x*rs.x/a2 + n.y*rs.y/a2 + n.z*rs.z/b2;
+        double rsArs = rs.x*rs.x/a2 + rs.y*rs.y/a2 + rs.z*rs.z/b2;
+        double Delta = rsAn*rsAn - nAn*(rsArs-1.0);
+        
+        if(Delta > 0) // sun-sat line intersects the Earth ellipsoid
+        {
+            t1 = (-2.0*rsAn + sqrt(Delta))/2.0/nAn;
+            t2 = (-2.0*rsAn - sqrt(Delta))/2.0/nAn;
+            
+            ds1 = (t1 <= t2) ? t1:t2;
+            //ds2 = (t1 <= t2) ? t2:t1;
+        }
+        else
+        {
+            // normal vector to the plane sat,sun and Earth
+            GVector p = crossproduct(r, n);
+            // normal at the ellipsoid that is perpendicular to n
+            GVector ns = crossproduct(n, p);
+            ns.normalise();
+            
+            t = ns.x*a2*ns.x + ns.y*a2*ns.y + ns.z*b2*ns.z ;
+            double lam1 = sqrt( 1.0/ t );
+            double lam2 = -lam1;
+            
+            s1 = dotproduct(ns, rs) - lam1*t;
+            s2 = dotproduct(ns, rs) - lam2*t;
+            
+            double lam = fabs(s1)<fabs(s2)? lam1: lam2;
+            dis = lam*(n.x*ns.x*a2 + n.y*ns.y*a2 + n.z*ns.z*b2) - dotproduct(n, rs);
+            
+            ds1 = dis;
+        }
+         // sun-sat line DOES NOT intersect the Earth ellipsoid, get the tangents
+        
         if(dis_sat_sun < ds1)  // full phase
         {
             state = 0;
+            //导致后面的 area_bright, dis_boundary, and dis_circle 都没有计算
+            
             return state;
         }
         else if(dis_sat_sun >= ds2)  // ellipse
@@ -505,9 +570,9 @@ namespace gfc
         
         //B: build the ISF coordinate system
         o = r - f*n; // the origin of the photo coordinate system (PSC)
-        //u = r - rtn*n;
-        //u = n - 1.0/rtn*r;
-        u = rtn*n - r;
+        
+        u = n - 1.0/rtn*r; //只有这个定义没问题
+        
         u.normalise();
         v = crossproduct(n, u);
         
@@ -522,19 +587,6 @@ namespace gfc
         
         t = (r.x*r.x/a2 + r.y*r.y/a2 + r.z*r.z/b2 - 1.0);
         
-        //C: calculate M
-//        GMatrix MM(3,3);//A(3,3);
-//        t = (r.x*r.x/a2 + r.y*r.y/a2 + r.z*r.z/b2 - 1.0);
-//        MM(0,0) = r.x*r.x/a2/a2 - t/a2;
-//        MM(0,1) = r.x*r.y/a2/a2;
-//        MM(0,2) = r.x*r.z/a2/b2;
-//        MM(1,0) = MM(0,1);
-//        MM(1,1) = r.y*r.y/a2/a2 - t/a2;
-//        MM(1,2) = r.y*r.z/a2/b2;
-//        MM(2,0) = MM(0,2);
-//        MM(2,1) = MM(1,2);
-//        MM(2,2) = r.z*r.z/b2/b2 - t/b2;
-//
         double M[3][3]={0.0};
         M[0][0] = r.x*r.x/a2/a2 - t/a2;
         M[0][1] = r.x*r.y/a2/a2;
@@ -549,20 +601,6 @@ namespace gfc
         
         //D: calculate K
         double K[6] = {0.0};
-//        double KK[6] = {0.0};
-//        GMatrix tu(3,1), tv(3,1),tn(3,1), to(3,1),tr(3,1);
-//        tu[0] = u.x;tu[1] = u.y;tu[2] = u.z;
-//        tv[0] = v.x;tv[1] = v.y;tv[2] = v.z;
-//        //to[0] = o.x;to[1] = o.y;to[2] = o.z;
-//        //tr[0] = r.x;tr[1] = r.y;tr[2] = r.z;
-//        tn[0] = n.x;tn[1] = n.y;tn[2] = n.z;
-//
-//        ((~tu)*MM*tu).getData(KK); // K[0]
-//        ((~tu)*MM*tv).getData(KK+1); // K[1]
-//        ((~tv)*MM*tv).getData(KK+2); // K[2]
-//        (-2.0*f*(~tu*MM*tn)).getData(KK+3); //K[3]
-//        (-2.0*f*(~tv*MM*tn)).getData(KK+4);  //K[4]
-//        (f*f*(~tn*MM*tn)).getData(KK+5); //K[5]
         
         K[0] = (u.x*M[0][0] + u.y*M[1][0] + u.z*M[2][0])*u.x
              + (u.x*M[0][1] + u.y*M[1][1] + u.z*M[2][1])*u.y
@@ -599,56 +637,31 @@ namespace gfc
             K[i] = K[i]*1.0E6;
         }
         
-//        double CEOF[5]={K[0]/K[5], 2*K[1]/K[5], K[2]/K[5], K[3]/K[5],K[4]/K[5] };
-//        double XC[2] = { (CEOF[1]*CEOF[4] - 2*CEOF[2]*CEOF[3])/(4*CEOF[0]*CEOF[2] - CEOF[1]*CEOF[1]), (CEOF[1]*CEOF[3] - 2*CEOF[0]*CEOF[4])/(4*CEOF[0]*CEOF[2] - CEOF[1]*CEOF[1])    };
-        
-        
         //E: calculate the eigen value and eigen vector of matrix B
         t =  sqrt( (K[0]+K[2])*(K[0]+K[2]) - 4.0*(K[0]*K[2] - K[1]*K[1]) ) ;
         double lambda1 = (K[0]+K[2]+t)/2.0;
         double lambda2 = (K[0]+K[2]-t)/2.0;
         
-        //get the eigen vector of B, i.e. matrix Q
         double  r1[2]={0.0,1.0},r2[2]={1.0,0.0};
-        bool sol1 = false, sol2 =false;
-        if( fabs(lambda1 - K[0])<1.0E-12)
+        // http://www.math.harvard.edu/archive/21b_fall_04/exhibits/2dmatrices/index.html
+        if(K[1]!= 0.0)
         {
-            r1[1] = 0.0;
-            if( (lambda1 - K[0])*K[1] <0.0 ) // 异号
-            {
-                r1[0] = -1.0;
-            }
-            else
-            {
-                r1[0] = 1.0;
-            }
-            sol1 = true;
+            r1[0] = lambda1 - K[2];
+            r1[1] = K[1];
+
+            r2[0] = lambda2 - K[2];
+            r2[1] = K[1];
+
         }
-        
-        if( fabs(lambda2 - K[2])<1.0E-12)
+        else if( fabs(K[2]) < 1.0E-12)
         {
-            r2[0] = 0.0;
-            if( (lambda2 - K[2])*K[1] <0.0 ) // 异号
-            {
-                r2[1] = -1.0;
-            }
-            else
-            {
-                r2[1] = 1.0;
-            }
-            sol2 = true;
+            r1[0] = 1;
+            r1[1] = 0;
+
+            r2[0] = 0;
+            r2[1] = 1;
         }
-        
-        if(sol1 ==false)
-        {
-            r1[0] = K[1]/(lambda1 - K[0]);  // r1 for lambda1
-        }
-        
-        if(sol2 ==false)
-        {
-            r2[1] = K[1]/(lambda2 - K[2]);  // r2 for lambda2
-        }
-        
+    
         //get the unit vector
         t = sqrt(r1[0]*r1[0]+r1[1]*r1[1]);
         r1[0] = r1[0]/t;r1[1] = r1[1]/t;
@@ -656,16 +669,16 @@ namespace gfc
         t= sqrt(r2[0]*r2[0]+r2[1]*r2[1]);
         r2[0] = r2[0]/t;r2[1] = r2[1]/t;
         
-        //the larger eigen value is lambda1
-        if( fabs(lambda1) <= fabs(lambda2) )  // swap lamda1 and lamda2, with r1 and r2
-        {
-            t = lambda1;
-            lambda1 = lambda2;
-            lambda2 = t;
-            double r[2] ={r1[0],r1[1]};
-            r1[0] = r2[0]; r1[1] = r2[1];
-            r2[0] = r[0]; r2[1] = r[1];
-        }
+//        //the larger eigen value is lambda1
+//        if( fabs(lambda1) <= fabs(lambda2) )  // swap lamda1 and lamda2, with r1 and r2
+//        {
+//            t = lambda1;
+//            lambda1 = lambda2;
+//            lambda2 = t;
+//            double r[2] ={r1[0],r1[1]};
+//            r1[0] = r2[0]; r1[1] = r2[1];
+//            r2[0] = r[0]; r2[1] = r[1];
+//        }
         
         double OM = (K[2]*K[3]*K[3] - 2.0*K[1]*K[3]*K[4] + K[0]*K[4]*K[4] )/(4.0*(K[0]*K[2] - K[1]*K[1]));
         // the translation parameters
@@ -690,10 +703,6 @@ namespace gfc
         double XX[4]={0.0}; // the solution of quartic equation
         int num_of_solution = 0;
         
-        //num_of_solution = GMath::quarticSolver(ce,XX);
-        
-        
-        //std::complex<double> ret[4];
         num_of_solution = GMath::solve_quartic(ce[0], ce[1], ce[2], ce[3], XX);
         
         if( num_of_solution == 3 || num_of_solution == 4)
@@ -702,11 +711,6 @@ namespace gfc
             exit(0);
         }
         
-        // calculate the coordinates of the intersections betweent the circle and the conical curve in transformed frame
-        // in the new frame, the origin is at the centre of the projection of the Earth
-        double Q1[2]={ (1.0 - XX[0]*XX[0])/(1.0 + XX[0]*XX[0])*R0 + 0.5*tx , 2*XX[0]/(1.0 + XX[0]*XX[0])*R0 + 0.5*ty};
-        double Q2[2]={ (1.0 - XX[1]*XX[1])/(1.0 + XX[1]*XX[1])*R0 + 0.5*tx , 2*XX[1]/(1.0 + XX[1]*XX[1])*R0 + 0.5*ty};
-        
         //calculate the sun's projection centre Os (PSC) in the transformed frame
         double Os[2] = {0.5*tx , 0.5*ty };
         //double Os[2] = {0.0,0.0};
@@ -714,6 +718,14 @@ namespace gfc
         // the projection of the earth's centre Pe in the transformed frame is obtained by converting PEC_isf into the rotated and translated frame
         PEC_new[0] = PEC_isf.x*r1[0] + r1[1]*PEC_isf.y + 0.5*tx;
         PEC_new[1] = PEC_isf.x*r2[0] + r2[1]*PEC_isf.y + 0.5*ty;
+        
+        //printf("PEC_new: %f %f\n",PEC_new[0], PEC_new[1]);
+        
+        // calculate the coordinates of the intersections betweent the circle and the conical curve in transformed frame
+        // in the new frame, the origin is at the centre of the projection of the Earth
+        double Q1[2]={ (1.0 - XX[0]*XX[0])/(1.0 + XX[0]*XX[0])*R0 + 0.5*tx , 2*XX[0]/(1.0 + XX[0]*XX[0])*R0 + 0.5*ty};
+        double Q2[2]={ (1.0 - XX[1]*XX[1])/(1.0 + XX[1]*XX[1])*R0 + 0.5*tx , 2*XX[1]/(1.0 + XX[1]*XX[1])*R0 + 0.5*ty};
+        
         
         //PEC_new[0] = (PEC_isf.x-0.5*tx)*r1[0] + (PEC_isf.y-0.5*ty)*r2[0];
         //PEC_new[1] = (PEC_isf.x-0.5*tx)*r1[1] + (PEC_isf.y-0.5*ty)*r2[1];
@@ -730,7 +742,7 @@ namespace gfc
         double PEC_Os_len = sqrt( (Os[0]-PEC_new[0])*(Os[0]-PEC_new[0]) + (Os[1]-PEC_new[1])*(Os[1]-PEC_new[1]));
         double d[2] = { (Os[0]-PEC_new[0])/PEC_Os_len,(Os[1]-PEC_new[1])/PEC_Os_len };
         double aa = lambda1*d[0]*d[0] + lambda2*d[1]*d[1];
-        double bb = 2*(lambda1*PEC_new[0]*d[0] + lambda2*PEC_new[1]*d[1]);
+        double bb = 2.0*(lambda1*PEC_new[0]*d[0] + lambda2*PEC_new[1]*d[1]);
         double cc = lambda1*PEC_new[0]*PEC_new[0] + lambda2*PEC_new[1]*PEC_new[1] + K[5] - OM;
         t1 = (-bb + sqrt(bb*bb - 4.0*aa*cc ))/aa/2.0;
         t2 = (-bb - sqrt(bb*bb - 4.0*aa*cc ))/aa/2.0;
@@ -851,8 +863,6 @@ namespace gfc
             area_bright = area_hyperbola( Q1, Q2, Os, R0, a, b, in_out, x_axis);
             
             // similar as that in the ellipse case
-            
-            
         }
         
         
@@ -898,8 +908,20 @@ namespace gfc
         }
         
         //ref: http://www.robertobigoni.eu/Matematica/Conics/segmentHyp/segmentHyp.html
-        double s1 = b*( Q1[0]*sqrt(  (Q1[0]*Q1[0]/a/a) -1.0 ) - a*acosh(Q1[0]/a) );
-        double s2 = b*( Q2[0]*sqrt(  (Q2[0]*Q2[0]/a/a) -1.0 ) - a*acosh(Q2[0]/a) );
+        double s1 = 0.0, s2 =0.0;
+        
+        double xQ1 = fabs(Q1[0]);
+        double xQ2 = fabs(Q2[0]);
+        
+        s1 = b*( xQ1*sqrt(  (xQ1*xQ1/a/a) -1.0 ) - a*acosh(xQ1/a) );
+        
+        s2 = b*( xQ2*sqrt(  (xQ2*xQ2/a/a) -1.0 ) - a*acosh(xQ2/a) );
+        
+        if(isnan(s1) || isnan(s2) )
+        {
+            int testc = 0;
+        }
+        
         double ss = s1<=s2?s1:s2;
         double sl = s1>=s2?s1:s2;
         double S2 =0.0;
@@ -917,6 +939,7 @@ namespace gfc
             S2 = (sl - ss - 2*s_trapizium )/2.0;
         }
         
+        
         if(in_out == true) // the centre of the sun is inside the ellipse
         {
             area = SQ1Q2Os - TQ1Q2Os - S2;
@@ -925,6 +948,11 @@ namespace gfc
         {
             double area_shadow =  SQ1Q2Os - TQ1Q2Os + S2;
             area = 3.14159265357*Rs*Rs -area_shadow;
+        }
+        
+        if(area < 0.0 || area > 3.1415926*Rs*Rs)
+        {
+            int testc = 0;
         }
         
         return area;
@@ -953,7 +981,56 @@ namespace gfc
         // elliptical sector
         //double SQ1Q2Oe = 0.5*a*b*acos(cte);
         
-        double SQ1Q2Oe = 0.5*a*b*fabs( acos(ae[0]/a) - acos(be[0]/a) );
+        double SQ1Q2Oe = 0.0;
+        double aa =  a> b? a: b;
+        double q1 =0.0, q2 =0.0;
+        if(ae[0]>0 && ae[1]>0)  // the first quadrant
+        {
+            q1 = atan(ae[1]/ ae[0]);
+        }
+        else if(ae[0]<0 && ae[1]>0)
+        {
+            q1 = 3.14159265357 - atan(-ae[1]/ae[0]);
+        }
+        else if(ae[0]<0 && ae[1]<0)
+        {
+            q1 = 3.14159265357 + atan(ae[1]/ ae[0]);
+        }
+        else if( ae[0]>0 && ae[1]<0 )
+        {
+            q1 = 3.14159265357*2 - atan(-ae[1]/ae[0]);
+        }
+        
+        if(be[0]>0 && be[1]>0)  // the first quadrant
+        {
+            q2 = atan(be[1]/be[0]);
+        }
+        else if(be[0]<0 && be[1]>0)
+        {
+            q2 = 3.14159265357 - atan(-be[1]/be[0]);
+        }
+        else if(be[0]<0 && be[1]<0)
+        {
+            q2 = 3.14159265357 + atan(be[1]/be[0]);
+        }
+        else if( be[0]>0 && be[1]<0 )
+        {
+            q2 = 3.14159265357*2 - atan(-be[1]/be[0]);
+        }
+        
+        double s_a = a*b/2.0*( q1 - atan2( (b-a)*sin(2.0*q1), (a+b) + (b-a)*cos(2*q1)) );
+        double s_b = a*b/2.0*( q2 - atan2( (b-a)*sin(2.0*q2), (a+b) + (b-a)*cos(2*q2)) );
+        
+        SQ1Q2Oe = fabs(s_b - s_a);
+        
+//        if(ae[1]*be[1]<0.0)
+//        {
+//            SQ1Q2Oe = 0.5*a*b*fabs( acos(fabs(ae[0])/aa) + acos(fabs(be[0])/aa) );
+//        }
+//        else
+//        {
+//            SQ1Q2Oe = 0.5*a*b*fabs( acos(ae[0]/aa) - acos(be[0]/aa) );
+//        }
         
         double S1 = SQ1Q2Oe - TQ1Q2Oe;
         
@@ -1716,14 +1793,14 @@ namespace gfc
     {
         double factor = 1.0;
         
-        double a = 6378.137; //km
-        double b = 6356.7523142; //km  6356.7523142
+//        double a = 6378.137; //km
+//        double b = 6356.7523142; //km  6356.7523142
         
         // for sphere test
-       // double a = 6371.0; //km
-       // double b = 6371.0; //km  6356.7523142
+        double a = 6371.0; //km
+        double b = 6371.000001; //km  6356.7523142
         
-        double hgt_atm = 50.0; // the hight of atmosphere, this parameter is very important
+        double hgt_atm = 50.0; // the hight of atmosphere, this parameter is important
         
         //considering atmosphere
         double a_atm = a + hgt_atm; //km
@@ -1732,12 +1809,12 @@ namespace gfc
         double Area_earth =0.0, Area_atm = 0.0, Area_solar=0.0;
         int state1 = -1, state2 =-1;
         
-        double EC_intersection1[2]={0.0},EC_intersection2[2]={0.0}, EC[2]={0.0};
-        double Boundary_earth[2] = {0.0}, Boundary_atm[2] = {0.0};
-        double PEC_new[2] ={0.0};
-        double sun_intersection[2]={0.0};
+//        double EC_intersection1[2]={0.0},EC_intersection2[2]={0.0}, EC[2]={0.0};
+//        double Boundary_earth[2] = {0.0}, Boundary_atm[2] = {0.0};
+//        double PEC_new[2] ={0.0};
+//        double sun_intersection[2]={0.0};
         
-        double x1 =0.0, x2 =0.0, dis0 =0.0, dis1 = 0.0, dis2 = 0.0, thickness;
+        double x1 =0.0, x2 =0.0, dis0 =0.0, dis1 = 0.0, dis2 = 0.0, thickness=0.0;
         double r_sun = 0.0;
         
         if(hgt_atm == 0.0 )
@@ -1758,7 +1835,6 @@ namespace gfc
             {
                factor = Area_earth/Area_solar;
             }
-            
         }
         else  // considering the atmosphere
         {
@@ -1766,9 +1842,9 @@ namespace gfc
             //state1 = perspectiveProjection(a_atm,b_atm,sunpos_eci,satpos_eci,r_sun, Area_atm,EC_intersection1, EC);
             //state2 = perspectiveProjection(a,b,sunpos_eci,satpos_eci,r_sun, Area_earth,EC_intersection2, EC);
             
+            state1 = myperspectiveProjection(a_atm,b_atm,sunpos_eci,satpos_eci,r_sun, Area_atm,dis1,dis0);
             state2 = myperspectiveProjection(a,b,sunpos_eci,satpos_eci,r_sun, Area_earth,dis2,dis0);
             
-            state1 = myperspectiveProjection(a_atm,b_atm,sunpos_eci,satpos_eci,r_sun, Area_atm,dis1,dis0);
             
             double mu1 = 0.0;  // 大气层辐射通过系数, distance = 0
             double mu2 = 1.0;  // distance = 1;
@@ -1802,6 +1878,7 @@ namespace gfc
             // the thickness of atmosphere
            thickness = dis1 - dis2;
             
+            //printf("%6.4f %6.4f %6.4f %6.4f\n",dis0,dis1,dis2,thickness);
             //线性模型
             //double u1 = (mu2-mu1) * x1 + mu1;
             //double u2 = (mu2-mu1) * x2 + mu1;
@@ -1820,7 +1897,7 @@ namespace gfc
             //double u1 = 1.0/( 1+ exp(-3*x1+1) );
             //double u2 = 1.0/( 1+ exp(-3*x2+1) );
             
-            if(state1 == 0)  // full phase
+            if(state1 == 0)  // outside of atmosphere
             {
                 factor = 1.0;
             }
@@ -1849,16 +1926,38 @@ namespace gfc
             // totally in the atmosphere
             if( state1 == -1 && state2 == 0 )
             {
-                x1 = (dis0 - dis2)/thickness;
-                x2 = (dis0 - dis2 + 2.0*r_sun )/thickness;
+                double u1 =0, u2 =0;
+                if(dis2 != 0.0)
+                {
+                    x1 = (dis0 - dis2)/thickness;
+                    x2 = (dis0 - dis2 + 2.0*r_sun )/thickness;
+                    
+                    //log
+                    //double u1 = a_log + b_log*log(x1+1.0);
+                    //double u2 = a_log + b_log*log(x2+1.0);
+                    
+                    //linear
+                    u1 = (mu2-mu1) * x1 + mu1;
+                    u2 = (mu2-mu1) * x2 + mu1;
+                }
+                else if (fabs(dis2)< 1.0E-9) // no projection for the solid Earth (outside of the solid Earth), but the satellite is in the atmosphere's projection
+                {
+                    
+                    //thickness = hgt_atm*dis1 / ((a_atm+b_atm)/2.0 );
+//                    thickness = 500*r_sun;
+//                    x1 = (dis1 - dis0  - 2*r_sun)/thickness;
+//                    x2 = (dis1 - dis0)/thickness;
+//
+//                    //linear
+//                    u1 = (mu1-mu2) * x1 + mu2;
+//                    u2 = (mu1-mu2) * x2 + mu2;
+//
+                    u1 = 0.5;
+                    u2 = 0.5;
+                    
+                }
                 
-                //log
-                //double u1 = a_log + b_log*log(x1+1.0);
-                //double u2 = a_log + b_log*log(x2+1.0);
                 
-                //linear
-                double u1 = (mu2-mu1) * x1 + mu1;
-                double u2 = (mu2-mu1) * x2 + mu1;
                 
                 factor = (u1+u2)/2.0;
                 //factor = u;
@@ -1917,7 +2016,7 @@ namespace gfc
         //printf("%f %f %f \n", factor, f1, f2);
         //printf("%f %d %d %f %f %f %f %f %f %f %f\n", factor, state1, state2, Area_solar, Area_atm, Area_earth,mydis, mydis1, mydis2, x1, x2 );
         
-        //printf("%f %d %d %f\n", factor, state1, state2, thickness);
+        //printf("%f %d %d %f %f %f %f %f %f\n", factor, state1, state2, dis0,dis1, dis2, thickness,Area_atm,Area_earth);
         
         return factor;
     }
