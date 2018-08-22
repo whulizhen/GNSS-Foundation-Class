@@ -198,8 +198,8 @@ int main(int argc, char* argv[])
     GString sp3dir = "/Users/lizhen/experiments/data/sp3/2015codesp3/";
     
     argv[1] = "/Users/lizhen/experiments/data/gfcsetup_test.cfg";
-    argv[2] = "ssGAL";  //satellite system; ssGRACE
-    argv[3] = "11";     //prn 1
+    argv[2] = "ssGRACE";  //satellite system; ssGRACE
+    argv[3] = "1";     //prn 1
     
     //2015/01/11/18:34:25.000000
 //    argv[4] = "2015 1 11 17 34 30.00000000"; // start time in GPST
@@ -213,9 +213,9 @@ int main(int argc, char* argv[])
     
     
     //for galileo
-    argv[4] = "2015 1 11 00 00 00.00000000"; // start time in GPST
-    argv[5] = "2015 1 12 00 00 00.00000000"; // end time in GPST
-    argv[6] = "com18264.sp3,com18265.sp3,com18266.sp3,com18270.sp3,com18271.sp3,com18272.sp3,com18273.sp3,com18274.sp3,com18275.sp3,com18276.sp3,com18280.sp3,com18281.sp3,com18282.sp3,com18283.sp3";
+//    argv[4] = "2015 1 11 00 00 00.00000000"; // start time in GPST
+//    argv[5] = "2015 1 12 00 00 00.00000000"; // end time in GPST
+//    argv[6] = "com18264.sp3,com18265.sp3,com18266.sp3,com18270.sp3,com18271.sp3,com18272.sp3,com18273.sp3,com18274.sp3,com18275.sp3,com18276.sp3,com18280.sp3,com18281.sp3,com18282.sp3,com18283.sp3";
     
     //for bds
     //argv[4] = "2015 01 01 00 00 00.00000000"; // start time in GPST
@@ -231,6 +231,9 @@ int main(int argc, char* argv[])
 //    argv[4] = "2007 01 20 00 01 00.000000"; // start time in GPST
 //    argv[5] = "2007 01 20 23 59 00.000000"; // end time in GPST
     
+    argv[4] = "2007 01 20 01 27 20.000000";
+    argv[5] = "2007 01 20 01 28 05.000000";
+
     // gpst: 2007/01/20/00:40:28.000000 --> 2007/01/20/00:40:56.000000
     //argv[4] = "2007 01 20 00 29 24.000000"; // start time in GPST
     //argv[5] = "2007 01 20 00 29 52.000000"; // end time in GPST
@@ -320,12 +323,12 @@ int main(int argc, char* argv[])
     std::vector<GString> sp3file = sp3filelist.split(',');
     
     
-    //GSpaceCraftMgr::loadGRACEEphemeris("/Users/lizhen/experiments/data/sp3/GRACE/nav_0120.data");
+    GSpaceCraftMgr::loadGRACEEphemeris("/Users/lizhen/experiments/data/sp3/GRACE/nav_0120.data");
     
-    for(int i = 0 ; i< sp3file.size(); i++ )
-    {
-        GSpaceCraftMgr::loadPreciseEphemeris(sp3dir + sp3file[i]);
-    }
+//    for(int i = 0 ; i< sp3file.size(); i++ )
+//    {
+//        GSpaceCraftMgr::loadPreciseEphemeris(sp3dir + sp3file[i]);
+//    }
     
     GSensorID myid(satsys, satprn); // C08  C06 and C14 , G11, E11(IOV101)
     GSpaceCraft& mysat = GSpaceCraftMgr::gSpacecraft[myid.getIDString()];
@@ -417,7 +420,7 @@ mykpe(6838.48265785065597999,0.00303136072481130849909,1.55413552698389439467,1.
         //mykpe.propagate(mykpe, (epoch_gps-start_gps).toSeconds(), mp_eci, mv_eci);
         
         // for the eclipse event detection
-        mysat.getStatePointer()->shadow_detector(epoch_gps,GSpaceEnv::planetPos_ecef[GJPLEPH::SUN], mp_ecef);
+       // mysat.getStatePointer()->shadow_detector(epoch_gps,GSpaceEnv::planetPos_eci[GJPLEPH::SUN], mysat.getStatePointer()->satpos_eci);
         
         //for the eci cooridnates
         //mysat.getStatePointer()->shadow_detector(epoch_gps,GSpaceEnv::planetPos_eci[GJPLEPH::SUN], mysat.getStatePointer()->satpos_eci);

@@ -94,7 +94,7 @@ namespace gfc
             
             //GVector mysunpos_eci = GSpaceEnv::planetPos_eci[GJPLEPH::SUN];
             
-//            if(!strcmp("2007/01/20/22:59:48.000000", GTime::GTime2CivilTime(epoch_utc).TimeString().c_str()))
+//            if(!strcmp("2007/01/20/01:27:32.000000", GTime::GTime2CivilTime(epoch_utc).TimeString().c_str()))
 //            {
 //                int testc = 0;
 //            }
@@ -111,10 +111,10 @@ namespace gfc
             
             //shadow_factor = shadowFactor(<#double a#>, <#double b#>, GSpaceEnv::planetPos_eci[GJPLEPH::SUN], satpos_eci);
             
-            //printf("%s : %f\n",GTime::GTime2CivilTime(epoch_utc).TimeString().c_str(), shadow_factor);
+            printf("%s : %f\n",GTime::GTime2CivilTime(epoch_utc).TimeString().c_str(), shadow_factor);
             if(shadow_factor < 0.0 || shadow_factor > 1.0 || isnan(shadow_factor))
             {
-                printf("%s : %f \n",GTime::GTime2CivilTime(epoch_utc).TimeString().c_str(), shadow_factor);
+                printf("%s: %f \n",GTime::GTime2CivilTime(epoch_utc).TimeString().c_str(), shadow_factor);
                 int testc = 0;
             }
 
@@ -369,7 +369,7 @@ namespace gfc
             pre_factor = myfactor;
             if(umbra_start == true)
             {
-                printf("shadow factor: %f\n",myfactor);
+                printf("%s: %f\n",GTime::GTime2CivilTime(GTime::UTC2GPST(m_epoch)).TimeString().c_str(), myfactor);
             }
            
         }
@@ -644,22 +644,22 @@ namespace gfc
         
         double  r1[2]={0.0,1.0},r2[2]={1.0,0.0};
         // http://www.math.harvard.edu/archive/21b_fall_04/exhibits/2dmatrices/index.html
-        if(K[1]!= 0.0)
-        {
-            r1[0] = lambda1 - K[2];
-            r1[1] = K[1];
-
-            r2[0] = lambda2 - K[2];
-            r2[1] = K[1];
-
-        }
-        else if( fabs(K[2]) < 1.0E-12)
+        
+        
+        if( fabs(K[1]) < 1.0E-12)
         {
             r1[0] = 1;
             r1[1] = 0;
 
             r2[0] = 0;
             r2[1] = 1;
+        }
+        else
+        {
+            r1[0] = lambda1 - K[2];
+            r1[1] = K[1];
+            r2[0] = lambda2 - K[2];
+            r2[1] = K[1];
         }
     
         //get the unit vector
@@ -670,15 +670,15 @@ namespace gfc
         r2[0] = r2[0]/t;r2[1] = r2[1]/t;
         
 //        //the larger eigen value is lambda1
-//        if( fabs(lambda1) <= fabs(lambda2) )  // swap lamda1 and lamda2, with r1 and r2
-//        {
-//            t = lambda1;
-//            lambda1 = lambda2;
-//            lambda2 = t;
-//            double r[2] ={r1[0],r1[1]};
-//            r1[0] = r2[0]; r1[1] = r2[1];
-//            r2[0] = r[0]; r2[1] = r[1];
-//        }
+        if( fabs(lambda1) <= fabs(lambda2) )  // swap lamda1 and lamda2, with r1 and r2
+        {
+            t = lambda1;
+            lambda1 = lambda2;
+            lambda2 = t;
+            double r[2] ={r1[0],r1[1]};
+            r1[0] = r2[0]; r1[1] = r2[1];
+            r2[0] = r[0]; r2[1] = r[1];
+        }
         
         double OM = (K[2]*K[3]*K[3] - 2.0*K[1]*K[3]*K[4] + K[0]*K[4]*K[4] )/(4.0*(K[0]*K[2] - K[1]*K[1]));
         // the translation parameters
@@ -860,26 +860,23 @@ namespace gfc
                 b = sqrt(-BB);
             }
             
-            area_bright = area_hyperbola( Q1, Q2, Os, R0, a, b, in_out, x_axis);
+            area_bright = area_hyperbola( Q1, Q2, Os,PEC_new, R0, a, b, in_out, x_axis);
             
             // similar as that in the ellipse case
         }
         
-        
-        
         return state;
-        
     }
     
     
-    double GMotionState::area_hyperbola(double Q1[2], double Q2[2], double Os[2], double Rs,double a, double b, bool in_out, bool x_axis)
+    double GMotionState::area_hyperbola(double Q1[2], double Q2[2], double Os[2],double Oe[2], double Rs,double a, double b, bool in_out, bool x_axis)
     {
         double area = 0.0;
         double as[2] = {Q1[0]-Os[0],Q1[1] -Os[1] };
         double bs[2] = {Q2[0]-Os[0],Q2[1] -Os[1] };
         
-        double ae[2] = {Q1[0],Q1[1]  };
-        double be[2] = {Q2[0],Q2[1]  };
+        double ae[2] = {Q1[0]-Oe[0],Q1[1] -Oe[1]  };
+        double be[2] = {Q2[0]-Oe[0],Q2[1] -Oe[1]  };
         
         
         double TQ1Q2Os = 0.5*fabs(as[0]*bs[1] - bs[0]*as[1]);
@@ -891,8 +888,8 @@ namespace gfc
         //calculate the area of hyperbolic secttion
         
         
-        double SQ1Q2Oe = 0.5*a*b*fabs( acos(ae[0]/a) - acos(be[0]/a) );
-        double S1 = SQ1Q2Oe - TQ1Q2Oe;
+        //double SQ1Q2Oe = 0.5*a*b*fabs( acos(ae[0]/a) - acos(be[0]/a) );
+        //double S1 = SQ1Q2Oe - TQ1Q2Oe;
         
         if(x_axis == false) //// 主轴是y, 整个双曲线旋转90度，使得x为主轴
         {
@@ -925,13 +922,32 @@ namespace gfc
         double ss = s1<=s2?s1:s2;
         double sl = s1>=s2?s1:s2;
         double S2 =0.0;
-        if( Q1[1]*Q2[1] < 0.0 )  //2个交点在x轴不同侧
+        if( Q1[1]*Q2[1] < 0.0 )  //2个交点在y轴不同侧
         {
-            double k = ( Q2[1] - Q1[1] )/( Q2[0] - Q1[0]);
-            double m = Q1[1] - k *Q1[0];
-            double x_m = - m/k;
+            double x_m = 0.0;
             
-            S2 = ss + (sl - ss)/2.0 - 0.5*fabs((Q2[0]- x_m)*Q2[1]) + 0.5*fabs((x_m - Q1[0])*Q1[1]);
+            if(fabs(Q2[0] - Q1[0])>1.0E-10)
+            {
+                double k = ( Q2[1] - Q1[1] )/( Q2[0] - Q1[0]);
+                double m = Q1[1] - k *Q1[0];
+                x_m = - m/k;
+            }
+            else
+            {
+                x_m = Q1[0];
+                //S2 = sl;
+            }
+            
+            if(Q1[0]>Q2[0])
+            {
+                S2 = ss + (sl - ss)/2.0 - 0.5*fabs((x_m - Q1[0])*Q1[1]) + 0.5*fabs((Q2[0]- x_m)*Q2[1]) ;
+            }
+            else
+            {
+                S2 = ss + (sl - ss)/2.0 - 0.5*fabs((Q2[0]- x_m)*Q2[1]) + 0.5*fabs((x_m - Q1[0])*Q1[1]);
+            }
+            
+            
         }
         else  //2 个交点在同一侧
         {
@@ -1793,13 +1809,13 @@ namespace gfc
     {
         double factor = 1.0;
         
-//        double a = 6378.137; //km
-//        double b = 6356.7523142; //km  6356.7523142
+        double a = 6378.137; //km
+        double b = 6356.7523142; //km  6356.7523142
         
         // for sphere test
-        double a = 6371.0; //km
-        double b = 6371.000001; //km  6356.7523142
-        
+//        double a = 6371.0; //km
+//        double b = 6371.0; //km  6356.7523142
+//
         double hgt_atm = 50.0; // the hight of atmosphere, this parameter is important
         
         //considering atmosphere
@@ -1814,13 +1830,13 @@ namespace gfc
 //        double PEC_new[2] ={0.0};
 //        double sun_intersection[2]={0.0};
         
-        double x1 =0.0, x2 =0.0, dis0 =0.0, dis1 = 0.0, dis2 = 0.0, thickness=0.0;
+        double x1 =0.0, x2 =0.0, dis0_e =0.0,dis0_t =0.0, dis1 = 0.0, dis2 = 0.0, thickness=0.0;
         double r_sun = 0.0;
         
         if(hgt_atm == 0.0 )
         {
             //state2 = perspectiveProjection(a,b,sunpos_eci,satpos_eci,r_sun, Area_earth,EC_intersection2, EC);
-             state2 = myperspectiveProjection(a,b,sunpos_eci,satpos_eci,r_sun, Area_earth,dis1, dis0);
+             state2 = myperspectiveProjection(a,b,sunpos_eci,satpos_eci,r_sun, Area_earth,dis1, dis0_e);
              Area_solar = 3.14159265357*r_sun*r_sun;
             
             if(state2 == 0)
@@ -1842,9 +1858,8 @@ namespace gfc
             //state1 = perspectiveProjection(a_atm,b_atm,sunpos_eci,satpos_eci,r_sun, Area_atm,EC_intersection1, EC);
             //state2 = perspectiveProjection(a,b,sunpos_eci,satpos_eci,r_sun, Area_earth,EC_intersection2, EC);
             
-            state1 = myperspectiveProjection(a_atm,b_atm,sunpos_eci,satpos_eci,r_sun, Area_atm,dis1,dis0);
-            state2 = myperspectiveProjection(a,b,sunpos_eci,satpos_eci,r_sun, Area_earth,dis2,dis0);
-            
+            state1 = myperspectiveProjection(a_atm,b_atm,sunpos_eci,satpos_eci,r_sun, Area_atm,dis1,dis0_t);
+            state2 = myperspectiveProjection(a,b,sunpos_eci,satpos_eci,r_sun, Area_earth,dis2,dis0_e);
             
             double mu1 = 0.0;  // 大气层辐射通过系数, distance = 0
             double mu2 = 1.0;  // distance = 1;
@@ -1877,7 +1892,7 @@ namespace gfc
             
             // the thickness of atmosphere
            thickness = dis1 - dis2;
-            
+           
             //printf("%6.4f %6.4f %6.4f %6.4f\n",dis0,dis1,dis2,thickness);
             //线性模型
             //double u1 = (mu2-mu1) * x1 + mu1;
@@ -1907,7 +1922,7 @@ namespace gfc
                )
             {
                 x1 = 1.0;
-                x2 = (thickness - (dis1 - dis0))/thickness;
+                x2 = (thickness - (dis1 - dis0_t))/thickness;
                 
                 //log
                 //double u1 = a_log + b_log*log(x1+1.0);
@@ -1929,8 +1944,8 @@ namespace gfc
                 double u1 =0, u2 =0;
                 if(dis2 != 0.0)
                 {
-                    x1 = (dis0 - dis2)/thickness;
-                    x2 = (dis0 - dis2 + 2.0*r_sun )/thickness;
+                    x1 = (dis0_t - dis2)/thickness;
+                    x2 = (dis0_t - dis2 + 2.0*r_sun )/thickness;
                     
                     //log
                     //double u1 = a_log + b_log*log(x1+1.0);
@@ -1965,7 +1980,7 @@ namespace gfc
             // partly in the earth and atmosphere
             if( state1 == -1 && (state2 == 1  || state2 == 2) )
             {
-                x1 = (2.0*r_sun - (dis2 - dis0))/thickness;
+                x1 = (2.0*r_sun - (dis2 - dis0_t))/thickness;
                 x2 = 0.0;
                 
                 //log
